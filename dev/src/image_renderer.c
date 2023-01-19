@@ -1,14 +1,14 @@
 #include "../include/image_renderer.h"
-#define DIV_IMG_THREAD 10
+#define DIV_IMG_THREAD 100
 
 int setup_renderer(app_params* params){
 
-	SDL_Init(SDL_INIT_VIDEO);
-	params->window = SDL_CreateWindow("SDL2 Displaying Image",
-        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-        params->width, params->height ,0);
+    SDL_Init(SDL_INIT_VIDEO);
+    params->window = SDL_CreateWindow("SDL2 Displaying Image",
+            SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+            params->width, params->height ,0);
     params->renderer = SDL_CreateRenderer(params->window, -1, SDL_RENDERER_ACCELERATED);
-	return 0;
+    return 0;
 }
 
 size_t min(size_t i, size_t j){
@@ -41,14 +41,15 @@ void render(SDL_Surface* surface, size_t width, size_t height){
         }
     }
     free(retval);
+    free(ti);
 }
 
 void set_pixel(SDL_Surface *surface, size_t x, size_t y, Uint32 pixel)
 {
-  Uint32 * const target_pixel = (Uint32 *) ((Uint8 *) surface->pixels
-                                             + y * surface->pitch
-                                             + x * surface->format->BytesPerPixel);
-  *target_pixel = pixel;
+    Uint32 * const target_pixel = (Uint32 *) ((Uint8 *) surface->pixels
+            + y * surface->pitch
+            + x * surface->format->BytesPerPixel);
+    *target_pixel = pixel;
 }
 
 void* render_pixel(void* tiv){
@@ -64,22 +65,25 @@ int launch(app_params* params){
     int quit = 0;
     SDL_Event event;
     SDL_Surface* surface = SDL_GetWindowSurface(params->window); 
-	while (!quit)
-	{
-		SDL_WaitEvent(&event);
-		switch (event.type)
-		{
-		case SDL_QUIT:
-			quit = 1;
-			break;
-		}
+    while (!quit)
+    {
+        SDL_WaitEvent(&event);
+        switch (event.type)
+        {
+            case SDL_QUIT:
+                quit = 1;
+                break;
 
-        render(surface, 200, 200);
-        SDL_UpdateWindowSurface(params->window);
-	}
+            case SDL_WINDOWEVENT:
+                render(surface, params->width, params->height);
+                SDL_UpdateWindowSurface(params->window);
+                break;
+        }
+    }
     SDL_UnlockSurface(surface);
     SDL_DestroyRenderer(params->renderer); 
     SDL_DestroyWindow(params->window);
-	SDL_Quit();
+    SDL_Quit();
     return 0;
 }
+
