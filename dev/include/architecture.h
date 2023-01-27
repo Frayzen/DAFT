@@ -4,17 +4,33 @@
 
 
 
+//id = size_t, point strut (3 flaots), vetr and tri to staitc,
+
+
+//init_mesh   add_vertex   , add_tria(3 size_t args index ) , 
+//
+//
+//cast function (ray and tri
+//
+
+typedef struct point{
+	size_t id_p;
+	float x;
+	float y;
+	float z;
+}point;
+ 
 typedef struct triangle
 {
-	int id_t;
-	size_t points[3];
-	float normal[0];
+	size_t id_t;
+	size_t vert[3];
+	point normal;
 }triangle;
 
 typedef struct mesh
 {
-	int id_m;
-	float **vertexs;
+	size_t id_m;
+	point ** vertexes;
 	size_t v_size;
 	size_t t_size;
 	triangle ** triangles;
@@ -22,34 +38,44 @@ typedef struct mesh
 
 typedef struct camera
 {
-	float pos[3];
-	float dir[3];
+	size_t id_c;
+	point pos;
+	point dir;
+
 }camera;
 
 typedef struct light
 {
-	float pos[3];
-	float dir[3];
-	float color[3];
+	size_t id_l;
+	point pos;
+	point dir;
+	point color;
 	float intensity;
+    float spread;
 }light;
 
 typedef struct ray
 {
-	float pos[3];
-	float dir[3];
+	size_t id_r;
+	point pos;
+	point dir;
 
 	int hit;
-	float contact[3];
+	point contact;
 	triangle **collision;
 }ray;
 
 
 typedef struct world
 {
-	mesh ** objects;
-	camera ** cameras;
-	light ** lights;
+
+    size_t size_c;
+    size_t size_l;
+    size_t size_m;
+    camera ** cameras;
+    light ** lights;
+    mesh ** meshes;
+
 }world;
 
 
