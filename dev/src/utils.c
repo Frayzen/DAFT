@@ -117,7 +117,7 @@ mesh * init_mesh(size_t no_vert, size_t no_tri, size_t id)
 	return m;
 }
 
-void build_mesh(mesh * m, point * vertexes, triangle ** triangles)
+void build_mesh(mesh * m, point ** vertexes, triangle ** triangles)
 {
     m->vertexes = vertexes;
     m->triangles = triangles;
@@ -181,9 +181,57 @@ world * init_world()
     return w;
 }
 
+void add_mesh(world * w, mesh * m)
+{
+    if(w->meshes == NULL)
+    {
+        w->meshes = malloc(sizeof(mesh) * MAX_MESH);
+        w->meshes[0] = m;
+        w->size_m = 1;
+    }
+    else if (w->size_m < MAX_MESH)
+    {
+        w->meshes[w->size_m] = m;
+        w->size_m++;
+    }
+    else
+    {
+        printf("Error: Max number of meshes reached");
+    }
+
+}
+
+void free_world(world * w)
+{
+    if(w->meshes != NULL)
+    {
+        for(int i = 0; i < w->size_m; i++)
+        {
+            free_mesh(w->meshes[i]);
+        }
+        free(w->meshes);
+    }
+    if(w->cameras != NULL)
+    {
+        for(int i = 0; i < w->size_c; i++)
+        {
+            free(w->cameras[i]);
+        }
+        free(w->cameras);
+    }
+    if(w->lights != NULL)
+    {
+        for(int i = 0; i < w->size_l; i++)
+        {
+            free(w->lights[i]);
+        }
+        free(w->lights);
+    }
+    free(w);
+}
 
 
-/*
+
 int main (void)
 {
     point ** points = malloc(sizeof(point*) * 8);
@@ -210,7 +258,10 @@ int main (void)
     mesh * m = init_mesh(8, 6, 0);
     build_mesh(m, points, triangles);
 
-    free_mesh(m);
+    world * w = init_world();
+    add_mesh(w, m);
+    free_world(w);
+
 
 	return 1;
 }
