@@ -65,7 +65,7 @@ typedef struct ray
 	triangle **collision;
 }ray;
 
-
+//
 typedef struct world
 {
 
