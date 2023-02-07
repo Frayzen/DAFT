@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
+#include <time.h>
 #include <err.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -26,7 +27,6 @@ struct app_params{
     SDL_Renderer* renderer;
 } typedef app_params;
 
-void render(SDL_Surface* surface, size_t width, size_t height);
-void* render_pixel(void*ti);
+void render(SDL_Renderer* renderer, size_t width, size_t height);
 int setup_renderer(app_params* params);
 int launch(app_params* params);

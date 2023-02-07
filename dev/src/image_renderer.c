@@ -11,76 +11,55 @@ int setup_renderer(app_params* params){
     return 0;
 }
 
-size_t min(size_t i, size_t j){
-    return i < j ? i : j;
-}
-void render(SDL_Surface* surface, size_t width, size_t height){
-    //RENDERING PIXEL BY PIXEL PART
-    size_t subw = width/DIV_IMG_THREAD; 
-    size_t subh = height/DIV_IMG_THREAD;
-
-    pthread_t tids[subh][subw];
-    thread_info* ti = malloc(sizeof(thread_info));
-    ti->surface = surface;
-    for(size_t ix = 0; ix < subw; ix++){
-        for(size_t iy = 0; iy < subh; iy++){
-            ti->xs = ix*DIV_IMG_THREAD;
-            ti->ys = iy*DIV_IMG_THREAD;
-            ti->xe = min(width-1, (ix+1)*DIV_IMG_THREAD);
-            ti->ye = min(height-1, (iy+1)*DIV_IMG_THREAD);
-
-            pthread_create(&(tids[iy][ix]), NULL, render_pixel, ti);
-        }
-    }
-    void** retval = malloc(sizeof(void*));
-    for(size_t ix = 0; ix < subw; ix++){
-        for(size_t iy = 0; iy < subh; iy++){
-            int err = pthread_join(tids[iy][ix], retval);
-            if(err)
-                errx(3, "An error occured during image thread processing (id:%i)\n", err);
-        }
-    }
-    free(retval);
-    free(ti);
-}
-
-void set_pixel(SDL_Surface *surface, size_t x, size_t y, Uint32 pixel)
+void degrade(SDL_Texture* texture, SDL_Renderer *renderer, int width, int height)
 {
-    Uint32 * const target_pixel = (Uint32 *) ((Uint8 *) surface->pixels
-            + y * surface->pitch
-            + x * surface->format->BytesPerPixel);
-    *target_pixel = pixel;
+    SDL_PixelFormat *format;
+    Uint32* pixels = malloc(sizeof(Uint32)*height*width);
+    size_t i;
+    int pitch;
+    SDL_LockTexture(texture, NULL, (void**)&pixels, &pitch);
+    printf("Lock\n");
+    format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
+    for(i = 0; i < width*height; i++)
+        pixels[i] = SDL_MapRGBA(format, i%255, 0, 0, 255);
+    SDL_UnlockTexture(texture);
+    SDL_FreeFormat(format);
 }
 
-void* render_pixel(void* tiv){
-    thread_info* ti = tiv;
-    for(size_t x = ti->xs; x < ti->xe; x++){
-        for(size_t y = ti->ys; y < ti->ye; y++)
-            set_pixel(ti->surface, x, y, SDL_MapRGB(ti->surface->format, 255, 0, 0));
-    }
-    pthread_exit(NULL);
-}
 
 int launch(app_params* params){ 
     int quit = 0;
     SDL_Event event;
-    SDL_Surface* surface = SDL_GetWindowSurface(params->window); 
+    time_t last = time(NULL);
+    int fps = 0;
+    SDL_Rect rect;
+    rect.x = 0;
+    rect.y = 0;
+    rect.w = params->width;
+    rect.h = params->height;
+    SDL_Texture* texture = SDL_CreateTexture(params->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, params->width, params->height);
     while (!quit)
     {
-        SDL_WaitEvent(&event);
-        switch (event.type)
+        if(SDL_PollEvent(&event))
         {
-            case SDL_QUIT:
+            if(event.type == SDL_QUIT)
+            {
                 quit = 1;
                 break;
-
-            case SDL_WINDOWEVENT:
-                render(surface, params->width, params->height);
-                SDL_UpdateWindowSurface(params->window);
-                break;
+            }
+        }
+        SDL_RenderClear(params->renderer);
+        degrade(texture, params->renderer, params->width, params->height); 
+        SDL_RenderCopy(params->renderer, texture, &rect, &rect); 
+        free(texture);
+        SDL_RenderPresent(params->renderer);
+        fps++;
+        if(last != time(NULL)){
+            printf("%i fps\n", fps);
+            fps = 0;
+            last = time(NULL);
         }
     }
-    SDL_UnlockSurface(surface);
     SDL_DestroyRenderer(params->renderer); 
     SDL_DestroyWindow(params->window);
     SDL_Quit();
