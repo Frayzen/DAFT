@@ -11,17 +11,23 @@ int setup_renderer(app_params* params){
     return 0;
 }
 
-void degrade(SDL_Texture* texture, SDL_Renderer *renderer, int width, int height)
+void degrade(Uint32* pixels, int width, int height)
 {
     SDL_PixelFormat *format;
-    Uint32* pixels = malloc(sizeof(Uint32)*height*width);
     size_t i;
-    int pitch;
-    SDL_LockTexture(texture, NULL, (void**)&pixels, &pitch);
-    format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
-    for(i = 0; i < width*height; i++)
-        pixels[i] = SDL_MapRGBA(format, i%width*(i/width)%255, 0, 0, 255);
-    SDL_UnlockTexture(texture);
+    format = SDL_AllocFormat(SDL_PIXELFORMAT_RGB888);
+    srand(time(NULL));
+    int g = rand()%255;
+    int b = rand()%255;
+    for(i = 0; i < width*height; i++){
+        for(size_t j = 0; j < 10; j++){
+            g++;
+            g%=255;
+            b++;
+            b%=255;
+        }
+        pixels[i] = SDL_MapRGB(format, i%width*(i/width)%255, g, b);
+    }
     SDL_FreeFormat(format);
 }
 
@@ -31,17 +37,16 @@ int launch(app_params* params){
     SDL_Event event;
     time_t last = time(NULL);
     int fps = 0;
-    SDL_Rect rect;
-    rect.x = 0;
-    rect.y = 0;
-    rect.w = params->width;
-    rect.h = params->height;
-    SDL_Texture* texture = SDL_CreateTexture(params->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, params->width, params->height);
+    SDL_Texture* texture = SDL_CreateTexture(params->renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_STREAMING, params->width, params->height);
+    int pitch;
+    Uint32* pixels = malloc(sizeof(Uint32)*params->height*params->width);
+    SDL_LockTexture(texture, NULL, (void**)&pixels, &pitch);
     while (!quit)
     {
         SDL_RenderClear(params->renderer);
-        degrade(texture, params->renderer, params->width, params->height); 
-        SDL_RenderCopy(params->renderer, texture, &rect, &rect); 
+        degrade(pixels, params->width, params->height); 
+        SDL_UnlockTexture(texture);
+        SDL_RenderCopy(params->renderer, texture, NULL, NULL); 
         SDL_RenderPresent(params->renderer);
         fps++;
         if(last != time(NULL)){
