@@ -27,6 +27,7 @@ void add_vertex(mesh * m, size_t id, float x, float y, float z);
 void add_tri(mesh * m, size_t id, size_t a, size_t b, size_t c);
 
 void free_mesh(mesh * m);
+
 world * init_world();
 
 void add_mesh(world * w, mesh * m);

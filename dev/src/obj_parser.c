@@ -4,7 +4,7 @@ void load_object(world* w, char* file, float scale){
     FILE *fp;
     fp = fopen(file, "r");
     if(fp == NULL){
-        printf("File not found");
+        printf("File '%s' not found\n", file);
         return;
     }
     char line[128];

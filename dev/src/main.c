@@ -1,6 +1,9 @@
 #include "../include/image_renderer.h"
+#include "../include/obj_parser.h"
 #include <stdio.h>
 int main(){
+    world* world = init_world();
+    load_object(world, "assets/objs/cube.obj", 1);
     app_params params;
     params.width = 800;
     params.height = 500;
