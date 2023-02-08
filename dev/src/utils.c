@@ -1,12 +1,11 @@
 #include "../include/architecture.h"
-//make add vertex and add tri
-//remove most of if == NULL in the inits
-
+#include <math.h>
 #define MAX_CAM 5
 #define MAX_LIGHT 5
 #define MAX_MESH 5
 #define MAX_TRI 75
 #define MAX_VERT 75
+#define MAX_RAY 100
 
 
 camera * init_camera(size_t id, point pos, point dir)
@@ -214,12 +213,92 @@ void free_world(world * w)
 	free(w);
 }
 
+float dot(point * a, point * b)
+{
+    return a->x*b->x + a->y*b->y + a->z*b->z;
+}
+
+ void crossProduct(point * a, point * b, point * c) {
+     c->x = a->y * b->z - a->z * b->y;
+     c->y = a->z * b->x - a->x * b->z;
+     c->z = a->x * b->y - a->y * b->x;
+
+ }
 
 
-int main (void)
+void scale(point * a, float s)
+{
+    a->x *= s;
+    a->y *= s;
+    a->z *= s;
+}
+
+void add(point * a, point * b)
+{
+    a->x += b->x;
+    a->y += b->y;
+    a->z += b->z;
+}
+
+void minus(point * a, point * b)
+{
+    a->x -= b->x;
+    a->y -= b->y;
+    a->z -= b->z;
+}
+
+
+float area_triangle(point * a, point * b, point * c)
+{
+    point ab = {b->x - a->x, b->y - a->y, b->z - a->z};
+    point ac = {c->x - a->x, c->y - a->y, c->z - a->z};
+    point * cross = init_point(0, 0, 0, 0);
+    crossProduct(&ab, &ac, cross);
+    float area = 0.5 * sqrtf(dot(cross, cross));
+    free(cross);
+    return area;
+
+}
+
+void hit_triangle(ray * ray, mesh * mesh, size_t index)
 {
 
+    point * a = mesh->vertexes[mesh->triangles[index]->vert[0]];
+    point * b = mesh->vertexes[mesh->triangles[index]->vert[1]];
+    point * c = mesh->vertexes[mesh->triangles[index]->vert[2]];
 
 
-	return 1;
+    point * p = &ray->contact;
+    if (area_triangle(a, b, c) == area_triangle(p, a, b) + area_triangle(p, b, c) + area_triangle(p, c, a))
+    {
+        ray->hit = 1;
+
+    }
+
 }
+
+
+
+void ray_intersect(ray * ray, point * vertex, point * normal, mesh * m)
+{
+
+    float d = dot(normal, vertex);
+    float n_p = dot(normal, &ray->pos);
+    float n_rd = dot(normal, &ray->dir);
+
+    float t = (d - n_p)/n_rd;
+    printf("t: %f\n", t);
+    if(t > 0)
+    {
+
+
+        point  p = {ray->pos.x + t*ray->dir.x, ray->pos.y + t*ray->dir.y, ray->pos.z + t*ray->dir.z};
+        ray->contact = p;
+
+    }
+
+
+}
+
+
+
