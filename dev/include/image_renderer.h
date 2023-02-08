@@ -1,4 +1,3 @@
-#pragma once
 #include <stdio.h>
 #include <omp.h>
 #include <pthread.h>
@@ -7,6 +6,7 @@
 #include <err.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#pragma once
 struct thread_info{
     //xstart 
     size_t xs;

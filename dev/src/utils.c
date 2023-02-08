@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #include "../include/architecture.h"
 #include <math.h>
 #define MAX_CAM 5
@@ -8,12 +7,6 @@
 #define MAX_VERT 75
 #define MAX_RAY 100
 
-=======
-#include "../include/utils.h"
-
-//make add vertex and add tri
-//remove most of if == NULL in the inits
->>>>>>> obj_parser
 
 camera * init_camera(size_t id, point pos, point dir)
 {
