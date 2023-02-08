@@ -1,13 +1,7 @@
-#include "../include/architecture.h"
+#include "../include/utils.h"
+
 //make add vertex and add tri
 //remove most of if == NULL in the inits
-
-#define MAX_CAM 5
-#define MAX_LIGHT 5
-#define MAX_MESH 5
-#define MAX_TRI 75
-#define MAX_VERT 75
-
 
 camera * init_camera(size_t id, point pos, point dir)
 {
@@ -212,14 +206,4 @@ void free_world(world * w)
 		free(w->lights);
 	}
 	free(w);
-}
-
-
-
-int main (void)
-{
-
-
-
-	return 1;
 }

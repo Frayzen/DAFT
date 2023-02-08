@@ -1,6 +1,7 @@
 #include <math.h>
 #include "architecture.h"
 
+#pragma once
 
 
 
