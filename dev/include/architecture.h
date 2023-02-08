@@ -1,9 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-
-
-
-
+#pragma once
 //id = size_t, point strut (3 flaots), vetr and tri to staitc,
 
 
