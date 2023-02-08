@@ -1,5 +1,6 @@
 #pragma once
 #include <stdio.h>
+#include <omp.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include <time.h>

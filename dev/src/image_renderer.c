@@ -2,7 +2,7 @@
 #define DIV_IMG_THREAD 100
 
 int setup_renderer(app_params* params){
-
+    omp_set_num_threads(omp_get_num_procs());
     SDL_Init(SDL_INIT_VIDEO);
     params->window = SDL_CreateWindow("SDL2 Displaying Image",
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -19,13 +19,8 @@ void degrade(Uint32* pixels, int width, int height)
     srand(time(NULL));
     int g = rand()%255;
     int b = rand()%255;
+    #pragma omp parallel for
     for(i = 0; i < width*height; i++){
-        for(size_t j = 0; j < 10; j++){
-            g++;
-            g%=255;
-            b++;
-            b%=255;
-        }
         pixels[i] = SDL_MapRGB(format, i%width*(i/width)%255, g, b);
     }
     SDL_FreeFormat(format);
