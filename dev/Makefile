@@ -6,6 +6,8 @@ CC       = gcc
 # compiling flags here
 CFLAGS   = -std=c99 -Wall -Werror 
 
+LIBS = -fopenmp -pthread -lm -ldl `pkg-config --cflags gtk+-3.0 --libs sdl2 SDL2_image`
+
 LINKER   = gcc
 # linking flags here
 LFLAGS   = -Wall -Werror 
@@ -22,11 +24,11 @@ rm       = rm -f
 
 
 $(BINDIR)/$(TARGET): $(OBJECTS)
-	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
+	@$(LINKER) $(OBJECTS) $(LFLAGS) $(LIBS) -o $@
 	@echo "Linking complete!"
 
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< $(LIBS) -o $@
 	@echo "Compiled "$<" successfully!"
 
 .PHONY: clean
