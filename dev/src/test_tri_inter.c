@@ -1,7 +1,7 @@
-#include "image_renderer.c"
-#include "utils.c"
+#include "../include/image_renderer.h"
+#include "../include/utils.h"
 #include <stdio.h>
-
+/*
 int main(){
     mesh * m = init_mesh(3, 1, 0);
     add_vertex(m, 0, -10, 0, 0);
@@ -30,4 +30,4 @@ int main(){
 
 
     return 0;
-}
+}*/

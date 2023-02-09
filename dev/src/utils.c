@@ -1,5 +1,4 @@
-#include "../include/architecture.h"
-#include <math.h>
+#include "../include/utils.h"
 #define MAX_CAM 5
 #define MAX_LIGHT 5
 #define MAX_MESH 5
@@ -87,8 +86,14 @@ triangle *  init_triangle(size_t id, size_t x, size_t y, size_t z)
 	return t;
 }
 
-
-
+//create a new point
+point npoint(float x, float y, float z){
+    point*p = (point *)malloc(sizeof(point));
+    p->x = x;
+    p->y = y;
+    p->z = z;
+    return *p;
+}
 point * init_point(size_t id, float x, float y, float z)
 {
 	point * p = (point *)malloc(sizeof(point));
@@ -247,71 +252,12 @@ void minus(point * a, point * b)
     a->z -= b->z;
 }
 
-
-float area_triangle(point * a, point * b, point * c)
-{
-    point ab = {b->x - a->x, b->y - a->y, b->z - a->z};
-    point ac = {c->x - a->x, c->y - a->y, c->z - a->z};
-    point * cross = init_point(0, 0, 0, 0);
-    crossProduct(&ab, &ac, cross);
-    float area = 0.5 * sqrtf(dot(cross, cross));
-    free(cross);
-    return area;
-
+point normalize(point p){
+    float sum = p.x+p.y+p.z;
+    if(sum == 0)
+        return p;
+    p.x/=sum;
+    p.y/=sum;
+    p.z/=sum;
+    return p;
 }
-
-
-void ray_intersect(ray * ray, point * vertex, point * normal)
-{
-
-    float d = dot(normal, vertex);
-    float n_p = dot(normal, &ray->pos);
-    float n_rd = dot(normal, &ray->dir);
-    printf("d = %f\n" , d);
-    printf("n_p = %f\n" , n_p);
-    printf("n_rd = %f\n" , n_rd);
-    float t = (d - n_p)/n_rd;
-    printf("t: %f\n", t);
-    if(t > 0)
-    {
-
-        point  p = {0, ray->pos.x + t*ray->dir.x, ray->pos.y + t*ray->dir.y, ray->pos.z + t*ray->dir.z};
-
-        ray->contact = p;
-        ray->hit = -1;
-
-    }
-    else
-    {
-        ray->hit = 0;
-    }
-
-
-}
-
-
-void hit_triangle(ray * ray, mesh * mesh, size_t index)
-{
-
-    point * a = mesh->vertexes[mesh->triangles[index]->vert[0]];
-    point * b = mesh->vertexes[mesh->triangles[index]->vert[1]];
-    point * c = mesh->vertexes[mesh->triangles[index]->vert[2]];
-    minus(a,c);
-    ray_intersect(ray, a, &mesh->triangles[index]->normal);
-    if (ray->hit == -1) {
-
-
-        point *p = &ray->contact;
-        if (area_triangle(a, b, c) == area_triangle(p, a, b) + area_triangle(p, b, c) + area_triangle(p, c, a)) {
-            ray->hit = 1;
-            printf("yess\n");
-
-        }
-    }
-
-}
-
-
-
-
-

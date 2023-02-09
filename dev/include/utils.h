@@ -1,4 +1,5 @@
 #include "architecture.h"
+#include <math.h>
 #pragma once
 #define MAX_CAM 5
 #define MAX_LIGHT 5
@@ -18,6 +19,9 @@ ray * init_ray(size_t id, point pos, point dir);
 
 triangle *  init_triangle(size_t id, size_t x, size_t y, size_t z);
 
+//create a new point
+point npoint(float x, float y, float z);
+
 point * init_point(size_t id, float x, float y, float z);
 
 mesh * init_mesh(size_t no_vert, size_t no_tri, size_t id);
@@ -34,3 +38,14 @@ void add_mesh(world * w, mesh * m);
 
 void free_world(world * w);
 
+float dot(point * a, point * b);
+
+void crossProduct(point * a, point * b, point * c);
+
+void scale(point * a, float s);
+
+void add(point * a, point * b);
+
+void minus(point * a, point * b);
+
+point normalize(point p);

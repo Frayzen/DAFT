@@ -1,7 +1,7 @@
 #include "../include/image_renderer.h"
 #define DIV_IMG_THREAD 100
 
-int setup_renderer(app_params* params){
+int setup_window(app_params* params){
     omp_set_num_threads(omp_get_num_procs());
     SDL_Init(SDL_INIT_VIDEO);
     params->window = SDL_CreateWindow("SDL2 Displaying Image",
@@ -27,7 +27,7 @@ void degrade(Uint32* pixels, int width, int height)
 }
 
 
-int launch(app_params* params){ 
+int render_camera(app_params* params){
     int quit = 0;
     SDL_Event event;
     time_t last = time(NULL);

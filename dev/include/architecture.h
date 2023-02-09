@@ -37,7 +37,10 @@ typedef struct camera
 {
 	size_t id_c;
 	point pos;
+    //vector pointing toward the direction of the camera
 	point dir;
+    //field of view in degree (90 - 120 degrees)
+    size_t FOV;
 
 }camera;
 

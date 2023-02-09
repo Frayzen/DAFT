@@ -1,32 +1,15 @@
 #include <math.h>
+#include "utils.h"
 #include "architecture.h"
 
 #pragma once
 
+typedef struct raycast_param{
+    camera* cam;
+    size_t x_pix;
+    size_t y_pix;
+} raycast_param;
 
 
-typedef struct
-{
-    double x, y,z;
-}Vector;
 
-
-typedef struct {
-    Vector normal;
-    double d;
-} Plane;
-
-typedef struct
-{
-    Vector origin;
-    Vector direction;
-}Ray;
-
-double dotProduct(Vector a, Vector b);
-
-
-//detect intersection between the Ray ray and the plane 
-//returns 
-int intersectRayPlane(ray ray, Plane plane, point *intersection);
-//int Raycast(point int p1, point p2, point p3, Ray);
-
+int ray_cast_pixel(raycast_param params);

@@ -6,28 +6,18 @@
 #include <err.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "architecture.h"
 #pragma once
-struct thread_info{
-    //xstart 
-    size_t xs;
-    //xend
-    size_t xe;
-    //ystart
-    size_t ys;
-    //yend
-    size_t ye;
-
-    SDL_Surface* surface;
-} typedef thread_info;
-
 struct app_params{
     size_t width;
     size_t height;
     size_t FPS_UPPER_LIMIT;
     SDL_Window* window;
     SDL_Renderer* renderer;
+    world* world;
+    camera* cam;
 } typedef app_params;
 
 void render(SDL_Renderer* renderer, size_t width, size_t height);
-int setup_renderer(app_params* params);
-int launch(app_params* params);
+int setup_window(app_params* params);
+int render_camera(app_params* params);
