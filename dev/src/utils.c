@@ -219,17 +219,20 @@ void free_world(world * w)
 	free(w);
 }
 
-float dot(point * a, point * b)
+float dot(point  a, point  b)
 {
-    return a->x*b->x + a->y*b->y + a->z*b->z;
+    return a.x*b.x + a.y*b.y + a.z*b.z;
 }
 
- void crossProduct(point * a, point * b, point * c) {
-     c->x = a->y * b->z - a->z * b->y;
-     c->y = a->z * b->x - a->x * b->z;
-     c->z = a->x * b->y - a->y * b->x;
-
+ point crossProduct(point a, point b)
+ {
+        point c;
+        c.x = a.y*b.z - a.z*b.y;
+        c.y = a.z*b.x - a.x*b.z;
+        c.z = a.x*b.y - a.y*b.x;
+        return c;
  }
+
 
 
 void scale(point * a, float s)

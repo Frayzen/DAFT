@@ -38,9 +38,9 @@ void add_mesh(world * w, mesh * m);
 
 void free_world(world * w);
 
-float dot(point * a, point * b);
+float dot(point a, point b);
 
-void crossProduct(point * a, point * b, point * c);
+point crossProduct(point a, point b);
 
 void scale(point * a, float s);
 
