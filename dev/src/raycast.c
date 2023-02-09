@@ -43,11 +43,11 @@ void ray_intersect(ray * ray, point * vertex, point * normal)
     float d = dot(normal, vertex);
     float n_p = dot(normal, &ray->pos);
     float n_rd = dot(normal, &ray->dir);
-    printf("d = %f\n" , d);
-    printf("n_p = %f\n" , n_p);
-    printf("n_rd = %f\n" , n_rd);
+    //printf("d = %f\n" , d);
+    //printf("n_p = %f\n" , n_p);
+    //printf("n_rd = %f\n" , n_rd);
     float t = (d - n_p)/n_rd;
-    printf("t: %f\n", t);
+    //printf("t: %f\n", t);
     if(t > 0)
     {
 
@@ -75,21 +75,35 @@ void hit_triangle(ray * ray, mesh * mesh, size_t index)
     minus(a,c);
     ray_intersect(ray, a, &mesh->triangles[index]->normal);
     if (ray->hit == -1) {
-
-
         point *p = &ray->contact;
         if (area_triangle(a, b, c) == area_triangle(p, a, b) + area_triangle(p, b, c) + area_triangle(p, c, a)) {
             ray->hit = 1;
-            printf("yess\n");
-
         }
     }
 
 }
 
 int ray_cast_pixel(raycast_param params){
-    //TODO
-    return 1;
+    float yaw = params.cam->yaw;
+    float pitch = params.cam->pitch;
+    float FOV = params.cam->FOV;
+    float pitch_ratio = 1-2*params.x_pix/params.width;
+    float yaw_ratio = 1-2*params.y_pix/params.height;
+    float cur_yaw = yaw+yaw_ratio*FOV;
+    float cur_pitch = pitch+pitch_ratio*FOV;
+    point dir = npoint(cos(cur_pitch)*sin(cur_yaw),sin(cur_pitch),cos(cur_pitch)*cos(cur_yaw));
+    ray* ry = init_ray(0, params.cam->pos, dir);
+    world* wd = params.wd;
+    for(size_t id_mesh = 0; id_mesh < wd->size_m; id_mesh++){
+        mesh* m = wd->meshes[id_mesh];
+        for(size_t t_id = 0; t_id < m->t_size; t_id++){
+            //printf("running for the ray ry %f %f %f\n", ry->dir.x, ry->dir.y, ry->dir.z);
+            hit_triangle(ry, m, t_id);
+            if(ry->hit)
+                return 255;
+        }
+    }
+    return 0;
 }
 
 

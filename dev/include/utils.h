@@ -7,7 +7,7 @@
 #define MAX_TRI 75
 #define MAX_VERT 75
 
-camera * init_camera(size_t id, point pos, point dir);
+camera * init_camera(size_t id, point pos, float pitch, float yaw);
 
 void add_camera(world * w, camera * cam);
 

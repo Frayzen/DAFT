@@ -7,6 +7,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "architecture.h"
+
 #pragma once
 struct app_params{
     size_t width;
@@ -14,10 +15,9 @@ struct app_params{
     size_t FPS_UPPER_LIMIT;
     SDL_Window* window;
     SDL_Renderer* renderer;
-    world* world;
+    world* wd;
     camera* cam;
 } typedef app_params;
 
-void render(SDL_Renderer* renderer, size_t width, size_t height);
 int setup_window(app_params* params);
 int render_camera(app_params* params);

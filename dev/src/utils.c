@@ -7,12 +7,13 @@
 #define MAX_RAY 100
 
 
-camera * init_camera(size_t id, point pos, point dir)
+camera * init_camera(size_t id, point pos, float pitch, float yaw)
 {
 	camera * cam = (camera *)malloc(sizeof(camera));
 	cam->id_c = id;
 	cam->pos = pos;
-	cam->dir = dir;
+    cam->pitch = pitch;
+    cam->yaw = yaw;
 	return cam;
 }
 

@@ -37,6 +37,7 @@ void load_object(world* w, char* file, float scale){
             add_tri(m, m->t_size, v1, v2, v3);
         }
     }
+    add_mesh(w, m);
     printf("Loaded %lu verticles and %lu faces \n", m->v_size, m->t_size);
     fclose(fp);
 }

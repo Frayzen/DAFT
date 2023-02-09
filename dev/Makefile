@@ -7,6 +7,7 @@ CC       = gcc
 CFLAGS   = -std=c99 -Wall -Werror 
 
 LIBS = -fopenmp -pthread -lm -ldl `pkg-config --cflags gtk+-3.0 --libs sdl2 SDL2_image`
+DEBUG_FLAGS = -g 
 
 LINKER   = gcc
 # linking flags here
@@ -26,6 +27,10 @@ rm       = rm -f
 $(BINDIR)/$(TARGET): $(OBJECTS)
 	@$(LINKER) $(OBJECTS) $(LFLAGS) $(LIBS) -o $@
 	@echo "Linking complete!"
+
+debug: $(OBJECTS)
+	@$(LINKER) $(OBJECTS) $(LFLAGS) $(LIBS) $(DEBUG_FLAGS) -o $@
+	@echo "[DEBUG] Linking complete!"
 
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
 	@$(CC) $(CFLAGS) -c $< $(LIBS) -o $@

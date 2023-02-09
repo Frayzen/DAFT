@@ -1,4 +1,5 @@
 #include "../include/image_renderer.h"
+#include "../include/raycast.h"
 #define DIV_IMG_THREAD 100
 
 int setup_window(app_params* params){
@@ -11,17 +12,22 @@ int setup_window(app_params* params){
     return 0;
 }
 
-void degrade(Uint32* pixels, int width, int height)
+void render(Uint32* pixels, int width, int height, camera* cam, world* w)
 {
     SDL_PixelFormat *format;
     size_t i;
     format = SDL_AllocFormat(SDL_PIXELFORMAT_RGB888);
-    srand(time(NULL));
-    int g = rand()%255;
-    int b = rand()%255;
-    #pragma omp parallel for
+    raycast_param rcp;
+    rcp.width = width;
+    rcp.height = height;
+    rcp.wd = w;
+    rcp.cam = cam;
+//    #pragma omp parallel for private(rcp)
     for(i = 0; i < width*height; i++){
-        pixels[i] = SDL_MapRGB(format, i%width*(i/width)%255, g, b);
+        rcp.x_pix = i%width;
+        rcp.y_pix = i/width;
+        int r = ray_cast_pixel(rcp);
+        pixels[i] = SDL_MapRGB(format, r,r,r);
     }
     SDL_FreeFormat(format);
 }
@@ -39,7 +45,7 @@ int render_camera(app_params* params){
     while (!quit)
     {
         SDL_RenderClear(params->renderer);
-        degrade(pixels, params->width, params->height); 
+        render(pixels, params->width, params->height, params->cam, params->wd);
         SDL_UnlockTexture(texture);
         SDL_RenderCopy(params->renderer, texture, NULL, NULL); 
         SDL_RenderPresent(params->renderer);
