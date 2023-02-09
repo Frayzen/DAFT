@@ -11,6 +11,10 @@ int main(){
             point* p = m->vertexes[mi];
             printf("Pt %lu : %f %f %f\n", mi, p->x, p->y, p->z);
         }
+        for(size_t mi = 0; mi < m->t_size; mi++){
+            triangle* t = m->triangles[mi];
+            printf("FACE %lu : %lu %lu %lu\n", mi, t->vert[0], t->vert[1], t->vert[2]);
+        }
     }
 
     printf("WORDL OBJ COUNT: %lu \n", wd->size_m);

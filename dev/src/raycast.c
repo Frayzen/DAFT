@@ -3,11 +3,10 @@
 void ray_intersect(triangle * tri, mesh * m, ray * r) {
 
     float EPSILON = 0.0000001;
-    point v0 = *m->vertexes[tri->vert[0]];
+    printf("OK ok m->vertexes %lu\n", tri->vert[0]);
+    point v0 = *(m->vertexes[tri->vert[0]]);
     point v1 = *m->vertexes[tri->vert[1]];
     point v2 = *m->vertexes[tri->vert[2]];
-    ppoint(v0, "V0");
-    ppoint(v1, "V1");
     ppoint(v2, "V2");
     point edge1 = {v1.x - v0.x, v1.y - v0.y, v1.z - v0.z};
     point edge2 = {v2.x - v0.x, v2.y - v0.y, v2.z - v0.z};
@@ -64,7 +63,9 @@ int ray_cast_pixel(raycast_param params){
     world* wd = params.wd;
     for(size_t id_mesh = 0; id_mesh < wd->size_m; id_mesh++){
         mesh* m = wd->meshes[id_mesh];
+        printf("%lu MTSIZE\n", m->t_size);
         for(size_t t_id = 0; t_id < m->t_size; t_id++){
+            printf("%lu TID     MID = %lu \n", t_id, id_mesh);
             ray_intersect(m->triangles[t_id], m, ry);
             if(ry->hit)
                 return 255;
