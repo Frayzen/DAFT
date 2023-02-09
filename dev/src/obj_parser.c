@@ -1,6 +1,6 @@
 #include "../include/obj_parser.h"
 
-void load_object(world* w, char* file, float scale){
+void load_object(world* w, char* file, float scale, point pos){
     FILE *fp;
     fp = fopen(file, "r");
     if(fp == NULL){
@@ -27,6 +27,7 @@ void load_object(world* w, char* file, float scale){
             p.x*=scale;
             p.y*=scale;
             p.z*=scale;
+            addp(&p, &pos);
             add_vertex(m, m->v_size, p.x, p.y, p.z);
         }
         if(line[0] == 'f'){

@@ -6,6 +6,9 @@ void ray_intersect(triangle * tri, mesh * m, ray * r) {
     point v0 = *m->vertexes[tri->vert[0]];
     point v1 = *m->vertexes[tri->vert[1]];
     point v2 = *m->vertexes[tri->vert[2]];
+    ppoint(v0, "V0");
+    ppoint(v1, "V1");
+    ppoint(v2, "V2");
     point edge1 = {v1.x - v0.x, v1.y - v0.y, v1.z - v0.z};
     point edge2 = {v2.x - v0.x, v2.y - v0.y, v2.z - v0.z};
     point h = crossProduct(r->dir, edge2);
@@ -30,28 +33,38 @@ void ray_intersect(triangle * tri, mesh * m, ray * r) {
     }
     else // This means that there is a line intersection but not a ray intersection.
         return;
-
-
-
 }
 
 
 
 int ray_cast_pixel(raycast_param params){
     float yaw = params.cam->yaw;
-    float pitch = params.cam->pitch;
-    float FOV = params.cam->FOV;
-    float pitch_ratio = 1-2*params.x_pix/params.width;
-    float yaw_ratio = 1-2*params.y_pix/params.height;
-    float cur_yaw = yaw+yaw_ratio*FOV;
-    float cur_pitch = pitch+pitch_ratio*FOV;
-    point dir = npoint(cos(cur_pitch)*sin(cur_yaw),sin(cur_pitch),cos(cur_pitch)*cos(cur_yaw));
+    //float pitch = params.cam->pitch;
+    float FOV = params.cam->FOV*M_PI/180;
+    float hFOV = FOV/2;
+    float pitch_ratio = (float)params.x_pix/(params.width-1);
+    float yaw_ratio = (float)params.y_pix/(params.height-1);
+    printf("x %lu y %lu ratios : %f %f \n", params.x_pix, params.y_pix, yaw_ratio, pitch_ratio);
+    
+    float deg1 = yaw+hFOV;
+    float deg2 = yaw-hFOV;
+    point p1 = npoint(cos(deg1), 0, sin(deg1));
+    point p2 = npoint(cos(deg2), 0, sin(deg2));
+    point flat = minus(p2, p1);
+    point xz = add(p1, scale(flat, yaw_ratio));
+    
+    deg1 = hFOV;
+    p1 = npoint(0, cos(deg1), 0);
+    p2 = scale(p1, -1);
+    flat = minus(p2, p1);
+    point y = add(p1, scale(flat, pitch_ratio));
+    point dir = add(xz, y);
+    ppoint(dir, "DIR");
     ray* ry = init_ray(0, params.cam->pos, dir);
     world* wd = params.wd;
     for(size_t id_mesh = 0; id_mesh < wd->size_m; id_mesh++){
         mesh* m = wd->meshes[id_mesh];
         for(size_t t_id = 0; t_id < m->t_size; t_id++){
-            //printf("running for the ray ry %f %f %f\n", ry->dir.x, ry->dir.y, ry->dir.z);
             ray_intersect(m->triangles[t_id], m, ry);
             if(ry->hit)
                 return 255;
@@ -59,7 +72,3 @@ int ray_cast_pixel(raycast_param params){
     }
     return 0;
 }
-
-
-
-

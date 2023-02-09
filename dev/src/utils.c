@@ -7,13 +7,14 @@
 #define MAX_RAY 100
 
 
-camera * init_camera(size_t id, point pos, float pitch, float yaw)
+camera * init_camera(size_t id, point pos, float pitch, float yaw, int FOV)
 {
 	camera * cam = (camera *)malloc(sizeof(camera));
 	cam->id_c = id;
 	cam->pos = pos;
     cam->pitch = pitch;
     cam->yaw = yaw;
+    cam->FOV = FOV;
 	return cam;
 }
 
@@ -234,22 +235,37 @@ float dot(point  a, point  b)
  }
 
 
-
-void scale(point * a, float s)
+point scale(point a, float s){
+    a.x*=s;
+    a.y*=s;
+    a.z*=s;
+    return a;
+}
+void scalep(point * a, float s)
 {
     a->x *= s;
     a->y *= s;
     a->z *= s;
 }
-
-void add(point * a, point * b)
+point add(point a, point b){
+    a.x+=b.x;
+    a.y+=b.y;
+    a.z+=b.z;
+    return a;
+}
+void addp(point * a, point * b)
 {
     a->x += b->x;
     a->y += b->y;
     a->z += b->z;
 }
-
-void minus(point * a, point * b)
+point minus(point a, point b){
+    a.x-=b.x;
+    a.y-=b.y;
+    a.z-=b.z;
+    return a;
+}
+void minusp(point * a, point * b)
 {
     a->x -= b->x;
     a->y -= b->y;
@@ -264,4 +280,7 @@ point normalize(point p){
     p.y/=sum;
     p.z/=sum;
     return p;
+}
+void ppoint(point p, char* msg){
+    printf("POINT %s %f %f %f\n", msg, p.x, p.y, p.z);
 }

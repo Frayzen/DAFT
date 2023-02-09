@@ -66,6 +66,7 @@ int render_camera(app_params* params){
                 return 0;
             }
         }
+        return 0;
     }
     return 0;
 }

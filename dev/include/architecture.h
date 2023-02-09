@@ -78,8 +78,3 @@ typedef struct world
     mesh ** meshes;
 
 }world;
-
-
-
-
-

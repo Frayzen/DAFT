@@ -1,13 +1,14 @@
 #include "architecture.h"
 #include <math.h>
 #pragma once
+#define M_PI 3.14159265358979323846
 #define MAX_CAM 5
 #define MAX_LIGHT 5
 #define MAX_MESH 5
 #define MAX_TRI 75
 #define MAX_VERT 75
 
-camera * init_camera(size_t id, point pos, float pitch, float yaw);
+camera * init_camera(size_t id, point pos, float pitch, float yaw, int FOV);
 
 void add_camera(world * w, camera * cam);
 
@@ -42,10 +43,16 @@ float dot(point a, point b);
 
 point crossProduct(point a, point b);
 
-void scale(point * a, float s);
+point scale(point a, float s);
+void scalep(point *a, float s);
 
-void add(point * a, point * b);
+point add(point a, point b);
+void addp(point *a, point*b);
 
-void minus(point * a, point * b);
+point minus(point a, point b);
+void minusp(point* a, point*b);
 
 point normalize(point p);
+
+//print a point
+void ppoint(point p, char* msg);

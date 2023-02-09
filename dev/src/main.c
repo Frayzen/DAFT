@@ -3,12 +3,21 @@
 #include <stdio.h>
 int main(){
     world* wd = init_world();
-    load_object(wd, "assets/objs/cube.obj", 1);
+    load_object(wd, "assets/objs/cube.obj", .1, npoint(-5, 0, 0));
+    
+    for(size_t i = 0; i < wd->size_m; i++){
+        mesh* m = wd->meshes[i];
+        for(size_t mi = 0; mi < m->v_size; mi++){
+            point* p = m->vertexes[mi];
+            printf("Pt %lu : %f %f %f\n", mi, p->x, p->y, p->z);
+        }
+    }
+
     printf("WORDL OBJ COUNT: %lu \n", wd->size_m);
-    camera* cam = init_camera(0, npoint(0,0,0), 0, 0);
+    camera* cam = init_camera(0, npoint(0,0,0), 0, 0, 120);
     app_params params;
-    params.width = 800;
-    params.height = 500;
+    params.width = 3;
+    params.height = 3;
     params.wd = wd;
     params.cam = cam;
     params.FPS_UPPER_LIMIT=30;
