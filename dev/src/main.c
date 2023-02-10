@@ -29,7 +29,7 @@ int main(){
     params.FPS_UPPER_LIMIT=30;
     if(setup_window(&params))
         return 1;
-
+    cam->skybox = IMG_Load("assets/textures/Nebula.png");
     render_camera(&params);
     free(cam);
     free_world(wd);

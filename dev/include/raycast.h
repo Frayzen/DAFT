@@ -18,9 +18,9 @@ typedef struct raycast_param{
 
 
 typedef struct color{
-    int r;
-    int g;
-    int b;
+    Uint8 r;
+    Uint8 g;
+    Uint8 b;
 } color;
 
 color ray_cast_pixel(raycast_param params);

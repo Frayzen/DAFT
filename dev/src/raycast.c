@@ -43,7 +43,10 @@ void ray_intersect(triangle * tri, mesh * m, ray * r) {
 }
 
 
-
+void getPixelColor(SDL_Surface* surface, int x, int y, Uint8*r, Uint8*g,Uint8*b){
+    Uint32 pixel = ((Uint32*)surface->pixels)[y*surface->w+x];
+    SDL_GetRGB(pixel, surface->format, r,g,b);
+}
 color ray_cast_pixel(raycast_param params){
     float yaw = params.cam->yaw;
     //float pitch = params.cam->pitch;
@@ -83,9 +86,19 @@ color ray_cast_pixel(raycast_param params){
             }
         }
     }
+    color c;
+    c.r = v;
+    c.g = v;
+    c.b = v;
     free(ry);
-    color c = {
-        v,v,v
-    };
+    if(!v && params.cam->skybox != NULL){
+        dir = scale(dir, -1);
+        float u = 0.5+ (atan2f(dir.x, dir.z)/(M_PI*2));
+        float v = 0.5+ (asinf(dir.y)/M_PI);
+        SDL_Surface* skybox = params.cam->skybox;
+        size_t x = u*skybox->w;
+        size_t y = v*skybox->h;
+        getPixelColor(skybox, x, y, &c.r, &c.g, &c.b);
+    }
     return c;
 }
