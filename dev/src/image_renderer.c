@@ -17,13 +17,13 @@ void render(Uint32* pixels, int width, int height, camera* cam, world* w)
     SDL_PixelFormat *format;
     size_t i;
     format = SDL_AllocFormat(SDL_PIXELFORMAT_RGB888);
-    raycast_param rcp;
-    rcp.width = width;
-    rcp.height = height;
-    rcp.wd = w;
-    rcp.cam = cam;
-    //    #pragma omp parallel for private(rcp)
+    #pragma omp parallel for
     for(i = 0; i < width*height; i++){
+        raycast_param rcp;
+        rcp.width = width;
+        rcp.height = height;
+        rcp.wd = w;
+        rcp.cam = cam;
         rcp.x_pix = i%width;
         rcp.y_pix = i/width;
         int r = ray_cast_pixel(rcp);
