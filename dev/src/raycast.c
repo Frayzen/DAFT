@@ -43,8 +43,8 @@ int ray_cast_pixel(raycast_param params){
     //float pitch = params.cam->pitch;
     float FOV = params.cam->FOV*M_PI/180;
     float hFOV = FOV/2;
-    float pitch_ratio = (float)params.x_pix/(params.width-1);
-    float yaw_ratio = (float)params.y_pix/(params.height-1);
+    float pitch_ratio = (float)params.y_pix/(params.height-1);
+    float yaw_ratio = (float)params.x_pix/(params.width-1);
 
     float deg1 = yaw+hFOV;
     float deg2 = yaw-hFOV;
