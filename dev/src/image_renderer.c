@@ -43,6 +43,8 @@ int render_camera(app_params* params){
     Uint32* pixels = malloc(sizeof(Uint32)*params->height*params->width);
     SDL_LockTexture(texture, NULL, (void**)&pixels, &pitch);
     int once = 0;
+    float angle = 0;
+    float ro = 4;
     while (!quit)
     {
         SDL_RenderClear(params->renderer);
@@ -78,6 +80,9 @@ int render_camera(app_params* params){
             free(pixels);
             return 0;
         }
+        params->cam->pos = npoint(ro*cos(angle), 0, ro*sin(angle));
+        params->cam->yaw = M_PI + angle;
+        angle+=.1;
     }
     SDL_DestroyTexture(texture);
     free(pixels);

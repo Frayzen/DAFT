@@ -4,7 +4,7 @@
 #include <stdio.h>
 int main(){
     world* wd = init_world();
-    load_object(wd, "assets/objs/cube.obj", .5, npoint(4, .1, .5));
+    load_object(wd, "assets/objs/cube.obj", .5, npoint(0,0,0));
    
     for(size_t i = 0; i < wd->size_m; i++){
         mesh* m = wd->meshes[i];
@@ -22,8 +22,8 @@ int main(){
     printf("WORDL OBJ COUNT: %lu \n", wd->size_m);
     camera* cam = init_camera(0, npoint(0,0,0), 0, 0, 120);
     app_params params;
-    params.width = 200;
-    params.height = 200;
+    params.width = 500;
+    params.height = 500;
     raycast_param rp;
     rp.cam = cam;
     rp.x_pix = params.width/2 - 1;
