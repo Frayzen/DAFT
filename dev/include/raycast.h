@@ -11,8 +11,16 @@ typedef struct raycast_param{
     size_t y_pix;
     size_t width;
     size_t height;
+    int r;
+    int g;
+    int b;
 } raycast_param;
 
 
+typedef struct color{
+    int r;
+    int g;
+    int b;
+} color;
 
-int ray_cast_pixel(raycast_param params);
+color ray_cast_pixel(raycast_param params);

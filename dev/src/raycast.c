@@ -44,7 +44,7 @@ void ray_intersect(triangle * tri, mesh * m, ray * r) {
 
 
 
-int ray_cast_pixel(raycast_param params){
+color ray_cast_pixel(raycast_param params){
     float yaw = params.cam->yaw;
     //float pitch = params.cam->pitch;
     float FOV = params.cam->FOV*M_PI/180;
@@ -84,5 +84,8 @@ int ray_cast_pixel(raycast_param params){
         }
     }
     free(ry);
-    return v;
+    color c = {
+        v,v,v
+    };
+    return c;
 }

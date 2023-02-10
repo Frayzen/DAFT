@@ -24,14 +24,6 @@ int main(){
     app_params params;
     params.width = 500;
     params.height = 500;
-    raycast_param rp;
-    rp.cam = cam;
-    rp.x_pix = params.width/2 - 1;
-    rp.y_pix = params.height/2 - 1;
-    rp.width = params.width;
-    rp.height = params.height;
-    rp.wd = wd;
-    ray_cast_pixel(rp);
     params.wd = wd;
     params.cam = cam;
     params.FPS_UPPER_LIMIT=30;

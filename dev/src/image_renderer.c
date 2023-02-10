@@ -33,8 +33,8 @@ void render(Uint32* pixels, int width, int height, camera* cam, world* w)
         rcp.cam = cam;
         rcp.x_pix = i%width;
         rcp.y_pix = i/width;
-        int r = ray_cast_pixel(rcp);
-        pixels[i] = SDL_MapRGB(format, r,r,r);
+        color c = ray_cast_pixel(rcp);
+        pixels[i] = SDL_MapRGB(format, c.r,c.g,c.b);
     }
     SDL_FreeFormat(format);
 }
