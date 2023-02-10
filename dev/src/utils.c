@@ -284,3 +284,6 @@ point normalize(point p){
 void ppoint(point p, char* msg){
     printf("POINT %s %f %f %f\n", msg, p.x, p.y, p.z);
 }
+float norm(point p){
+    return sqrtf(p.x*p.x+p.y*p.y+p.z*p.z);
+}

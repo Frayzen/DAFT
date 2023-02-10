@@ -29,7 +29,13 @@ void ray_intersect(triangle * tri, mesh * m, ray * r) {
     float t = f*dot(edge2, q);
     if(t > EPSILON){
         r->contact = add(r->pos, scale(r->dir, t));
-        r->hit = 1;
+        point normal = crossProduct(edge1, edge2);
+        float val = dot(normalize(normal), normalize(r->dir));
+        if(val < 0)
+            val*=-1;
+        if(val > 1)
+            val = 1;
+        r->hit = (int) 255*val;
         return;
     }
     // This means that there is a line intersection but not a ray intersection. 
@@ -61,16 +67,22 @@ int ray_cast_pixel(raycast_param params){
     point dir = add(xz, y);
     ray* ry = init_ray(0, params.cam->pos, dir);
     world* wd = params.wd;
+    float dist = -1;
+    int v = 0;
     for(size_t id_mesh = 0; id_mesh < wd->size_m; id_mesh++){
         mesh* m = wd->meshes[id_mesh];
         for(size_t t_id = 0; t_id < m->t_size; t_id++){
             ray_intersect(m->triangles[t_id], m, ry);
             if(ry->hit){
-                free(ry);
-                return 255;
+                float cur = norm(minus(ry->pos, ry->contact));
+                    if(cur < dist || dist == -1){
+                        dist = cur;
+                        v = ry->hit;
+                    }
+                ry->hit = 0;
             }
         }
     }
     free(ry);
-    return 0;
+    return v;
 }

@@ -52,6 +52,8 @@ void addp(point *a, point*b);
 point minus(point a, point b);
 void minusp(point* a, point*b);
 
+float norm(point p);
+
 point normalize(point p);
 
 //print a point
