@@ -27,10 +27,6 @@ $(BINDIR)/$(TARGET): $(OBJECTS)
 	@$(LINKER) $(OBJECTS) $(LFLAGS) $(LIBS) -o $@
 	@echo "Linking complete!"
 
-debug: $(OBJECTS)
-	@$(LINKER) $(OBJECTS) $(LFLAGS) $(LIBS) $(DEBUG_FLAGS) -o $@
-	@echo "[DEBUG] Linking complete!"
-
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
 	@$(CC) $(CFLAGS) -c $< $(LIBS) -o $@
 	@echo "Compiled "$<" successfully!"
