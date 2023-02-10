@@ -8,7 +8,7 @@
 
 
 camera * init_camera(size_t id, point pos, float pitch, float yaw, int FOV)
-{
+    {
 	camera * cam = (camera *)malloc(sizeof(camera));
 	cam->id_c = id;
 	cam->pos = pos;
@@ -90,11 +90,11 @@ triangle *  init_triangle(size_t id, size_t x, size_t y, size_t z)
 
 //create a new point
 point npoint(float x, float y, float z){
-    point*p = (point *)malloc(sizeof(point));
-    p->x = x;
-    p->y = y;
-    p->z = z;
-    return *p;
+    point p;
+    p.x = x;
+    p.y = y;
+    p.z = z;
+    return p;
 }
 point * init_point(size_t id, float x, float y, float z)
 {

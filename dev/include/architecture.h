@@ -11,10 +11,10 @@
 //
 
 typedef struct point{
-	size_t id_p;
 	float x;
 	float y;
 	float z;
+	size_t id_p;
 }point;
  
 typedef struct triangle

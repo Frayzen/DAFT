@@ -35,7 +35,7 @@ void load_object(world* w, char* file, float scale, point pos){
             int vt1, vt2, vt3;
             int vn1, vn2, vn3;
             sscanf(line, "f %d/%d/%d %d/%d/%d %d/%d/%d", &v1, &vt1, &vn1, &v2, &vt2, &vn2, &v3, &vt3, &vn3);
-            add_tri(m, m->t_size, v1, v2, v3);
+            add_tri(m, m->t_size, v1-1, v2-1, v3-1);
         }
     }
     add_mesh(w, m);

@@ -22,7 +22,7 @@ void render(Uint32* pixels, int width, int height, camera* cam, world* w)
     rcp.height = height;
     rcp.wd = w;
     rcp.cam = cam;
-//    #pragma omp parallel for private(rcp)
+    //    #pragma omp parallel for private(rcp)
     for(i = 0; i < width*height; i++){
         rcp.x_pix = i%width;
         rcp.y_pix = i/width;
@@ -42,6 +42,7 @@ int render_camera(app_params* params){
     int pitch;
     Uint32* pixels = malloc(sizeof(Uint32)*params->height*params->width);
     SDL_LockTexture(texture, NULL, (void**)&pixels, &pitch);
+    int once = 0;
     while (!quit)
     {
         SDL_RenderClear(params->renderer);
@@ -62,12 +63,24 @@ int render_camera(app_params* params){
                 free(texture);
                 //SDL_DestroyRenderer(params->renderer); 
                 SDL_DestroyWindow(params->window);
+                SDL_DestroyTexture(texture);
                 SDL_Quit();
+                free(pixels);
                 return 0;
             }
         }
-        return 0;
+        if(once){
+            free(texture);
+            //SDL_DestroyRenderer(params->renderer); 
+            SDL_DestroyWindow(params->window);
+            SDL_DestroyTexture(texture);
+            SDL_Quit();
+            free(pixels);
+            return 0;
+        }
     }
+    SDL_DestroyTexture(texture);
+    free(pixels);
     return 0;
 }
 
