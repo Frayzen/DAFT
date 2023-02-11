@@ -107,15 +107,65 @@ point * init_point(size_t id, float x, float y, float z)
 }
 
 
+size_t compute_depth(size_t nb_tri){
+    size_t depth = 0;
+
+    while (nb_tri > 0)
+    {
+        nb_tri /= LBBOX;
+        depth++;
+    }
+    return depth;
+}
+
+size_t compute_tri_last_level(size_t depth, size_t no_tri)
+{
+    return no_tri/(LBBOX^(depth));
+}
+
+size_t compute_no_extra(size_t no_tri, size_t tri_last_level, size_t depth)
+{
+    return no_tri - (tri_last_level * LBBOX^(depth));
+}
+///nbcnr is number of children of next recursion
+bbox * build_bbox(size_ depth, size_t no_tri, size_t no_extra)
+{/// make init bbox
+    bbox * b = (bbox *)malloc(sizeof(bbox));
+    b->total = 0;
+    if (depth == 1)
+    {
+        b->tris = (triangle *)malloc(sizeof(triangle) *(no_extra + no_tri));
+        b->c_size  = no_extra + no_tri;
+
+        return b;
+    }
+    else
+    {
+        bbox * b = (bbox *)malloc(sizeof(bbox)*LBBOX);
+        b->c_size = LBBOX;
+        size_t nbcnr = LBBOX^(depth-2);
+        for (size_t i = 0; i < LBBOX; i++)
+        {
+            b[i] = build_bbox(depth-1, no_tri, extra < nbcnr ? extra : nbcnr);
+            extra -= nbcnr;
+
+        }
+        return b;
+    }
+}
 
 mesh * init_mesh(size_t no_vert, size_t no_tri, size_t id)
 {
-	mesh * m = (mesh *)malloc(sizeof(mesh));
+
+    mesh * m = (mesh *)malloc(sizeof(mesh));
+    m->depth = compute_depth(no_tri-1);
+    m->tri_last_level = compute_tri_last_level(m->depth, no_tri);
+    m->no_extra = compute_no_extra(no_tri, m->tri_last_level, m->depth);
+    m->bounding_box = build_bbox(m->depth, m->tri_last_level, m->no_extra);
 	m->id_m = id;
-	m->t_size = 0;
-	m->v_size = 0;
-	m->triangles = (triangle **)malloc(sizeof(triangle*)*no_tri);
+	m->v_size = no_vert;
 	m->vertexes = (point **)malloc(sizeof(point *)*no_vert);
+
 	return m;
 }
 
@@ -133,12 +183,16 @@ void add_vertex(mesh * m, size_t id, float x, float y, float z)
 
 void add_tri(mesh * m, size_t id, size_t a, size_t b, size_t c)
 {
-	if (m->t_size < MAX_TRI)
-	{
 		triangle *  t = init_triangle(id, a, b, c);
-		m->triangles[m->t_size] = t;
-		m->t_size++;
-	}
+		bbox curr = m->bounding_box;
+        size_t depth = m->depth;
+        for(size_t i = 0; i < depth; i++)
+        {
+            for(size_t j = 0; j < LBBOX; j++)
+            {
+                if(curr.children[j].total)
+            }
+        }
 }
 
 

@@ -10,6 +10,7 @@
 //cast function (ray and tri
 //
 
+
 typedef struct point{
 	float x;
 	float y;
@@ -29,8 +30,10 @@ typedef struct mesh
 	size_t id_m;
 	point ** vertexes;
 	size_t v_size;
-	size_t t_size;
-	triangle ** triangles;
+    size_t tri_last_level;
+    size_t depth;
+    size_t no_extra;
+	bbox * bounding_box;
 }mesh;
 
 typedef struct camera
@@ -78,3 +81,16 @@ typedef struct world
     mesh ** meshes;
 
 }world;
+
+
+//LBBOX  is the max number of children in a bounding box
+#define LBBOX 10
+typedef struct bbox
+{//either children or tris is null
+    point min;
+    point max;
+    size_t total;
+    bbox * children;
+    triangle * tris;
+    size_t c_size;
+}bbox;
