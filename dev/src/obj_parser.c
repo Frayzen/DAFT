@@ -24,7 +24,7 @@ void load_object(world* w, char* file, float scale, point pos){
     size_t faceloaded = 0;
     while(fgets(line, sizeof(line), fp) != NULL){
         if(line[0] == 'v' && line[1] == ' '){
-            sscanf(line, "v %f %f %f", &p.x, &p.y, &p.z);
+            sscanf(line, "v %le %le %le", &p.x, &p.y, &p.z);
             p.x*=scale;
             p.y*=scale;
             p.z*=scale;

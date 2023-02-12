@@ -2,16 +2,6 @@
 #include "../include/obj_parser.h"
 #include "../include/raycast.h"
 #include <stdio.h>
-void print_rec(bbox* b){
-    printf("TOTAL %lu\n", b->total);
-    printf("MTOTAL %lu\n", b->maxtotal);
-    ppoint(b->max, "MAX");
-    ppoint(b->max, "MIN");
-    if(!b->tris)
-    for(size_t i = 0; i < b->c_size; i++){
-        print_rec(b->children[i]);
-    }
-}
 int main(){
     world* wd = init_world();
     load_object(wd, "assets/objs/gourd.obj", .4, npoint(0,0,0));
@@ -24,7 +14,6 @@ int main(){
         printf("OBJ bounding_box points: (max then min) for c_size %lu\n", m->bounding_box->c_size);
         ppoint(m->bounding_box->min, "MIN");
         ppoint(m->bounding_box->max, "MAX");
-        print_rec(m->bounding_box);
     }
 
     printf("WORDL OBJ COUNT: %lu \n", wd->size_m);

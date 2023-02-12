@@ -13,9 +13,9 @@
 
 
 typedef struct point{
-	float x;
-	float y;
-	float z;
+	double x;
+	double y;
+	double z;
 }point;
  
 typedef struct triangle

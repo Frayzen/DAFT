@@ -34,7 +34,6 @@ void ray_intersect(triangle * tri, mesh * m, ray * r) {
             val*=-1;
         if(val > 1)
             val = 1;
-        printf("Returning TRUE\n");
         r->hit = (int) 255;
         return;
     }
@@ -42,6 +41,10 @@ void ray_intersect(triangle * tri, mesh * m, ray * r) {
     return;
 }
 void intersect_bbox(mesh* m, ray* r, bbox* b){
+    if(b->maxtotal < 100){
+        r->hit = 255;
+        return;
+    }
     float tmin = -INFINITY;
     float tmax = INFINITY;
     r->hit = 0;
@@ -71,44 +74,46 @@ void intersect_bbox(mesh* m, ray* r, bbox* b){
         tmin = max(tmin, min(tz1, tz2));
         tmax = min(tmax, max(tz1, tz2));
     }
-    if(tmax < tmin)
+    //if(tmax < tmin)
         return;
-    if(m->bounding_box!=b){
-        r->hit = 255;
-        return;
-    }
     point contact;
     int hit_val = 0;
     float dist = -1;
-    if(!b->tris){
+    ray nr;
+    nr.pos = r->pos;
+    nr.dir = r->dir;
+    nr.hit = 0;
+    if(b->c_size != b->maxtotal){
         for(size_t i = 0; i < b->c_size; i++){
-            intersect_bbox(m, r, b->children[i]);
-            if(r->hit){
-               float curr_dist = norm(minus(r->pos, r->contact));
+            intersect_bbox(m, &nr, b->children[i]);
+            if(nr.hit){
+               float curr_dist = norm(minus(nr.pos, nr.contact));
                if(curr_dist < dist){
                    dist = curr_dist;
                    hit_val = 255;
-                   contact = r->contact;
+                   contact = nr.contact;
                }
             }
-            r->hit = 0;
+            nr.hit = 0;
         }
         r->contact = contact;
         r->hit = hit_val;
+        if(b->maxtotal < 100)
+            r->hit = 255;
         return;
     }else{
         for(size_t i = 0; i < b->c_size; i++){
-            ray_intersect(&b->tris[i], m, r);
-            if(r->hit){
+            ray_intersect(&b->tris[i], m, &nr);
+            if(nr.hit){
                 //printf("HIT for %u\n", r->hit);
-               float curr_dist = norm(minus(r->pos, r->contact));
+               float curr_dist = norm(minus(nr.pos, nr.contact));
                if(curr_dist < dist){
                    dist = curr_dist;
                    hit_val = 255;
-                   contact = r->contact;
+                   contact = nr.contact;
                }
             }
-            r->hit = 0;
+            nr.hit = 0;
         }
         r->contact = contact;
         r->hit = hit_val;

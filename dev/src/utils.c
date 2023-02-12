@@ -3,8 +3,6 @@
 #define MAX_CAM 5
 #define MAX_LIGHT 5
 #define MAX_MESH 5
-#define MAX_TRI 75
-#define MAX_VERT 75
 #define MAX_RAY 100
 
 
@@ -86,7 +84,7 @@ ray * init_ray(point pos, point dir)
 
 triangle *  init_triangle(size_t x, size_t y, size_t z)
 {
-	triangle * t = (triangle *)malloc(sizeof(triangle) * MAX_TRI);
+	triangle * t = malloc(sizeof(triangle));
 	t->vert[0] = x;
 	t->vert[1] = y;
 	t->vert[2] = z;
@@ -137,12 +135,8 @@ mesh * init_mesh(size_t no_vert, size_t no_tri, size_t id)
 
 void add_vertex(mesh * m, float x, float y, float z)
 {
-	if (m->v_size < MAX_VERT)
-	{
-		m->vertexes[m->v_size] = npoint(x,y,z);
-		m->v_size++;
-	}
-
+	m->vertexes[m->v_size] = npoint(x,y,z);
+	m->v_size++;
 }
 
 void get_vertex_from_triangle(mesh* m, triangle* tri, point* a, point* b, point *c){

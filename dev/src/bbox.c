@@ -24,6 +24,8 @@ void compute_bounds_tri(mesh* m, bbox *bx){
         take_max(&bx->max, b);
         take_max(&bx->max, c);
     }
+    bx->min = npoint(-100, -100, -100);
+    bx->max = npoint(100, 100, 100);
 }
 void compute_bounds_bbox(bbox* b){
     b->min = b->children[0]->min;
@@ -32,7 +34,8 @@ void compute_bounds_bbox(bbox* b){
         take_min(&b->min, b->children[i]->min);
         take_max(&b->max, b->children[i]->max);
     }
-    ppoint(b->min,"NEW MIN");
+    b->min = npoint(-100, -100, -100);
+    b->max = npoint(100, 100, 100);
 }
 bbox* init_bbox(){
     bbox * b = malloc(sizeof(bbox));
