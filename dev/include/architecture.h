@@ -26,7 +26,7 @@ typedef struct triangle
 
 #pragma once
 //LBBOX  is the max number of children in a bounding box
-#define LBBOX 10
+#define LBBOX 15
 typedef struct bbox
 {//either children or tris is null
     point min;

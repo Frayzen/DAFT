@@ -4,7 +4,8 @@
 #include <stdio.h>
 int main(){
     world* wd = init_world();
-    load_object(wd, "assets/objs/gourd.obj", .4, npoint(0,0,0));
+    printf("LOADING OBJ...");
+    load_object(wd, "assets/objs/gourd.obj", 1, npoint(0,0,0));
    
     for(size_t i = 0; i < wd->size_m; i++){
         mesh* m = wd->meshes[i];

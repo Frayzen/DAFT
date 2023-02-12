@@ -34,17 +34,13 @@ void ray_intersect(triangle * tri, mesh * m, ray * r) {
             val*=-1;
         if(val > 1)
             val = 1;
-        r->hit = (int) 255;
+        r->hit = (int) 255*val;
         return;
     }
     // This means that there is a line intersection but not a ray intersection. 
     return;
 }
-void intersect_bbox(mesh* m, ray* r, bbox* b){
-    if(b->maxtotal < 100){
-        r->hit = 255;
-        return;
-    }
+int intersect_bbox(ray* r, bbox* b){
     float tmin = -INFINITY;
     float tmax = INFINITY;
     r->hit = 0;
@@ -74,51 +70,51 @@ void intersect_bbox(mesh* m, ray* r, bbox* b){
         tmin = max(tmin, min(tz1, tz2));
         tmax = min(tmax, max(tz1, tz2));
     }
-    //if(tmax < tmin)
-        return;
-    point contact;
-    int hit_val = 0;
-    float dist = -1;
-    ray nr;
-    nr.pos = r->pos;
-    nr.dir = r->dir;
-    nr.hit = 0;
-    if(b->c_size != b->maxtotal){
-        for(size_t i = 0; i < b->c_size; i++){
-            intersect_bbox(m, &nr, b->children[i]);
-            if(nr.hit){
-               float curr_dist = norm(minus(nr.pos, nr.contact));
-               if(curr_dist < dist){
-                   dist = curr_dist;
-                   hit_val = 255;
-                   contact = nr.contact;
-               }
+    return tmax >= tmin;
+}
+
+int ray_cast(mesh* m, ray* r, bbox* b){
+    if(intersect_bbox(r, b)){
+        r->hit = 0;
+        if(b->tris){
+            float closest = -1;
+            int val = 0;
+            point contact;
+            for(size_t i = 0; i < b->c_size; i++){
+                ray_intersect(&b->tris[i], m, r);
+                if(r->hit){
+                    float dist = norm(minus(r->pos, r->contact));
+                    if(closest == -1 || dist < closest){
+                        closest = dist;
+                        val = r->hit;
+                        contact = r->contact;
+                    }
+                    r->hit = 0;
+                }
             }
-            nr.hit = 0;
-        }
-        r->contact = contact;
-        r->hit = hit_val;
-        if(b->maxtotal < 100)
-            r->hit = 255;
-        return;
-    }else{
-        for(size_t i = 0; i < b->c_size; i++){
-            ray_intersect(&b->tris[i], m, &nr);
-            if(nr.hit){
-                //printf("HIT for %u\n", r->hit);
-               float curr_dist = norm(minus(nr.pos, nr.contact));
-               if(curr_dist < dist){
-                   dist = curr_dist;
-                   hit_val = 255;
-                   contact = nr.contact;
-               }
+            r->hit = val;
+            r->contact = contact;
+        }else{
+            float closest = -1;
+            int val = 0;
+            point contact;
+            for(size_t i = 0; i < b->c_size; i++){
+                if(ray_cast(m, r, b->children[i])){
+                    float dist = norm(minus(r->pos, r->contact));
+                    if(closest == -1 || dist < closest){
+                        closest = dist;
+                        val = r->hit;
+                        contact = r->contact;
+                    }
+                    r->hit = 0;
+                }
             }
-            nr.hit = 0;
+            r->hit = val;
+            r->contact = contact;
         }
-        r->contact = contact;
-        r->hit = hit_val;
-        return;
+        return r->hit;
     }
+    return 0;
 }
 
 int ray_cast_pixel(raycast_param params){
@@ -147,8 +143,7 @@ int ray_cast_pixel(raycast_param params){
     int v = 0;
     for(size_t idm = 0; idm < params.wd->size_m; idm++){
         mesh* m = params.wd->meshes[idm];
-        intersect_bbox(m, ry, m->bounding_box);
-        if(ry->hit)
+        if(ray_cast(m, ry, m->bounding_box))
             v = ry->hit; 
     }
     free(ry);
