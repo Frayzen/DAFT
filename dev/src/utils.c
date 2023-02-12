@@ -1,4 +1,5 @@
 #include "../include/utils.h"
+#include "../include/bbox.h"
 #define MAX_CAM 5
 #define MAX_LIGHT 5
 #define MAX_MESH 5
@@ -7,6 +8,12 @@
 #define MAX_RAY 100
 
 
+float min(float x, float y){
+    return x < y ? x : y;
+}
+float max(float x, float y){
+    return x > y ? x : y;
+}
 camera * init_camera(size_t id, point pos, float pitch, float yaw, int FOV)
     {
 	camera * cam = (camera *)malloc(sizeof(camera));
@@ -65,10 +72,9 @@ void add_light(world * w, light * l)
 }
 
 
-ray * init_ray(size_t id, point pos, point dir)
+ray * init_ray(point pos, point dir)
 {
 	ray * r = (ray *)malloc(sizeof(ray));
-	r->id_r = id;
 	r->pos = pos;
 	r->dir = dir;
 	r->hit = 0;
@@ -78,10 +84,9 @@ ray * init_ray(size_t id, point pos, point dir)
 
 
 
-triangle *  init_triangle(size_t id, size_t x, size_t y, size_t z)
+triangle *  init_triangle(size_t x, size_t y, size_t z)
 {
 	triangle * t = (triangle *)malloc(sizeof(triangle) * MAX_TRI);
-	t->id_t = id;
 	t->vert[0] = x;
 	t->vert[1] = y;
 	t->vert[2] = z;
@@ -96,63 +101,23 @@ point npoint(float x, float y, float z){
     p.z = z;
     return p;
 }
-point * init_point(size_t id, float x, float y, float z)
+point copyp(point p){
+    point r;
+    r.x = p.x;
+    r.y = p.y;
+    r.z = p.z;
+    return r;
+}
+point * init_point(float x, float y, float z)
 {
 	point * p = (point *)malloc(sizeof(point));
 	p->x = x;
 	p->y = y;
 	p->z = z;
-	p->id_p = id;
 	return p;
 }
 
 
-size_t compute_depth(size_t nb_tri){
-    size_t depth = 0;
-
-    while (nb_tri > 0)
-    {
-        nb_tri /= LBBOX;
-        depth++;
-    }
-    return depth;
-}
-
-size_t compute_tri_last_level(size_t depth, size_t no_tri)
-{
-    return no_tri/(LBBOX^(depth));
-}
-
-size_t compute_no_extra(size_t no_tri, size_t tri_last_level, size_t depth)
-{
-    return no_tri - (tri_last_level * LBBOX^(depth));
-}
-///nbcnr is number of children of next recursion
-bbox * build_bbox(size_ depth, size_t no_tri, size_t no_extra)
-{/// make init bbox
-    bbox * b = (bbox *)malloc(sizeof(bbox));
-    b->total = 0;
-    if (depth == 1)
-    {
-        b->tris = (triangle *)malloc(sizeof(triangle) *(no_extra + no_tri));
-        b->c_size  = no_extra + no_tri;
-
-        return b;
-    }
-    else
-    {
-        bbox * b = (bbox *)malloc(sizeof(bbox)*LBBOX);
-        b->c_size = LBBOX;
-        size_t nbcnr = LBBOX^(depth-2);
-        for (size_t i = 0; i < LBBOX; i++)
-        {
-            b[i] = build_bbox(depth-1, no_tri, extra < nbcnr ? extra : nbcnr);
-            extra -= nbcnr;
-
-        }
-        return b;
-    }
-}
 
 mesh * init_mesh(size_t no_vert, size_t no_tri, size_t id)
 {
@@ -163,57 +128,42 @@ mesh * init_mesh(size_t no_vert, size_t no_tri, size_t id)
     m->no_extra = compute_no_extra(no_tri, m->tri_last_level, m->depth);
     m->bounding_box = build_bbox(m->depth, m->tri_last_level, m->no_extra);
 	m->id_m = id;
-	m->v_size = no_vert;
-	m->vertexes = (point **)malloc(sizeof(point *)*no_vert);
+	m->v_size = 0;
+	m->vertexes = malloc(sizeof(point)*no_vert);
 
 	return m;
 }
 
 
-void add_vertex(mesh * m, size_t id, float x, float y, float z)
+void add_vertex(mesh * m, float x, float y, float z)
 {
 	if (m->v_size < MAX_VERT)
 	{
-		point * p = init_point(id, x, y, z);
-		m->vertexes[m->v_size] = p;
+		m->vertexes[m->v_size] = npoint(x,y,z);
 		m->v_size++;
 	}
 
 }
 
-void add_tri(mesh * m, size_t id, size_t a, size_t b, size_t c)
+void get_vertex_from_triangle(mesh* m, triangle* tri, point* a, point* b, point *c){
+    *a = m->vertexes[tri->vert[0]];
+    *b = m->vertexes[tri->vert[1]];
+    *c = m->vertexes[tri->vert[2]];
+}
+
+
+void add_tri(mesh * m, size_t a, size_t b, size_t c)
 {
-		triangle *  t = init_triangle(id, a, b, c);
-		bbox curr = m->bounding_box;
-        size_t depth = m->depth;
-        for(size_t i = 0; i < depth; i++)
-        {
-            for(size_t j = 0; j < LBBOX; j++)
-            {
-                if(curr.children[j].total)
-            }
-        }
+		triangle* t = init_triangle(a, b, c);
+        add_tri_to_bbox(m, m->bounding_box, m->depth, t);
 }
 
 
 void free_mesh(mesh * m)
 {
-	if(m->triangles != NULL)
-	{
-		for(size_t i = 0; i < m->t_size; i++)
-		{
-			free(m->triangles[i]);
-		}
-		free(m->triangles);
-	}
 	if(m->vertexes != NULL)
-	{
-		for(size_t i = 0; i < m->v_size; i++)
-		{
-			free(m->vertexes[i]);
-		}
 		free(m->vertexes);
-	}
+    free_bbox(m->bounding_box);
 	free(m);
 }
 

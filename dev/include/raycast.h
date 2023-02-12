@@ -1,7 +1,6 @@
 #include <math.h>
 #include "utils.h"
 #include "architecture.h"
-
 #pragma once
 
 typedef struct raycast_param{

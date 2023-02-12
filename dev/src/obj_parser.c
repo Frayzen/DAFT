@@ -21,6 +21,7 @@ void load_object(world* w, char* file, float scale, point pos){
     mesh* m = init_mesh(vertex_count, face_count, w->size_m);
     rewind(fp);
     point p;
+    size_t faceloaded = 0;
     while(fgets(line, sizeof(line), fp) != NULL){
         if(line[0] == 'v' && line[1] == ' '){
             sscanf(line, "v %f %f %f", &p.x, &p.y, &p.z);
@@ -28,18 +29,20 @@ void load_object(world* w, char* file, float scale, point pos){
             p.y*=scale;
             p.z*=scale;
             addp(&p, &pos);
-            add_vertex(m, m->v_size, p.x, p.y, p.z);
+            add_vertex(m, p.x, p.y, p.z);
         }
         if(line[0] == 'f'){
             int v1, v2, v3;
             int vt1, vt2, vt3;
             int vn1, vn2, vn3;
-            sscanf(line, "f %d/%d/%d %d/%d/%d %d/%d/%d", &v1, &vt1, &vn1, &v2, &vt2, &vn2, &v3, &vt3, &vn3);
-            add_tri(m, m->t_size, v1-1, v2-1, v3-1);
+            if(sscanf(line, "f %d/%d/%d %d/%d/%d %d/%d/%d", &v1, &vt1, &vn1, &v2, &vt2, &vn2, &v3, &vt3, &vn3) != 6)
+                sscanf(line, "f %d %d %d", &v1,&v2,&v3);
+            add_tri(m, v1-1, v2-1, v3-1);
+            faceloaded++;
         }
     }
     add_mesh(w, m);
-    printf("Loaded %lu verticles and %lu faces \n", m->v_size, m->t_size);
+    printf("Loaded %lu verticles and %lu faces \n", m->v_size, faceloaded);
     fclose(fp);
 }
 

@@ -2,9 +2,8 @@
 
 void ray_intersect(triangle * tri, mesh * m, ray * r) {
     float EPSILON = 0.0000001;
-    point v0 = *(m->vertexes[tri->vert[0]]);
-    point v1 = *m->vertexes[tri->vert[1]];
-    point v2 = *m->vertexes[tri->vert[2]];
+    point v0, v1, v2;
+    get_vertex_from_triangle(m, tri, &v0, &v1, &v2);
     //ppoint(v0, "V0");
     //ppoint(v1, "V1");
     //ppoint(v2, "V2");
@@ -35,14 +34,87 @@ void ray_intersect(triangle * tri, mesh * m, ray * r) {
             val*=-1;
         if(val > 1)
             val = 1;
-        r->hit = (int) 255*val;
+        printf("Returning TRUE\n");
+        r->hit = (int) 255;
         return;
     }
     // This means that there is a line intersection but not a ray intersection. 
     return;
 }
-
-
+void intersect_bbox(mesh* m, ray* r, bbox* b){
+    float tmin = -INFINITY;
+    float tmax = INFINITY;
+    r->hit = 0;
+    //    ppoint(b->max, "MAX");
+    //    ppoint(b->min, "MIN");
+    float x = r->dir.x;
+    if(x != 0){
+        float ox = r->pos.x;
+        float tx1 = (b->min.x - ox)/x;
+        float tx2 = (b->max.x - ox)/x;
+        tmin = max(tmin, min(tx1, tx2));
+        tmax = min(tmax, max(tx1, tx2));
+    }
+    float y = r->dir.y;
+    if(y != 0){
+        float oy = r->pos.y;
+        float ty1 = (b->min.y - oy)/y;
+        float ty2 = (b->max.y - oy)/y;
+        tmin = max(tmin, min(ty1, ty2));
+        tmax = min(tmax, max(ty1, ty2));
+    }
+    float z = r->dir.z;
+    if(z != 0){
+        float oz = r->pos.z;
+        float tz1 = (b->min.z - oz)/z;
+        float tz2 = (b->max.z - oz)/z;
+        tmin = max(tmin, min(tz1, tz2));
+        tmax = min(tmax, max(tz1, tz2));
+    }
+    if(tmax < tmin)
+        return;
+    if(m->bounding_box!=b){
+        r->hit = 255;
+        return;
+    }
+    point contact;
+    int hit_val = 0;
+    float dist = -1;
+    if(!b->tris){
+        for(size_t i = 0; i < b->c_size; i++){
+            intersect_bbox(m, r, b->children[i]);
+            if(r->hit){
+               float curr_dist = norm(minus(r->pos, r->contact));
+               if(curr_dist < dist){
+                   dist = curr_dist;
+                   hit_val = 255;
+                   contact = r->contact;
+               }
+            }
+            r->hit = 0;
+        }
+        r->contact = contact;
+        r->hit = hit_val;
+        return;
+    }else{
+        for(size_t i = 0; i < b->c_size; i++){
+            ray_intersect(&b->tris[i], m, r);
+            if(r->hit){
+                //printf("HIT for %u\n", r->hit);
+               float curr_dist = norm(minus(r->pos, r->contact));
+               if(curr_dist < dist){
+                   dist = curr_dist;
+                   hit_val = 255;
+                   contact = r->contact;
+               }
+            }
+            r->hit = 0;
+        }
+        r->contact = contact;
+        r->hit = hit_val;
+        return;
+    }
+}
 
 int ray_cast_pixel(raycast_param params){
     float yaw = params.cam->yaw;
@@ -65,23 +137,14 @@ int ray_cast_pixel(raycast_param params){
     flat = minus(p2, p1);
     point y = add(p1, scale(flat, pitch_ratio));
     point dir = add(xz, y);
-    ray* ry = init_ray(0, params.cam->pos, dir);
-    world* wd = params.wd;
-    float dist = -1;
+    ray* ry = init_ray(params.cam->pos, dir);
+
     int v = 0;
-    for(size_t id_mesh = 0; id_mesh < wd->size_m; id_mesh++){
-        mesh* m = wd->meshes[id_mesh];
-        for(size_t t_id = 0; t_id < m->t_size; t_id++){
-            ray_intersect(m->triangles[t_id], m, ry);
-            if(ry->hit){
-                float cur = norm(minus(ry->pos, ry->contact));
-                    if(cur < dist || dist == -1){
-                        dist = cur;
-                        v = ry->hit;
-                    }
-                ry->hit = 0;
-            }
-        }
+    for(size_t idm = 0; idm < params.wd->size_m; idm++){
+        mesh* m = params.wd->meshes[idm];
+        intersect_bbox(m, ry, m->bounding_box);
+        if(ry->hit)
+            v = ry->hit; 
     }
     free(ry);
     return v;

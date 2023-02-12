@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #pragma once
+
 //id = size_t, point strut (3 flaots), vetr and tri to staitc,
 
 
@@ -15,20 +16,32 @@ typedef struct point{
 	float x;
 	float y;
 	float z;
-	size_t id_p;
 }point;
  
 typedef struct triangle
 {
-	size_t id_t;
 	size_t vert[3];
 	point normal;
 }triangle;
 
+#pragma once
+//LBBOX  is the max number of children in a bounding box
+#define LBBOX 10
+typedef struct bbox
+{//either children or tris is null
+    point min;
+    point max;
+    size_t total;
+    size_t maxtotal;
+    struct bbox ** children;
+    triangle * tris;
+    //also maxtotal
+    size_t c_size;
+}bbox;
 typedef struct mesh
 {
 	size_t id_m;
-	point ** vertexes;
+	point * vertexes;
 	size_t v_size;
     size_t tri_last_level;
     size_t depth;
@@ -60,7 +73,6 @@ typedef struct light
 
 typedef struct ray
 {
-	size_t id_r;
 	point pos;
 	point dir;
 
@@ -81,16 +93,3 @@ typedef struct world
     mesh ** meshes;
 
 }world;
-
-
-//LBBOX  is the max number of children in a bounding box
-#define LBBOX 10
-typedef struct bbox
-{//either children or tris is null
-    point min;
-    point max;
-    size_t total;
-    bbox * children;
-    triangle * tris;
-    size_t c_size;
-}bbox;

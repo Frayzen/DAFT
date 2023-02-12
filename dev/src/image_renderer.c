@@ -49,7 +49,7 @@ int render_camera(app_params* params){
     int pitch;
     Uint32* pixels = malloc(sizeof(Uint32)*params->height*params->width);
     Uint32* locked_pixels = NULL;
-    int once = 0;
+    int once = 1;
     float angle = 0;
     float ro = 4;
     while (!quit)
