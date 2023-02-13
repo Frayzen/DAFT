@@ -5,7 +5,7 @@
 int main(){
     world* wd = init_world();
     printf("LOADING OBJ...");
-    load_object(wd, "assets/objs/gourd.obj", 1, npoint(0,0,0));
+    load_object(wd, "assets/objs/teddy.obj", .05, npoint(0,0,0));
    
     for(size_t i = 0; i < wd->size_m; i++){
         mesh* m = wd->meshes[i];
@@ -27,7 +27,7 @@ int main(){
     params.FPS_UPPER_LIMIT=30;
     if(setup_window(&params))
         return 1;
-    cam->skybox = IMG_Load("assets/textures/Nebula.png");
+    cam->skybox = IMG_Load("assets/textures/Sky.jpg");
     render_camera(&params);
     free(cam);
     free_world(wd);
