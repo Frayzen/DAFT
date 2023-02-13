@@ -1,3 +1,26 @@
-Dev branch of DAFT
-This branch is for test and new implementations purposes only.
-Please do not remove the branch.
+DAFT v1.0 [DEMO VERSION]:
+
+This project as been made during the S4 in the engineering school of EPITA by 4 students
+The target of the project is to produce a working raytracing engine as a potential library for any further 3D
+project. The duration of the project is less than 3 months and the team is made up of 4 people.
+
+
+Evolution of the project:
+
+[ =====--------------- ]
+        25/100
+
+Version: 1.0
+
+SUMARY:
+
+This is the first version of the project, developed in a bit less than 2 weeks,
+We implemented a basic working version of the raytracing algorithm using the SDL library only
+
+We load and support OBJ files
+The current program is a demo for the moment and the loads of the files are in the .c files only
+
+We optimized the raytracing by using Bounding Boxes structure.
+
+We also use UV mapping in order to create a background
+

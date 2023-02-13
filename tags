@@ -1,0 +1,269 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BINDIR	main/Makefile	/^BINDIR   = bin$/;"	m
+CC	main/Makefile	/^CC       = gcc$/;"	m
+CFLAGS	main/Makefile	/^CFLAGS   = -std=c99 -Wall -Werror $/;"	m
+DIV_IMG_THREAD	main/src/image_renderer.c	3;"	d	file:
+FOV	main/include/architecture.h	/^    size_t FOV;$/;"	m	struct:camera	access:public
+FPS_UPPER_LIMIT	main/include/image_renderer.h	/^    size_t FPS_UPPER_LIMIT;$/;"	m	struct:app_params	access:public
+INCLUDES	main/Makefile	/^INCLUDES := $(wildcard $(SRCDIR)\/*.h)$/;"	m
+LBBOX	main/include/architecture.h	31;"	d
+LFLAGS	main/Makefile	/^LFLAGS   = -Wall -Werror $/;"	m
+LIBS	main/Makefile	/^LIBS = -fopenmp -pthread -lm -ldl `pkg-config --cflags gtk+-3.0 --libs sdl2 SDL2_image` -g $/;"	m
+LINKER	main/Makefile	/^LINKER   = gcc$/;"	m
+MAX_CAM	main/include/utils.h	6;"	d
+MAX_CAM	main/src/utils.c	3;"	d	file:
+MAX_LIGHT	main/include/utils.h	7;"	d
+MAX_LIGHT	main/src/utils.c	4;"	d	file:
+MAX_MESH	main/include/utils.h	8;"	d
+MAX_MESH	main/src/utils.c	5;"	d	file:
+MAX_RAY	main/src/utils.c	6;"	d	file:
+MAX_TRI	main/include/utils.h	9;"	d
+MAX_VERT	main/include/utils.h	10;"	d
+M_PI	main/include/utils.h	5;"	d
+OBJDIR	main/Makefile	/^OBJDIR   = obj$/;"	m
+OBJECTS	main/Makefile	/^OBJECTS  := $(SOURCES:$(SRCDIR)\/%.c=$(OBJDIR)\/%.o)$/;"	m
+SOURCES	main/Makefile	/^SOURCES  := $(wildcard $(SRCDIR)\/*.c)$/;"	m
+SRCDIR	main/Makefile	/^SRCDIR   = src$/;"	m
+TARGET	main/Makefile	/^TARGET   = DAFT_dev$/;"	m
+add	main/include/utils.h	/^point add(point a, point b);$/;"	p	signature:(point a, point b)
+add	main/src/utils.c	/^point add(point a, point b){$/;"	f	signature:(point a, point b)
+add_camera	main/include/utils.h	/^void add_camera(world * w, camera * cam);$/;"	p	signature:(world * w, camera * cam)
+add_camera	main/src/utils.c	/^void add_camera(world * w, camera * cam)$/;"	f	signature:(world * w, camera * cam)
+add_light	main/include/utils.h	/^void add_light(world * w, light * l);$/;"	p	signature:(world * w, light * l)
+add_light	main/src/utils.c	/^void add_light(world * w, light * l)$/;"	f	signature:(world * w, light * l)
+add_mesh	main/include/utils.h	/^void add_mesh(world * w, mesh * m);$/;"	p	signature:(world * w, mesh * m)
+add_mesh	main/src/utils.c	/^void add_mesh(world * w, mesh * m)$/;"	f	signature:(world * w, mesh * m)
+add_tri	main/include/utils.h	/^void add_tri(mesh * m, size_t a, size_t b, size_t c);$/;"	p	signature:(mesh * m, size_t a, size_t b, size_t c)
+add_tri	main/src/utils.c	/^void add_tri(mesh * m, size_t a, size_t b, size_t c)$/;"	f	signature:(mesh * m, size_t a, size_t b, size_t c)
+add_tri_to_bbox	main/include/bbox.h	/^void add_tri_to_bbox(mesh* m, bbox *b, size_t depth, triangle *t);$/;"	p	signature:(mesh* m, bbox *b, size_t depth, triangle *t)
+add_tri_to_bbox	main/src/bbox.c	/^void add_tri_to_bbox(mesh* m, bbox *b, size_t depth, triangle *t){$/;"	f	signature:(mesh* m, bbox *b, size_t depth, triangle *t)
+add_vertex	main/include/utils.h	/^void add_vertex(mesh * m, float x, float y, float z);$/;"	p	signature:(mesh * m, float x, float y, float z)
+add_vertex	main/src/utils.c	/^void add_vertex(mesh * m, float x, float y, float z)$/;"	f	signature:(mesh * m, float x, float y, float z)
+addp	main/include/utils.h	/^void addp(point *a, point*b);$/;"	p	signature:(point *a, point*b)
+addp	main/src/utils.c	/^void addp(point * a, point * b)$/;"	f	signature:(point * a, point * b)
+app_params	main/include/image_renderer.h	/^struct app_params{$/;"	s
+app_params	main/include/image_renderer.h	/^} typedef app_params;$/;"	t
+app_params::FPS_UPPER_LIMIT	main/include/image_renderer.h	/^    size_t FPS_UPPER_LIMIT;$/;"	m	struct:app_params	access:public
+app_params::cam	main/include/image_renderer.h	/^    camera* cam;$/;"	m	struct:app_params	access:public
+app_params::height	main/include/image_renderer.h	/^    size_t height;$/;"	m	struct:app_params	access:public
+app_params::renderer	main/include/image_renderer.h	/^    SDL_Renderer* renderer;$/;"	m	struct:app_params	access:public
+app_params::wd	main/include/image_renderer.h	/^    world* wd;$/;"	m	struct:app_params	access:public
+app_params::width	main/include/image_renderer.h	/^    size_t width;$/;"	m	struct:app_params	access:public
+app_params::window	main/include/image_renderer.h	/^    SDL_Window* window;$/;"	m	struct:app_params	access:public
+b	main/include/raycast.h	/^    Uint8 b;$/;"	m	struct:color	access:public
+b	main/include/raycast.h	/^    int b;$/;"	m	struct:raycast_param	access:public
+bbox	main/include/architecture.h	/^typedef struct bbox$/;"	s
+bbox	main/include/architecture.h	/^}bbox;$/;"	t	typeref:struct:bbox
+bbox::c_size	main/include/architecture.h	/^    size_t c_size;$/;"	m	struct:bbox	access:public
+bbox::children	main/include/architecture.h	/^    struct bbox ** children;$/;"	m	struct:bbox	typeref:struct:bbox::bbox	access:public
+bbox::max	main/include/architecture.h	/^    point max;$/;"	m	struct:bbox	access:public
+bbox::maxtotal	main/include/architecture.h	/^    size_t maxtotal;$/;"	m	struct:bbox	access:public
+bbox::min	main/include/architecture.h	/^    point min;$/;"	m	struct:bbox	access:public
+bbox::total	main/include/architecture.h	/^    size_t total;$/;"	m	struct:bbox	access:public
+bbox::tris	main/include/architecture.h	/^    triangle * tris;$/;"	m	struct:bbox	access:public
+bounding_box	main/include/architecture.h	/^	bbox * bounding_box;$/;"	m	struct:mesh	access:public
+build_bbox	main/include/bbox.h	/^bbox* build_bbox(size_t depth, size_t no_tri, size_t no_extra);$/;"	p	signature:(size_t depth, size_t no_tri, size_t no_extra)
+build_bbox	main/src/bbox.c	/^bbox* build_bbox(size_t depth, size_t no_tri, size_t no_extra)$/;"	f	signature:(size_t depth, size_t no_tri, size_t no_extra)
+c_size	main/include/architecture.h	/^    size_t c_size;$/;"	m	struct:bbox	access:public
+cam	main/include/image_renderer.h	/^    camera* cam;$/;"	m	struct:app_params	access:public
+cam	main/include/raycast.h	/^    camera* cam;$/;"	m	struct:raycast_param	access:public
+camera	main/include/architecture.h	/^typedef struct camera$/;"	s
+camera	main/include/architecture.h	/^}camera;$/;"	t	typeref:struct:camera
+camera::FOV	main/include/architecture.h	/^    size_t FOV;$/;"	m	struct:camera	access:public
+camera::id_c	main/include/architecture.h	/^	size_t id_c;$/;"	m	struct:camera	access:public
+camera::pitch	main/include/architecture.h	/^    float pitch;$/;"	m	struct:camera	access:public
+camera::pos	main/include/architecture.h	/^	point pos;$/;"	m	struct:camera	access:public
+camera::skybox	main/include/architecture.h	/^    SDL_Surface* skybox;$/;"	m	struct:camera	access:public
+camera::yaw	main/include/architecture.h	/^    float yaw;$/;"	m	struct:camera	access:public
+cameras	main/include/architecture.h	/^    camera ** cameras;$/;"	m	struct:world	access:public
+children	main/include/architecture.h	/^    struct bbox ** children;$/;"	m	struct:bbox	typeref:struct:bbox::bbox	access:public
+collision	main/include/architecture.h	/^	triangle **collision;$/;"	m	struct:ray	access:public
+color	main/include/architecture.h	/^	point color;$/;"	m	struct:light	access:public
+color	main/include/raycast.h	/^typedef struct color{$/;"	s
+color	main/include/raycast.h	/^} color;$/;"	t	typeref:struct:color
+color::b	main/include/raycast.h	/^    Uint8 b;$/;"	m	struct:color	access:public
+color::g	main/include/raycast.h	/^    Uint8 g;$/;"	m	struct:color	access:public
+color::r	main/include/raycast.h	/^    Uint8 r;$/;"	m	struct:color	access:public
+compute_bounds_bbox	main/include/bbox.h	/^void compute_bounds_bbox(bbox* b);$/;"	p	signature:(bbox* b)
+compute_bounds_bbox	main/src/bbox.c	/^void compute_bounds_bbox(bbox* b){$/;"	f	signature:(bbox* b)
+compute_bounds_tri	main/include/bbox.h	/^void compute_bounds_tri(mesh* m, bbox* b);$/;"	p	signature:(mesh* m, bbox* b)
+compute_bounds_tri	main/src/bbox.c	/^void compute_bounds_tri(mesh* m, bbox *bx){$/;"	f	signature:(mesh* m, bbox *bx)
+compute_depth	main/include/bbox.h	/^size_t compute_depth(size_t nb_tri);$/;"	p	signature:(size_t nb_tri)
+compute_depth	main/src/bbox.c	/^size_t compute_depth(size_t nb_tri){$/;"	f	signature:(size_t nb_tri)
+compute_no_extra	main/include/bbox.h	/^size_t compute_no_extra(size_t no_tri, size_t tri_last_level, size_t depth);$/;"	p	signature:(size_t no_tri, size_t tri_last_level, size_t depth)
+compute_no_extra	main/src/bbox.c	/^size_t compute_no_extra(size_t no_tri, size_t tri_last_level, size_t depth)$/;"	f	signature:(size_t no_tri, size_t tri_last_level, size_t depth)
+compute_tri_last_level	main/include/bbox.h	/^size_t compute_tri_last_level(size_t depth, size_t no_tri);$/;"	p	signature:(size_t depth, size_t no_tri)
+compute_tri_last_level	main/src/bbox.c	/^size_t compute_tri_last_level(size_t depth, size_t no_tri)$/;"	f	signature:(size_t depth, size_t no_tri)
+contact	main/include/architecture.h	/^	point contact;$/;"	m	struct:ray	access:public
+copyp	main/include/utils.h	/^point copyp(point p);$/;"	p	signature:(point p)
+copyp	main/src/utils.c	/^point copyp(point p){$/;"	f	signature:(point p)
+crossProduct	main/include/utils.h	/^point crossProduct(point a, point b);$/;"	p	signature:(point a, point b)
+crossProduct	main/src/utils.c	/^ point crossProduct(point a, point b)$/;"	f	signature:(point a, point b)
+depth	main/include/architecture.h	/^    size_t depth;$/;"	m	struct:mesh	access:public
+dir	main/include/architecture.h	/^	point dir;$/;"	m	struct:light	access:public
+dir	main/include/architecture.h	/^	point dir;$/;"	m	struct:ray	access:public
+dot	main/include/utils.h	/^float dot(point a, point b);$/;"	p	signature:(point a, point b)
+dot	main/src/utils.c	/^float dot(point  a, point  b)$/;"	f	signature:(point a, point b)
+free_bbox	main/include/bbox.h	/^void free_bbox(bbox* b);$/;"	p	signature:(bbox* b)
+free_bbox	main/src/bbox.c	/^void free_bbox(bbox* b){$/;"	f	signature:(bbox* b)
+free_mesh	main/include/utils.h	/^void free_mesh(mesh * m);$/;"	p	signature:(mesh * m)
+free_mesh	main/src/utils.c	/^void free_mesh(mesh * m)$/;"	f	signature:(mesh * m)
+free_world	main/include/utils.h	/^void free_world(world * w);$/;"	p	signature:(world * w)
+free_world	main/src/utils.c	/^void free_world(world * w)$/;"	f	signature:(world * w)
+g	main/include/raycast.h	/^    Uint8 g;$/;"	m	struct:color	access:public
+g	main/include/raycast.h	/^    int g;$/;"	m	struct:raycast_param	access:public
+getPixelColor	main/src/raycast.c	/^void getPixelColor(SDL_Surface* surface, int x, int y, Uint8*r, Uint8*g,Uint8*b){$/;"	f	signature:(SDL_Surface* surface, int x, int y, Uint8*r, Uint8*g,Uint8*b)
+get_vertex_from_triangle	main/include/utils.h	/^void get_vertex_from_triangle(mesh* m, triangle* tri, point* a, point* b, point *c);$/;"	p	signature:(mesh* m, triangle* tri, point* a, point* b, point *c)
+get_vertex_from_triangle	main/src/utils.c	/^void get_vertex_from_triangle(mesh* m, triangle* tri, point* a, point* b, point *c){$/;"	f	signature:(mesh* m, triangle* tri, point* a, point* b, point *c)
+height	main/include/image_renderer.h	/^    size_t height;$/;"	m	struct:app_params	access:public
+height	main/include/raycast.h	/^    size_t height;$/;"	m	struct:raycast_param	access:public
+hit	main/include/architecture.h	/^	int hit;$/;"	m	struct:ray	access:public
+id_c	main/include/architecture.h	/^	size_t id_c;$/;"	m	struct:camera	access:public
+id_l	main/include/architecture.h	/^	size_t id_l;$/;"	m	struct:light	access:public
+id_m	main/include/architecture.h	/^	size_t id_m;$/;"	m	struct:mesh	access:public
+init_bbox	main/include/bbox.h	/^bbox* init_bbox();$/;"	p	signature:()
+init_bbox	main/src/bbox.c	/^bbox* init_bbox(){$/;"	f
+init_camera	main/include/utils.h	/^camera * init_camera(size_t id, point pos, float pitch, float yaw, int FOV);$/;"	p	signature:(size_t id, point pos, float pitch, float yaw, int FOV)
+init_camera	main/src/utils.c	/^camera * init_camera(size_t id, point pos, float pitch, float yaw, int FOV)$/;"	f	signature:(size_t id, point pos, float pitch, float yaw, int FOV)
+init_light	main/include/utils.h	/^light * init_light(size_t id, point pos, point dir, point color, float intensity);$/;"	p	signature:(size_t id, point pos, point dir, point color, float intensity)
+init_light	main/src/utils.c	/^light * init_light(size_t id, point pos, point dir, point color, float intensity)$/;"	f	signature:(size_t id, point pos, point dir, point color, float intensity)
+init_mesh	main/include/utils.h	/^mesh * init_mesh(size_t no_vert, size_t no_tri, size_t id);$/;"	p	signature:(size_t no_vert, size_t no_tri, size_t id)
+init_mesh	main/src/utils.c	/^mesh * init_mesh(size_t no_vert, size_t no_tri, size_t id)$/;"	f	signature:(size_t no_vert, size_t no_tri, size_t id)
+init_point	main/include/utils.h	/^point * init_point(float x, float y, float z);$/;"	p	signature:(float x, float y, float z)
+init_point	main/src/utils.c	/^point * init_point(float x, float y, float z)$/;"	f	signature:(float x, float y, float z)
+init_ray	main/include/utils.h	/^ray * init_ray(point pos, point dir);$/;"	p	signature:(point pos, point dir)
+init_ray	main/src/utils.c	/^ray * init_ray(point pos, point dir)$/;"	f	signature:(point pos, point dir)
+init_triangle	main/include/utils.h	/^triangle *  init_triangle(size_t x, size_t y, size_t z);$/;"	p	signature:(size_t x, size_t y, size_t z)
+init_triangle	main/src/utils.c	/^triangle *  init_triangle(size_t x, size_t y, size_t z)$/;"	f	signature:(size_t x, size_t y, size_t z)
+init_world	main/include/utils.h	/^world * init_world();$/;"	p	signature:()
+init_world	main/src/utils.c	/^world * init_world()$/;"	f
+intensity	main/include/architecture.h	/^	float intensity;$/;"	m	struct:light	access:public
+intersect_bbox	main/src/raycast.c	/^int intersect_bbox(ray* r, bbox* b){$/;"	f	signature:(ray* r, bbox* b)
+light	main/include/architecture.h	/^typedef struct light$/;"	s
+light	main/include/architecture.h	/^}light;$/;"	t	typeref:struct:light
+light::color	main/include/architecture.h	/^	point color;$/;"	m	struct:light	access:public
+light::dir	main/include/architecture.h	/^	point dir;$/;"	m	struct:light	access:public
+light::id_l	main/include/architecture.h	/^	size_t id_l;$/;"	m	struct:light	access:public
+light::intensity	main/include/architecture.h	/^	float intensity;$/;"	m	struct:light	access:public
+light::pos	main/include/architecture.h	/^	point pos;$/;"	m	struct:light	access:public
+light::spread	main/include/architecture.h	/^    float spread;$/;"	m	struct:light	access:public
+lights	main/include/architecture.h	/^    light ** lights;$/;"	m	struct:world	access:public
+load_object	main/include/obj_parser.h	/^void load_object(world* w, char* file, float scale, point pos);$/;"	p	signature:(world* w, char* file, float scale, point pos)
+load_object	main/src/obj_parser.c	/^void load_object(world* w, char* file, float scale, point pos){$/;"	f	signature:(world* w, char* file, float scale, point pos)
+main	main/src/main.c	/^int main(){$/;"	f
+max	main/include/architecture.h	/^    point max;$/;"	m	struct:bbox	access:public
+max	main/include/utils.h	/^float max(float x, float y);$/;"	p	signature:(float x, float y)
+max	main/src/utils.c	/^float max(float x, float y){$/;"	f	signature:(float x, float y)
+maxtotal	main/include/architecture.h	/^    size_t maxtotal;$/;"	m	struct:bbox	access:public
+mesh	main/include/architecture.h	/^typedef struct mesh$/;"	s
+mesh	main/include/architecture.h	/^}mesh;$/;"	t	typeref:struct:mesh
+mesh::bounding_box	main/include/architecture.h	/^	bbox * bounding_box;$/;"	m	struct:mesh	access:public
+mesh::depth	main/include/architecture.h	/^    size_t depth;$/;"	m	struct:mesh	access:public
+mesh::id_m	main/include/architecture.h	/^	size_t id_m;$/;"	m	struct:mesh	access:public
+mesh::no_extra	main/include/architecture.h	/^    size_t no_extra;$/;"	m	struct:mesh	access:public
+mesh::tri_last_level	main/include/architecture.h	/^    size_t tri_last_level;$/;"	m	struct:mesh	access:public
+mesh::v_size	main/include/architecture.h	/^	size_t v_size;$/;"	m	struct:mesh	access:public
+mesh::vertexes	main/include/architecture.h	/^	point * vertexes;$/;"	m	struct:mesh	access:public
+meshes	main/include/architecture.h	/^    mesh ** meshes;$/;"	m	struct:world	access:public
+min	main/include/architecture.h	/^    point min;$/;"	m	struct:bbox	access:public
+min	main/include/utils.h	/^float min(float x, float y);$/;"	p	signature:(float x, float y)
+min	main/src/utils.c	/^float min(float x, float y){$/;"	f	signature:(float x, float y)
+minus	main/include/utils.h	/^point minus(point a, point b);$/;"	p	signature:(point a, point b)
+minus	main/src/utils.c	/^point minus(point a, point b){$/;"	f	signature:(point a, point b)
+minusp	main/include/utils.h	/^void minusp(point* a, point*b);$/;"	p	signature:(point* a, point*b)
+minusp	main/src/utils.c	/^void minusp(point * a, point * b)$/;"	f	signature:(point * a, point * b)
+no_extra	main/include/architecture.h	/^    size_t no_extra;$/;"	m	struct:mesh	access:public
+norm	main/include/utils.h	/^float norm(point p);$/;"	p	signature:(point p)
+norm	main/src/utils.c	/^float norm(point p){$/;"	f	signature:(point p)
+normal	main/include/architecture.h	/^	point normal;$/;"	m	struct:triangle	access:public
+normalize	main/include/utils.h	/^point normalize(point p);$/;"	p	signature:(point p)
+normalize	main/src/utils.c	/^point normalize(point p){$/;"	f	signature:(point p)
+npoint	main/include/utils.h	/^point npoint(float x, float y, float z);$/;"	p	signature:(float x, float y, float z)
+npoint	main/src/utils.c	/^point npoint(float x, float y, float z){$/;"	f	signature:(float x, float y, float z)
+pitch	main/include/architecture.h	/^    float pitch;$/;"	m	struct:camera	access:public
+point	main/include/architecture.h	/^typedef struct point{$/;"	s
+point	main/include/architecture.h	/^}point;$/;"	t	typeref:struct:point
+point::x	main/include/architecture.h	/^	double x;$/;"	m	struct:point	access:public
+point::y	main/include/architecture.h	/^	double y;$/;"	m	struct:point	access:public
+point::z	main/include/architecture.h	/^	double z;$/;"	m	struct:point	access:public
+pos	main/include/architecture.h	/^	point pos;$/;"	m	struct:camera	access:public
+pos	main/include/architecture.h	/^	point pos;$/;"	m	struct:light	access:public
+pos	main/include/architecture.h	/^	point pos;$/;"	m	struct:ray	access:public
+ppoint	main/include/utils.h	/^void ppoint(point p, char* msg);$/;"	p	signature:(point p, char* msg)
+ppoint	main/src/utils.c	/^void ppoint(point p, char* msg){$/;"	f	signature:(point p, char* msg)
+r	main/include/raycast.h	/^    Uint8 r;$/;"	m	struct:color	access:public
+r	main/include/raycast.h	/^    int r;$/;"	m	struct:raycast_param	access:public
+ray	main/include/architecture.h	/^typedef struct ray$/;"	s
+ray	main/include/architecture.h	/^}ray;$/;"	t	typeref:struct:ray
+ray::collision	main/include/architecture.h	/^	triangle **collision;$/;"	m	struct:ray	access:public
+ray::contact	main/include/architecture.h	/^	point contact;$/;"	m	struct:ray	access:public
+ray::dir	main/include/architecture.h	/^	point dir;$/;"	m	struct:ray	access:public
+ray::hit	main/include/architecture.h	/^	int hit;$/;"	m	struct:ray	access:public
+ray::pos	main/include/architecture.h	/^	point pos;$/;"	m	struct:ray	access:public
+ray_cast	main/src/raycast.c	/^int ray_cast(mesh* m, ray* r, bbox* b){$/;"	f	signature:(mesh* m, ray* r, bbox* b)
+ray_cast_pixel	main/include/raycast.h	/^color ray_cast_pixel(raycast_param params);$/;"	p	signature:(raycast_param params)
+ray_cast_pixel	main/src/raycast.c	/^color ray_cast_pixel(raycast_param params){$/;"	f	signature:(raycast_param params)
+ray_intersect	main/src/raycast.c	/^void ray_intersect(triangle * tri, mesh * m, ray * r) {$/;"	f	signature:(triangle * tri, mesh * m, ray * r)
+raycast_param	main/include/raycast.h	/^typedef struct raycast_param{$/;"	s
+raycast_param	main/include/raycast.h	/^} raycast_param;$/;"	t	typeref:struct:raycast_param
+raycast_param::b	main/include/raycast.h	/^    int b;$/;"	m	struct:raycast_param	access:public
+raycast_param::cam	main/include/raycast.h	/^    camera* cam;$/;"	m	struct:raycast_param	access:public
+raycast_param::g	main/include/raycast.h	/^    int g;$/;"	m	struct:raycast_param	access:public
+raycast_param::height	main/include/raycast.h	/^    size_t height;$/;"	m	struct:raycast_param	access:public
+raycast_param::r	main/include/raycast.h	/^    int r;$/;"	m	struct:raycast_param	access:public
+raycast_param::wd	main/include/raycast.h	/^    world* wd;$/;"	m	struct:raycast_param	access:public
+raycast_param::width	main/include/raycast.h	/^    size_t width;$/;"	m	struct:raycast_param	access:public
+raycast_param::x_pix	main/include/raycast.h	/^    size_t x_pix;$/;"	m	struct:raycast_param	access:public
+raycast_param::y_pix	main/include/raycast.h	/^    size_t y_pix;$/;"	m	struct:raycast_param	access:public
+render	main/src/image_renderer.c	/^void render(Uint32* pixels, int width, int height, camera* cam, world* w)$/;"	f	signature:(Uint32* pixels, int width, int height, camera* cam, world* w)
+render_camera	main/include/image_renderer.h	/^int render_camera(app_params* params);$/;"	p	signature:(app_params* params)
+render_camera	main/src/image_renderer.c	/^int render_camera(app_params* params){$/;"	f	signature:(app_params* params)
+renderer	main/include/image_renderer.h	/^    SDL_Renderer* renderer;$/;"	m	struct:app_params	access:public
+rm	main/Makefile	/^rm       = rm -f$/;"	m
+scale	main/include/utils.h	/^point scale(point a, float s);$/;"	p	signature:(point a, float s)
+scale	main/src/utils.c	/^point scale(point a, float s){$/;"	f	signature:(point a, float s)
+scalep	main/include/utils.h	/^void scalep(point *a, float s);$/;"	p	signature:(point *a, float s)
+scalep	main/src/utils.c	/^void scalep(point * a, float s)$/;"	f	signature:(point * a, float s)
+setup_window	main/include/image_renderer.h	/^int setup_window(app_params* params);$/;"	p	signature:(app_params* params)
+setup_window	main/src/image_renderer.c	/^int setup_window(app_params* params){$/;"	f	signature:(app_params* params)
+size_c	main/include/architecture.h	/^    size_t size_c;$/;"	m	struct:world	access:public
+size_l	main/include/architecture.h	/^    size_t size_l;$/;"	m	struct:world	access:public
+size_m	main/include/architecture.h	/^    size_t size_m;$/;"	m	struct:world	access:public
+skybox	main/include/architecture.h	/^    SDL_Surface* skybox;$/;"	m	struct:camera	access:public
+spread	main/include/architecture.h	/^    float spread;$/;"	m	struct:light	access:public
+take_max	main/src/bbox.c	/^void take_max(point* p, point o){$/;"	f	signature:(point* p, point o)
+take_min	main/src/bbox.c	/^void take_min(point* p, point o){$/;"	f	signature:(point* p, point o)
+total	main/include/architecture.h	/^    size_t total;$/;"	m	struct:bbox	access:public
+tri_last_level	main/include/architecture.h	/^    size_t tri_last_level;$/;"	m	struct:mesh	access:public
+triangle	main/include/architecture.h	/^typedef struct triangle$/;"	s
+triangle	main/include/architecture.h	/^}triangle;$/;"	t	typeref:struct:triangle
+triangle::normal	main/include/architecture.h	/^	point normal;$/;"	m	struct:triangle	access:public
+triangle::vert	main/include/architecture.h	/^	size_t vert[3];$/;"	m	struct:triangle	access:public
+tris	main/include/architecture.h	/^    triangle * tris;$/;"	m	struct:bbox	access:public
+v_size	main/include/architecture.h	/^	size_t v_size;$/;"	m	struct:mesh	access:public
+vert	main/include/architecture.h	/^	size_t vert[3];$/;"	m	struct:triangle	access:public
+vertexes	main/include/architecture.h	/^	point * vertexes;$/;"	m	struct:mesh	access:public
+wd	main/include/image_renderer.h	/^    world* wd;$/;"	m	struct:app_params	access:public
+wd	main/include/raycast.h	/^    world* wd;$/;"	m	struct:raycast_param	access:public
+width	main/include/image_renderer.h	/^    size_t width;$/;"	m	struct:app_params	access:public
+width	main/include/raycast.h	/^    size_t width;$/;"	m	struct:raycast_param	access:public
+window	main/include/image_renderer.h	/^    SDL_Window* window;$/;"	m	struct:app_params	access:public
+world	main/include/architecture.h	/^typedef struct world$/;"	s
+world	main/include/architecture.h	/^}world;$/;"	t	typeref:struct:world
+world::cameras	main/include/architecture.h	/^    camera ** cameras;$/;"	m	struct:world	access:public
+world::lights	main/include/architecture.h	/^    light ** lights;$/;"	m	struct:world	access:public
+world::meshes	main/include/architecture.h	/^    mesh ** meshes;$/;"	m	struct:world	access:public
+world::size_c	main/include/architecture.h	/^    size_t size_c;$/;"	m	struct:world	access:public
+world::size_l	main/include/architecture.h	/^    size_t size_l;$/;"	m	struct:world	access:public
+world::size_m	main/include/architecture.h	/^    size_t size_m;$/;"	m	struct:world	access:public
+x	main/include/architecture.h	/^	double x;$/;"	m	struct:point	access:public
+x_pix	main/include/raycast.h	/^    size_t x_pix;$/;"	m	struct:raycast_param	access:public
+y	main/include/architecture.h	/^	double y;$/;"	m	struct:point	access:public
+y_pix	main/include/raycast.h	/^    size_t y_pix;$/;"	m	struct:raycast_param	access:public
+yaw	main/include/architecture.h	/^    float yaw;$/;"	m	struct:camera	access:public
+z	main/include/architecture.h	/^	double z;$/;"	m	struct:point	access:public
