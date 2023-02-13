@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #pragma once
 
 //id = size_t, point strut (3 flaots), vetr and tri to staitc,
@@ -58,6 +60,7 @@ typedef struct camera
     float yaw;
     //field of view in degree (90 - 120 degrees)
     size_t FOV;
+    SDL_Surface* skybox;
 
 }camera;
 

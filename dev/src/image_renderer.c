@@ -5,6 +5,7 @@
 int setup_window(app_params* params){
     omp_set_num_threads(omp_get_num_procs());
     SDL_Init(SDL_INIT_VIDEO);
+    IMG_Init(IMG_INIT_PNG);
     SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" );
     params->window = SDL_CreateWindow("SDL2 Displaying Image",
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -23,7 +24,7 @@ void render(Uint32* pixels, int width, int height, camera* cam, world* w)
 {
     SDL_PixelFormat *format;
     size_t i;
-    format = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
+    format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
     #pragma omp parallel for
     for(i = 0; i < width*height; i++){
         raycast_param rcp;
@@ -33,8 +34,9 @@ void render(Uint32* pixels, int width, int height, camera* cam, world* w)
         rcp.cam = cam;
         rcp.x_pix = i%width;
         rcp.y_pix = i/width;
-        int r = ray_cast_pixel(rcp);
-        pixels[i] = SDL_MapRGB(format, r,r,r);
+        color c = ray_cast_pixel(rcp);
+        //printf("COLORS %i %i %i\n", c.r, c.g, c.b);
+        pixels[i] = SDL_MapRGB(format, c.r,c.g,c.b);
     }
     SDL_FreeFormat(format);
 }
@@ -45,19 +47,20 @@ int render_camera(app_params* params){
     SDL_Event event;
     time_t last = time(NULL);
     int fps = 0;
-    SDL_Texture* texture = SDL_CreateTexture(params->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, params->width, params->height);
+    SDL_Texture* texture = SDL_CreateTexture(params->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, params->width, params->height);
     int pitch;
-    Uint32* pixels = malloc(sizeof(Uint32)*params->height*params->width);
-    Uint32* locked_pixels = NULL;
+    Uint32* pixels;;
     int once = 0;
     float angle = 0;
     float ro = 4;
+    SDL_Surface* old = params->cam->skybox;
+    params->cam->skybox = SDL_ConvertSurfaceFormat(old, SDL_PIXELFORMAT_RGBA8888, 0);
+    SDL_FreeSurface(old);
+    SDL_LockTexture(texture, NULL, (void**)&pixels, &pitch);
     while (!quit)
     {
         SDL_RenderClear(params->renderer);
         render(pixels, params->width, params->height, params->cam, params->wd);
-        SDL_LockTexture(texture, NULL, (void**)&locked_pixels, &pitch);
-        memcpy(locked_pixels, pixels, sizeof(Uint32)*params->height*params->width);
         SDL_UnlockTexture(texture);
         SDL_RenderCopy(params->renderer, texture, NULL, NULL); 
         SDL_RenderPresent(params->renderer);
@@ -91,7 +94,7 @@ int render_camera(app_params* params){
         }
         params->cam->pos = npoint(ro*cos(angle), 0, ro*sin(angle));
         params->cam->yaw = M_PI + angle;
-        angle+=.1;
+        angle+=.03;
     }
     SDL_DestroyTexture(texture);
     free(pixels);

@@ -20,6 +20,7 @@ camera * init_camera(size_t id, point pos, float pitch, float yaw, int FOV)
     cam->pitch = pitch;
     cam->yaw = yaw;
     cam->FOV = FOV;
+    cam->skybox = NULL;
 	return cam;
 }
 
@@ -203,6 +204,8 @@ void free_world(world * w)
 	{
 		for(size_t i = 0; i < w->size_c; i++)
 		{
+            if(w->cameras[i]->skybox)
+                SDL_FreeSurface(w->cameras[i]->skybox);
 			free(w->cameras[i]);
 		}
 		free(w->cameras);
