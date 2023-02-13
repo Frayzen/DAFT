@@ -18,14 +18,27 @@ int setup_window(app_params* params){
     }
     return 0;
 }
-
+void render_adaptative(ray* r, ray* rays, size_t x, size_t y, size_t width, size_t height){
+   if(x != 0){
+       ray src = rays[x-1+y*width];
+       printf("HEY %p\n", src.m->vertexes);
+       printf("LENGTH %lu FOR ID %lu\n", src.m->v_size, src.tri->vert[0]);
+       ray_intersect(src.tri, src.m, r);
+       if(r->hit)
+           return;
+   }
+}
 void render(Uint32* pixels, int width, int height, camera* cam, world* w)
 {
     SDL_PixelFormat *format;
     size_t i;
     format = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
-    #pragma omp parallel for
-    for(i = 0; i < width*height; i++){
+    ray* rays = calloc(sizeof(ray), width*height);
+    for(i = 0; i < width*height; i+=2){
+        if(i%width == 1)
+            i--;
+        else if(i%width == 0)
+            i++;
         raycast_param rcp;
         rcp.width = width;
         rcp.height = height;
@@ -33,10 +46,22 @@ void render(Uint32* pixels, int width, int height, camera* cam, world* w)
         rcp.cam = cam;
         rcp.x_pix = i%width;
         rcp.y_pix = i/width;
-        int r = ray_cast_pixel(rcp);
-        pixels[i] = SDL_MapRGB(format, r,r,r);
+        rays[i] = ray_cast_pixel(rcp);
+        pixels[i] = SDL_MapRGB(format, rays[i].hit,rays[i].hit,rays[i].hit);
+    }
+    for(i = 1; i < width*height; i+=2){
+        if(i%width == 1)
+            i--;
+        else if(i%width == 0)
+            i++;
+        size_t x = i%width;
+        size_t y = i/width;
+        ray r = nray(cam, x, y, width, height);
+        render_adaptative(&r, rays, x, y, width, height);
+        pixels[i] = SDL_MapRGB(format, rays[i].hit,rays[i].hit,rays[i].hit);
     }
     SDL_FreeFormat(format);
+    free(rays);
 }
 
 

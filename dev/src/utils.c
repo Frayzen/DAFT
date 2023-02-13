@@ -70,12 +70,12 @@ void add_light(world * w, light * l)
 }
 
 
-ray * init_ray(point pos, point dir)
+ray init_ray(point pos, point dir)
 {
-	ray * r = (ray *)malloc(sizeof(ray));
-	r->pos = pos;
-	r->dir = dir;
-	r->hit = 0;
+    ray r;
+	r.pos = pos;
+	r.dir = dir;
+	r.hit = 0;
 	return r;
 }
 

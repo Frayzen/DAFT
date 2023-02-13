@@ -35,6 +35,7 @@ void ray_intersect(triangle * tri, mesh * m, ray * r) {
         if(val > 1)
             val = 1;
         r->hit = (int) 255*val;
+        r->tri = tri;
         return;
     }
     // This means that there is a line intersection but not a ray intersection. 
@@ -80,6 +81,7 @@ int ray_cast(mesh* m, ray* r, bbox* b){
             float closest = -1;
             int val = 0;
             point contact;
+            triangle* tri = NULL;
             for(size_t i = 0; i < b->c_size; i++){
                 ray_intersect(&b->tris[i], m, r);
                 if(r->hit){
@@ -88,16 +90,19 @@ int ray_cast(mesh* m, ray* r, bbox* b){
                         closest = dist;
                         val = r->hit;
                         contact = r->contact;
+                        tri = r->tri;
                     }
                     r->hit = 0;
                 }
             }
             r->hit = val;
             r->contact = contact;
+            r->tri = tri;
         }else{
             float closest = -1;
             int val = 0;
             point contact;
+            triangle* tri = NULL;
             for(size_t i = 0; i < b->c_size; i++){
                 if(ray_cast(m, r, b->children[i])){
                     float dist = norm(minus(r->pos, r->contact));
@@ -105,47 +110,51 @@ int ray_cast(mesh* m, ray* r, bbox* b){
                         closest = dist;
                         val = r->hit;
                         contact = r->contact;
+                        tri = r->tri;
                     }
                     r->hit = 0;
                 }
             }
             r->hit = val;
             r->contact = contact;
+            r->tri = tri;
         }
         return r->hit;
     }
     return 0;
 }
 
-int ray_cast_pixel(raycast_param params){
-    float yaw = params.cam->yaw;
+ray nray(camera* cam, size_t x, size_t y, size_t w, size_t h){
+    float yaw = cam->yaw;
     //float pitch = params.cam->pitch;
-    float FOV = params.cam->FOV*M_PI/180;
+    float FOV = cam->FOV*M_PI/180;
     float hFOV = FOV/2;
-    float pitch_ratio = (float)params.y_pix/(params.height-1);
-    float yaw_ratio = (float)params.x_pix/(params.width-1);
+    float pitch_ratio = (float)y/(h-1);
+    float yaw_ratio = (float)x/(w-1);
 
     float deg1 = yaw+hFOV;
     float deg2 = yaw-hFOV;
     point p1 = npoint(cos(deg1), 0, sin(deg1));
     point p2 = npoint(cos(deg2), 0, sin(deg2));
     point flat = minus(p2, p1);
-    point xz = add(p1, scale(flat, yaw_ratio));
+    point xzdir = add(p1, scale(flat, yaw_ratio));
 
     deg1 = hFOV;
     p1 = npoint(0, cos(deg1), 0);
     p2 = scale(p1, -1);
     flat = minus(p2, p1);
-    point y = add(p1, scale(flat, pitch_ratio));
-    point dir = add(xz, y);
-    ray* ry = init_ray(params.cam->pos, dir);
+    point ydir = add(p1, scale(flat, pitch_ratio));
+    point dir = add(xzdir, ydir);
+    ray ry = init_ray(cam->pos, dir);
+    return ry;
+}
 
-    int v = 0;
+ray ray_cast_pixel(raycast_param params){
+    ray ry = nray(params.cam, params.x_pix, params.y_pix, params.width, params.height);
     for(size_t idm = 0; idm < params.wd->size_m; idm++){
         mesh* m = params.wd->meshes[idm];
-        if(ray_cast(m, ry, m->bounding_box))
-            v = ry->hit; 
+        ray_cast(m, &ry, m->bounding_box);
+        ry.m = m;
     }
-    free(ry);
-    return v;
+    return ry;
 }

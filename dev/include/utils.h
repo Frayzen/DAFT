@@ -21,7 +21,7 @@ light * init_light(size_t id, point pos, point dir, point color, float intensity
 
 void add_light(world * w, light * l);
 
-ray * init_ray(point pos, point dir);
+ray init_ray(point pos, point dir);
 
 triangle *  init_triangle(size_t x, size_t y, size_t z);
 

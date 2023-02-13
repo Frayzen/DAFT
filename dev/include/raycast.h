@@ -14,4 +14,6 @@ typedef struct raycast_param{
 
 
 
-int ray_cast_pixel(raycast_param params);
+ray ray_cast_pixel(raycast_param params);
+ray nray(camera* cam, size_t x, size_t y, size_t w, size_t h);
+void ray_intersect(triangle * tri, mesh * m, ray * r);

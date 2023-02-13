@@ -78,7 +78,8 @@ typedef struct ray
 
 	int hit;
 	point contact;
-	triangle **collision;
+	triangle *tri;
+    mesh *m;
 }ray;
 
 //
