@@ -1,6 +1,6 @@
 
 # project name (generate executable with this name)
-TARGET   = DAFT_dev
+TARGET   = DAFT
 
 CC       = gcc
 # compiling flags here
