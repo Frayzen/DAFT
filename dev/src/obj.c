@@ -22,14 +22,18 @@ void proccess(char* line, int i, int p, int t, int n)
 	}
 }
 
-void parse(char* path, world* w, float scale)
+void parse(char* path, world* w, float scale, point pos)
 {
-	FILE *file = fopen(path, "r");
+	FILE* file;
+	file = fopen(path, "r");
 	if (file == NULL)
 	{
-		errx(0, "unable to open file\n");
+		//errx(0, "unable to open file\n");
+		printf("cant open youre file man\n");
+		return;
 	}
 
+	//printf("ici\n");
 	size_t vert = 0;
 	size_t tri = 0;
 	//size_t norm = 0;
@@ -37,7 +41,7 @@ void parse(char* path, world* w, float scale)
 
 	char line[200];
 
-	while (fgets(line, sizeof(line), file))
+	while (fgets(line, sizeof(line), file) != NULL)
 	{
 		if (line[0] == 'v')
 		{
@@ -46,28 +50,32 @@ void parse(char* path, world* w, float scale)
 			//else if (line[1], 't')
 				//texture++;
 			//else
-			vert++;
+			if (line[1] == ' ')
+				vert++;
 		}
 		else if (line[0] == 'f')
 			tri++;
 	}
 
-	mesh *new_mesh = init_mesh(vert, tri, w->size_m);
-
+	printf("vert %lu tri %lu\n", vert, tri);
+	//printf("vert %lu tri %lu\n",vert, tri);
+	mesh* new_mesh = init_mesh(vert, tri, w->size_m);
 	fseek(file, 0, SEEK_SET);
 
 	point v;
-	while(fgets(line, sizeof(line), file))
+	while(fgets(line, sizeof(line), file) != NULL)
 	{
 		if (line[0] == 'v')
 		{
 			if (line[1] == ' ')
 			{
-				sscanf(line, "v %f %f %f", &v.x, &v.y, &v.z);
+				sscanf(line, "v %lf %lf %lf", &v.x, &v.y, &v.z);
 				v.x *= scale;
 				v.y *= scale;
 				v.z *= scale;
-				add_vertex(new_mesh, 0, v.x, v.y, v.z);
+				addp(&v, &pos);
+				printf("coord %lf\n", v.x);
+				add_vertex(new_mesh, v.x, v.y, v.z);
 			}
 			//line[1] == 'n'
 			//line[1] == 't'
@@ -90,9 +98,11 @@ void parse(char* path, world* w, float scale)
 				if (f == 0)
 					proccess(line, i, p1, t1, n1);
 			}
-			add_tri(new_mesh, new_mesh->t_size, p1, p2, p3);
+			printf("tri %d\n", p1-1);
+			add_tri(new_mesh, p1-1, p2-1, p3-1);
 		}
 	}
 
+	add_mesh(w, new_mesh);
 	fclose(file);
 }
