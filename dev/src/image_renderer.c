@@ -27,7 +27,7 @@ void render(Uint32* pixels, int width, int height, camera* cam, world* w)
     format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
     ray *rays = calloc(sizeof(ray), height*width);
     #pragma omp parallel for
-    for(i = 0; i < width*height; i++){
+    for(i = 0; i < width*height; i+=3){
         size_t x_pix = i%width;
         size_t y_pix = i/width;
         ray r = ray_cast_pixel(cam, w, x_pix, y_pix, width, height);
@@ -36,8 +36,10 @@ void render(Uint32* pixels, int width, int height, camera* cam, world* w)
         //printf("COLORS %i %i %i\n", c.r, c.g, c.b);
         pixels[i] = SDL_MapRGB(format, c.r,c.g,c.b);
     }
-    /*
-    for(i = 1; i < width*height; i+=2){
+    #pragma omp parallel for
+    for(i = 1; i < width*height; i++){
+        if(rays[i].hit)
+            continue;
         size_t x_pix = i%width;
         size_t y_pix = i/width;
         ray r = ray_cast_neighbour(cam, w, x_pix, y_pix, width, height, rays);
@@ -45,7 +47,6 @@ void render(Uint32* pixels, int width, int height, camera* cam, world* w)
         //printf("COLORS %i %i %i\n", c.r, c.g, c.b);
         pixels[i] = SDL_MapRGB(format, c.r,c.g,c.b);
     }
-    */
     SDL_FreeFormat(format);
     free(rays);
 }

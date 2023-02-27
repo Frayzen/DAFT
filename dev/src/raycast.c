@@ -163,8 +163,11 @@ ray ray_cast_neighbour(camera* cam, world* wd, size_t x, size_t y, size_t w, siz
     int u = get_id(w, h, x, y-1);
     if(u != -1 && cast_neighbour(&ry, rays[u]))
         return ry;
-    int r = get_id(w, h, x-1, y);
+    int r = get_id(w, h, x+1, y);
     if(r != -1 && cast_neighbour(&ry, rays[r]))
+        return ry;
+    int b = get_id(w, h, x, y+1);
+    if(b != -1 && cast_neighbour(&ry, rays[b]))
         return ry;
     if(!ry.hit && cam->skybox != NULL){
         point dir = scale(ry.dir, -1);
