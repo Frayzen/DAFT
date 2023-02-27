@@ -3,23 +3,7 @@
 #include "architecture.h"
 #pragma once
 
-typedef struct raycast_param{
-    camera* cam;
-    world* wd;
-    size_t x_pix;
-    size_t y_pix;
-    size_t width;
-    size_t height;
-    int r;
-    int g;
-    int b;
-} raycast_param;
 
-
-typedef struct color{
-    Uint8 r;
-    Uint8 g;
-    Uint8 b;
-} color;
-
-color ray_cast_pixel(raycast_param params);
+ray ray_cast_pixel(camera* cam, world* wd, size_t x, size_t y, size_t w, size_t h);
+void ray_intersect(triangle * tri, mesh * m, ray * r);
+ray ray_cast_neighbour(camera* cam, world* wd, size_t x, size_t y, size_t w, size_t h, ray rays[]);

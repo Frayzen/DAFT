@@ -77,6 +77,10 @@ ray * init_ray(point pos, point dir)
 	r->pos = pos;
 	r->dir = dir;
 	r->hit = 0;
+    r->c.r = 0;
+    r->c.g = 0;
+    r->c.b = 0;
+    r->mint = -1;
 	return r;
 }
 
@@ -274,7 +278,7 @@ void minusp(point * a, point * b)
 }
 
 point normalize(point p){
-    float sum = p.x+p.y+p.z;
+    float sum = norm(p);
     if(sum == 0)
         return p;
     p.x/=sum;

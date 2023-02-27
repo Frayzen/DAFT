@@ -74,14 +74,21 @@ typedef struct light
     float spread;
 }light;
 
+typedef struct color{
+    Uint8 r;
+    Uint8 g;
+    Uint8 b;
+} color;
 typedef struct ray
 {
 	point pos;
 	point dir;
 
 	int hit;
-	point contact;
-	triangle **collision;
+    float mint;
+    color c;
+	triangle *tri;
+    mesh* m;
 }ray;
 
 //

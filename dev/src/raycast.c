@@ -27,14 +27,21 @@ void ray_intersect(triangle * tri, mesh * m, ray * r) {
     }
     float t = f*dot(edge2, q);
     if(t > EPSILON){
-        r->contact = add(r->pos, scale(r->dir, t));
+        if(r->hit && r->mint < t)
+            return;
+        r->mint = t;
+        r->tri = tri;
+        r->m = m;
         point normal = crossProduct(edge1, edge2);
         float val = dot(normalize(normal), normalize(r->dir));
         if(val < 0)
             val*=-1;
         if(val > 1)
             val = 1;
-        r->hit = (int) 255*val;
+        r->hit = 1;
+        r->c.r =(int) 255*val;
+        r->c.g =(int) 255*val;
+        r->c.b =(int) 255*val;
         return;
     }
     // This means that there is a line intersection but not a ray intersection. 
@@ -43,7 +50,6 @@ void ray_intersect(triangle * tri, mesh * m, ray * r) {
 int intersect_bbox(ray* r, bbox* b){
     float tmin = -INFINITY;
     float tmax = INFINITY;
-    r->hit = 0;
     //    ppoint(b->max, "MAX");
     //    ppoint(b->min, "MIN");
     float x = r->dir.x;
@@ -75,42 +81,12 @@ int intersect_bbox(ray* r, bbox* b){
 
 int ray_cast(mesh* m, ray* r, bbox* b){
     if(intersect_bbox(r, b)){
-        r->hit = 0;
         if(b->tris){
-            float closest = -1;
-            int val = 0;
-            point contact;
-            for(size_t i = 0; i < b->c_size; i++){
+            for(size_t i = 0; i < b->c_size; i++)
                 ray_intersect(&b->tris[i], m, r);
-                if(r->hit){
-                    float dist = norm(minus(r->pos, r->contact));
-                    if(closest == -1 || dist < closest){
-                        closest = dist;
-                        val = r->hit;
-                        contact = r->contact;
-                    }
-                    r->hit = 0;
-                }
-            }
-            r->hit = val;
-            r->contact = contact;
         }else{
-            float closest = -1;
-            int val = 0;
-            point contact;
-            for(size_t i = 0; i < b->c_size; i++){
-                if(ray_cast(m, r, b->children[i])){
-                    float dist = norm(minus(r->pos, r->contact));
-                    if(closest == -1 || dist < closest){
-                        closest = dist;
-                        val = r->hit;
-                        contact = r->contact;
-                    }
-                    r->hit = 0;
-                }
-            }
-            r->hit = val;
-            r->contact = contact;
+            for(size_t i = 0; i < b->c_size; i++)
+                ray_cast(m, r, b->children[i]);
         }
         return r->hit;
     }
@@ -122,14 +98,13 @@ void getPixelColor(SDL_Surface* surface, int x, int y, Uint8*r, Uint8*g,Uint8*b)
     Uint32 pixel = ((Uint32*)surface->pixels)[y*surface->w+x];
     SDL_GetRGB(pixel, surface->format, r,g,b);
 }
-color ray_cast_pixel(raycast_param params){
-    float yaw = params.cam->yaw;
+ray get_ray(size_t width, size_t height, size_t x_pix, size_t y_pix, camera* cam){
+    float yaw = cam->yaw;
     //float pitch = params.cam->pitch;
-    float FOV = params.cam->FOV*M_PI/180;
+    float FOV = cam->FOV*M_PI/180;
     float hFOV = FOV/2;
-    float pitch_ratio = (float)params.y_pix/(params.height-1);
-    float yaw_ratio = (float)params.x_pix/(params.width-1);
-
+    float pitch_ratio = (float)y_pix/(height-1);
+    float yaw_ratio = (float)x_pix/(width-1);
     float deg1 = yaw+hFOV;
     float deg2 = yaw-hFOV;
     point p1 = npoint(cos(deg1), 0, sin(deg1));
@@ -143,27 +118,62 @@ color ray_cast_pixel(raycast_param params){
     flat = minus(p2, p1);
     point y = add(p1, scale(flat, pitch_ratio));
     point dir = add(xz, y);
-    ray* ry = init_ray(params.cam->pos, dir);
-
-    int v = 0;
-    for(size_t idm = 0; idm < params.wd->size_m; idm++){
-        mesh* m = params.wd->meshes[idm];
-        if(ray_cast(m, ry, m->bounding_box))
-            v = ry->hit; 
+    ray ry;
+    ry.pos = cam->pos;
+    ry.dir = dir;
+    ry.hit = 0;
+    return ry;
+}
+ray ray_cast_pixel(camera* cam, world* wd, size_t x, size_t y, size_t w, size_t h){
+    ray ry = get_ray(w,h,x,y,cam);
+    for(size_t idm = 0; idm <wd->size_m; idm++){
+        mesh* m = wd->meshes[idm];
+        ray_cast(m, &ry, m->bounding_box);
     }
-    color c;
-    c.r = v;
-    c.g = v;
-    c.b = v;
-    free(ry);
-    if(!v && params.cam->skybox != NULL){
-        dir = scale(dir, -1);
-        float u = 0.5+ (atan2f(dir.x, dir.z)/(M_PI*2));
+    if(!ry.hit && cam->skybox != NULL){
+        point dir = scale(normalize(ry.dir), -1);
+        float u = 0.5+ (atan2f(dir.z, dir.x)/(M_PI*2));
         float v = 0.5+ (asinf(dir.y)/M_PI);
-        SDL_Surface* skybox = params.cam->skybox;
+        SDL_Surface* skybox = cam->skybox;
         size_t x = u*skybox->w;
         size_t y = v*skybox->h;
-        getPixelColor(skybox, x, y, &c.r, &c.g, &c.b);
+        getPixelColor(skybox, x, y, &ry.c.r, &ry.c.g, &ry.c.b);
     }
-    return c;
+    return ry;
+}
+int get_id(size_t w, size_t h, size_t x, size_t y){
+    if(x < 0 || x >= w || y< 0 || y>=h)
+        return -1;
+    return w*y+x;
+}
+
+int cast_neighbour(ray *src, ray tgt){
+    if(!tgt.hit)
+        return 0;
+    triangle* tri = tgt.tri;
+    mesh* m = tgt.m;
+    ray_intersect(tri, m, src);
+    return src->hit;
+}
+ray ray_cast_neighbour(camera* cam, world* wd, size_t x, size_t y, size_t w, size_t h, ray rays[w*h]){
+    ray ry = get_ray(w,h,x,y,cam);
+    int l = get_id(w, h, x-1, y);
+    if(l != -1 && cast_neighbour(&ry, rays[l]))
+        return ry; 
+    int u = get_id(w, h, x, y-1);
+    if(u != -1 && cast_neighbour(&ry, rays[u]))
+        return ry;
+    int r = get_id(w, h, x-1, y);
+    if(r != -1 && cast_neighbour(&ry, rays[r]))
+        return ry;
+    if(!ry.hit && cam->skybox != NULL){
+        point dir = scale(ry.dir, -1);
+        float u = 0.5+ (atan2f(dir.x, dir.z)/(M_PI*2));
+        float v = 0.5+ (asinf(dir.y)/M_PI);
+        SDL_Surface* skybox = cam->skybox;
+        size_t x = u*skybox->w;
+        size_t y = v*skybox->h;
+        getPixelColor(skybox, x, y, &ry.c.r, &ry.c.g, &ry.c.b);
+    }
+    return ry;
 }
