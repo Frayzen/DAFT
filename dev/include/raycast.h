@@ -6,4 +6,6 @@
 
 ray ray_cast_pixel(camera* cam, world* wd, size_t x, size_t y, size_t w, size_t h);
 void ray_intersect(triangle * tri, mesh * m, ray * r);
-ray ray_cast_neighbour(camera* cam, world* wd, size_t x, size_t y, size_t w, size_t h, ray rays[]);
+void ray_cast_neighbour(int size, camera* cam, world* wd, size_t x, size_t y, size_t w, size_t h, ray rays[]);
+int cast_neighbour(ray *src, ray tgt);
+ray get_ray(size_t width, size_t height, size_t x_pix, size_t y_pix, camera* cam);

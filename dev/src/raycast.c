@@ -98,6 +98,15 @@ void getPixelColor(SDL_Surface* surface, int x, int y, Uint8*r, Uint8*g,Uint8*b)
     Uint32 pixel = ((Uint32*)surface->pixels)[y*surface->w+x];
     SDL_GetRGB(pixel, surface->format, r,g,b);
 }
+void get_sky(point direction, camera* cam, color* c){
+        point dir = scale(normalize(direction), -1);
+        float u = 0.5+ (atan2f(dir.z, dir.x)/(M_PI*2));
+        float v = 0.5+ (asinf(dir.y)/M_PI);
+        SDL_Surface* skybox = cam->skybox;
+        size_t x = u*skybox->w;
+        size_t y = v*skybox->h;
+        getPixelColor(skybox, x, y, &c->r, &c->g, &c->b);
+}
 ray get_ray(size_t width, size_t height, size_t x_pix, size_t y_pix, camera* cam){
     float yaw = cam->yaw;
     //float pitch = params.cam->pitch;
@@ -131,13 +140,7 @@ ray ray_cast_pixel(camera* cam, world* wd, size_t x, size_t y, size_t w, size_t 
         ray_cast(m, &ry, m->bounding_box);
     }
     if(!ry.hit && cam->skybox != NULL){
-        point dir = scale(normalize(ry.dir), -1);
-        float u = 0.5+ (atan2f(dir.z, dir.x)/(M_PI*2));
-        float v = 0.5+ (asinf(dir.y)/M_PI);
-        SDL_Surface* skybox = cam->skybox;
-        size_t x = u*skybox->w;
-        size_t y = v*skybox->h;
-        getPixelColor(skybox, x, y, &ry.c.r, &ry.c.g, &ry.c.b);
+        get_sky(ry.dir, cam, &ry.c);
     }
     return ry;
 }
@@ -155,28 +158,19 @@ int cast_neighbour(ray *src, ray tgt){
     ray_intersect(tri, m, src);
     return src->hit;
 }
-ray ray_cast_neighbour(camera* cam, world* wd, size_t x, size_t y, size_t w, size_t h, ray rays[w*h]){
-    ray ry = get_ray(w,h,x,y,cam);
-    int l = get_id(w, h, x-1, y);
-    if(l != -1 && cast_neighbour(&ry, rays[l]))
-        return ry; 
-    int u = get_id(w, h, x, y-1);
-    if(u != -1 && cast_neighbour(&ry, rays[u]))
-        return ry;
-    int r = get_id(w, h, x+1, y);
-    if(r != -1 && cast_neighbour(&ry, rays[r]))
-        return ry;
-    int b = get_id(w, h, x, y+1);
-    if(b != -1 && cast_neighbour(&ry, rays[b]))
-        return ry;
-    if(!ry.hit && cam->skybox != NULL){
-        point dir = scale(ry.dir, -1);
-        float u = 0.5+ (atan2f(dir.x, dir.z)/(M_PI*2));
-        float v = 0.5+ (asinf(dir.y)/M_PI);
-        SDL_Surface* skybox = cam->skybox;
-        size_t x = u*skybox->w;
-        size_t y = v*skybox->h;
-        getPixelColor(skybox, x, y, &ry.c.r, &ry.c.g, &ry.c.b);
+void ray_cast_neighbour(int size, camera* cam, world* wd, size_t x, size_t y, size_t w, size_t h, ray rays[w*h]){
+    ray target = rays[w*y+x];
+    for(int i = -size; i <= size; i++){
+        for(int j = -size; j <= size; j++){
+            int id = get_id(w, h, x+i, y+j);
+            if(id != -1 && !rays[id].hit){
+                ray r = get_ray(w, h, x+i, y+j, cam);
+                cast_neighbour(&r, target);
+                if(r.hit)
+                    rays[id] = r;
+                else
+                    rays[id] = ray_cast_pixel(cam, wd, x+i, y+j, w, h);
+            }
+        }
     }
-    return ry;
 }
