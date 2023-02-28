@@ -6,7 +6,7 @@
 int main(){
     world* wd = init_world();
     printf("LOADING OBJ...");
-    load_object(wd, "assets/objs/teddy.obj", 0.1, npoint(0,0,0));
+    load_object(wd, "assets/objs/cow.obj", 1, npoint(0,0,0));
    	//parse("assets/objs/cube.obj", wd, .05, npoint(0,0,0));
     for(size_t i = 0; i < wd->size_m; i++){
         mesh* m = wd->meshes[i];

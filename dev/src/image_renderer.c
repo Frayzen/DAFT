@@ -20,7 +20,9 @@ int setup_window(app_params* params){
     return 0;
 }
 void cover_surface(size_t fromx, size_t tox, size_t fromy, size_t toy, size_t width, size_t height, size_t size, camera* cam, world* w, ray* rays){
-    if(size < 1)
+    if(size < 2)
+        return;
+    if(fromx < 0 || tox > width || fromy < 0 || toy > height)
         return;
     size_t i, j;
     #pragma omp parallel for
@@ -38,11 +40,15 @@ void cover_surface(size_t fromx, size_t tox, size_t fromy, size_t toy, size_t wi
         else
             r = rays[k];
         rays[k] = r;
-        if(r.hit)
-            ray_cast_neighbour(w, cam, i, j, width, height, rays, k);
+        if(r.hit){
+            ray_cast_neighbour(w, cam, i, j, width, height, rays, k, -1);
+            cover_surface(i, i+size, j-size, j, width, height, size/2, cam, w, rays);
+            cover_surface(i-size, i, j, j+size, width, height, size/2, cam, w, rays);
+            cover_surface(i-size, i, j-size, j, width, height, size/2, cam, w, rays);
+            cover_surface(i, i+size, j, j+size, width, height, size/2, cam, w, rays);
+        }
         //printf("COLORS %i %i %i\n", c.r, c.g, c.b);
     }
-     
 }
 void render(Uint32* pixels, int width, int height, camera* cam, world* w)
 {
@@ -55,7 +61,15 @@ void render(Uint32* pixels, int width, int height, camera* cam, world* w)
     for(size_t i = 0; i < width*height; i++){
         ray r = rays[i];
         color c = r.c;
-        pixels[i] = SDL_MapRGB(format, c.r,c.g,c.b);
+        if(r.hit)
+            pixels[i] = SDL_MapRGB(format, c.r,c.g,c.b);
+        else{
+            r = get_ray(width, height, i%width, i/width, cam);
+            rays[i] = r;
+            get_sky(r.dir, cam, &r.c);
+            color c = r.c;
+            pixels[i] = SDL_MapRGB(format, c.r,c.g,c.b);
+        }
     }
     SDL_FreeFormat(format);
     free(rays);
