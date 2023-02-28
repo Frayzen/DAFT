@@ -158,19 +158,19 @@ int cast_neighbour(ray *src, ray tgt){
     ray_intersect(tri, m, src);
     return src->hit;
 }
-void ray_cast_neighbour(int size, camera* cam, world* wd, size_t x, size_t y, size_t w, size_t h, ray rays[w*h]){
-    ray target = rays[w*y+x];
-    for(int i = -size; i <= size; i++){
-        for(int j = -size; j <= size; j++){
-            int id = get_id(w, h, x+i, y+j);
-            if(id != -1 && !rays[id].hit){
-                ray r = get_ray(w, h, x+i, y+j, cam);
-                cast_neighbour(&r, target);
-                if(r.hit)
-                    rays[id] = r;
-                else
-                    rays[id] = ray_cast_pixel(cam, wd, x+i, y+j, w, h);
-            }
-        }
+void ray_cast_neighbour(world* wd, camera* cam, size_t x, size_t y, size_t w, size_t h, ray rays[w*h], size_t target_id){
+    int id = get_id(w, h, x, y);
+    if(id == -1 || (rays[id].hit && target_id != id))
+        return;
+    ray r = get_ray(w, h, x, y, cam);
+    cast_neighbour(&r, rays[target_id]);
+    if(r.hit){
+        rays[id] = r;
+        ray_cast_neighbour(wd, cam, x+1, y, w, h, rays, target_id);
+        ray_cast_neighbour(wd, cam, x-1, y, w, h, rays, target_id);
+        ray_cast_neighbour(wd, cam, x, y-1, w, h, rays, target_id);
+        ray_cast_neighbour(wd, cam, x, y+1, w, h, rays, target_id);
     }
+
+
 }

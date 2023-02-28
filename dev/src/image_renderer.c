@@ -30,13 +30,19 @@ void render(Uint32* pixels, int width, int height, camera* cam, world* w)
     for(j = 0; j < height; j+=size)
     #pragma omp parallel for
     for(i = 0; i < width; i+=size){
+        size_t k = j*width+i;
+        if(rays[k].hit)
+            continue;
         size_t x_pix = i;
         size_t y_pix = j;
-        ray r = ray_cast_pixel(cam, w, x_pix, y_pix, width, height);
-        size_t k = j*width+i;
+        ray r;
+        if(!rays[k].hit)
+            r = ray_cast_pixel(cam, w, x_pix, y_pix, width, height);
+        else
+            r = rays[k];
         rays[k] = r;
         if(r.hit){
-            ray_cast_neighbour(size, cam, w, i, j, width, height, rays);
+            ray_cast_neighbour(w, cam, i, j, width, height, rays, k);
         }
         //printf("COLORS %i %i %i\n", c.r, c.g, c.b);
     }
