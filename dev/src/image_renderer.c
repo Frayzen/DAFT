@@ -35,16 +35,41 @@ void cover_surface(size_t fromx, size_t tox, size_t fromy, size_t toy, size_t wi
         size_t x_pix = i;
         size_t y_pix = j;
         ray r;
-        if(!rays[k].hit)
+        if(!rays[k].hit){
             r = ray_cast_pixel(cam, w, x_pix, y_pix, width, height);
+            rays[k] = r;
+            if(r.hit)
+                ray_cast_neighbour(w, cam, x_pix, y_pix, width, height, rays, k, -1);
+        }
         else
             r = rays[k];
-        rays[k] = r;
-        if(r.hit){
-            ray_cast_neighbour(w, cam, i, j, width, height, rays, k, -1);
-        }
         //printf("COLORS %i %i %i\n", c.r, c.g, c.b);
     }
+}
+void checker_board(size_t w, size_t h, camera* cam,world* wd,ray* rays){
+    size_t i,j;
+#pragma omp parallel for
+    for(j = 0; j < h; j++){
+#pragma omp parallel for
+        for(i = j%2; i < w; i+=2){
+
+            size_t k = j*w+i;
+            if(rays[k].hit)
+                continue;
+            size_t x_pix = i;
+            size_t y_pix = j;
+            ray r;
+            if(!rays[k].hit){
+                r = ray_cast_pixel(cam, wd, x_pix, y_pix, w, h);
+                rays[k] = r;
+                if(r.hit)
+                    ray_cast_neighbour(wd, cam, i, j, w, h,rays, k, -1);
+            }
+            //printf("COLORS %i %i %i\n", c.r, c.g, c.b);
+        }
+
+    }
+
 }
 void render_scale(ray* small, size_t x, size_t y, size_t width, size_t height, size_t ratio, camera* cam , world*w, ray* rays){
     ray r = get_ray(width, height, x, y, cam);
@@ -73,21 +98,11 @@ void render(Uint32* pixels, int width, int height, camera* cam, world* w)
     SDL_PixelFormat *format;
     format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
     ray *rays = calloc(sizeof(ray), height*width);
-    size_t ratio = 5;
-    size_t sh = height/ratio;
-    size_t sw = width/ratio;
-    ray *small = calloc(sizeof(ray), sh*sw);
-    int size = 1;
-    cover_surface(0, sw, 0, sh, sw, sh, size, cam, w, small);
-
+//    cover_surface(0, width, 0, height, width, height, 3, cam, w, rays);
+    checker_board(width, height, cam, w, rays);
     #pragma omp parallel for
     for(size_t i = 0; i < width*height; i++){
-        size_t x = i%width;
-        size_t y = i/width;
-        if(small[(x/ratio)+(y/ratio)*(width/ratio)].hit && !rays[x+y*width].hit){
-            render_scale(small, x, y, width, height, ratio, cam ,w, rays);
-        }
-        color c = rays[x+y*width].c;
+        color c = rays[i].c;
         pixels[i] = SDL_MapRGB(format, c.r,c.g,c.b);
         /*        else{
                   r = get_ray(width, height, i%width, i/width, cam);

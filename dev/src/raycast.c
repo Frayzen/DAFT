@@ -17,7 +17,7 @@ void ray_intersect(triangle * tri, mesh * m, ray * r) {
     float f = 1.0 / a;
     point s = {r->pos.x - v0.x, r->pos.y - v0.y, r->pos.z - v0.z};
     float u = f * dot(s, h);
-    if (u < 0.0 || u > 1.0){
+    if (u < 0 || u > 1){
         return;
     }
     point q = crossProduct(s, edge1);
@@ -27,8 +27,9 @@ void ray_intersect(triangle * tri, mesh * m, ray * r) {
     }
     float t = f*dot(edge2, q);
     if(t > EPSILON){
-        if(r->hit && r->mint < t)
+        if(r->hit && r->mint < t){
             return;
+        }
         r->mint = t;
         r->tri = tri;
         r->m = m;
@@ -39,9 +40,9 @@ void ray_intersect(triangle * tri, mesh * m, ray * r) {
         if(val > 1)
             val = 1;
         r->hit = 1;
-        r->c.r =(int) 255*val;
-        r->c.g =(int) 255*val;
-        r->c.b =(int) 255*val;
+        r->c.r =(int) 254*val;
+        r->c.g =(int) 254*val;
+        r->c.b =(int) 254*val;
         return;
     }
     // This means that there is a line intersection but not a ray intersection. 
@@ -131,6 +132,10 @@ ray get_ray(size_t width, size_t height, size_t x_pix, size_t y_pix, camera* cam
     ry.pos = cam->pos;
     ry.dir = dir;
     ry.hit = 0;
+    ry.mint = -1;
+    ry.c.r = 0;
+    ry.c.g = 0;
+    ry.c.b = 0;
     return ry;
 }
 ray ray_cast_pixel(camera* cam, world* wd, size_t x, size_t y, size_t w, size_t h){
@@ -150,27 +155,29 @@ int get_id(size_t w, size_t h, size_t x, size_t y){
     return w*y+x;
 }
 
-int cast_neighbour(ray *src, ray tgt){
-    if(!tgt.hit)
-        return 0;
-    triangle* tri = tgt.tri;
-    mesh* m = tgt.m;
-    ray_intersect(tri, m, src);
+int cast_neighbour(ray* origin, ray* src){
+    ray_intersect(origin->tri, origin->m, src);
     return src->hit;
 }
-void ray_cast_neighbour(world* wd, camera* cam, size_t x, size_t y, size_t w, size_t h, ray rays[w*h], size_t target_id, size_t max_rec){
+void ray_cast_neighbour(world* wd, camera* cam, size_t x, size_t y, size_t w, size_t h, ray* rays, size_t target_id, size_t max_rec){
     int id = get_id(w, h, x, y);
-    if(id == -1 || (rays[id].hit && target_id != id) || !max_rec)
+    if(id == -1 || (rays[id].hit && target_id != id) || !max_rec){
         return;
-    ray r = get_ray(w, h, x, y, cam);
-    cast_neighbour(&r, rays[target_id]);
-    if(r.hit){
-        rays[id] = r;
-        ray_cast_neighbour(wd, cam, x+1, y, w, h, rays, target_id, max_rec-1);
-        ray_cast_neighbour(wd, cam, x-1, y, w, h, rays, target_id, max_rec-1);
-        ray_cast_neighbour(wd, cam, x, y-1, w, h, rays, target_id, max_rec-1);
-        ray_cast_neighbour(wd, cam, x, y+1, w, h, rays, target_id, max_rec-1);
     }
-
+    ray r;
+    if(target_id != id){
+        r = get_ray(w, h, x, y, cam);
+        cast_neighbour(&rays[target_id], &r);
+    }else
+        r = rays[id];
+    if(r.hit || target_id == id){
+        rays[id] = r;
+        int rg = 1;
+        for(int i=-rg; i <= rg; i++)
+            for(int j=-rg; j <= rg; j++)
+                if(i != 0 || j != 0)
+                    ray_cast_neighbour(wd, cam, x+i, y+j, w, h, rays, target_id, max_rec-1);
+    }else
+        rays[id].c.r = 250;
 
 }
