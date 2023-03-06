@@ -20,7 +20,7 @@ int setup_window(app_params* params){
     return 0;
 }
 void cover_surface(size_t fromx, size_t tox, size_t fromy, size_t toy, size_t width, size_t height, size_t size, camera* cam, world* w, ray* rays){
-    if(size < 2)
+    if(size < 1)
         return;
     if(fromx < 0 || tox > width || fromy < 0 || toy > height)
         return;
@@ -42,34 +42,61 @@ void cover_surface(size_t fromx, size_t tox, size_t fromy, size_t toy, size_t wi
         rays[k] = r;
         if(r.hit){
             ray_cast_neighbour(w, cam, i, j, width, height, rays, k, -1);
-            cover_surface(i, i+size, j-size, j, width, height, size/2, cam, w, rays);
-            cover_surface(i-size, i, j, j+size, width, height, size/2, cam, w, rays);
-            cover_surface(i-size, i, j-size, j, width, height, size/2, cam, w, rays);
-            cover_surface(i, i+size, j, j+size, width, height, size/2, cam, w, rays);
         }
         //printf("COLORS %i %i %i\n", c.r, c.g, c.b);
     }
+}
+void render_scale(ray* small, size_t x, size_t y, size_t width, size_t height, size_t ratio, camera* cam , world*w, ray* rays){
+    ray r = get_ray(width, height, x, y, cam);
+    size_t sx = x/ratio;
+    size_t sy = y/ratio;
+    for(int i = -1; i <= 1; i++){
+        for(int j = -1; j <= 1; j++){
+            int k = (sx+i)+(sy+j)*(width/ratio);
+            if(k < 0 || k >= (width*height)/(ratio*ratio))
+                continue;
+            if(!small[k].hit)
+                continue;
+            ray_intersect(small[k].tri, small[k].m, &r);
+        }
+    }
+    if(!r.hit){
+        r.c.r = 0;
+        r.c.g = 0;
+        r.c.b = 0;
+    }else
+        ray_cast_neighbour(w, cam, x, y, width, height, rays, x+y*width, -1);
+    rays[x+y*width] = r;
 }
 void render(Uint32* pixels, int width, int height, camera* cam, world* w)
 {
     SDL_PixelFormat *format;
     format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
     ray *rays = calloc(sizeof(ray), height*width);
-    int size = 8;
-    cover_surface(0,width,0,height,width,height, size, cam ,w ,rays);
+    size_t ratio = 5;
+    size_t sh = height/ratio;
+    size_t sw = width/ratio;
+    ray *small = calloc(sizeof(ray), sh*sw);
+    int size = 1;
+    cover_surface(0, sw, 0, sh, sw, sh, size, cam, w, small);
+
     #pragma omp parallel for
     for(size_t i = 0; i < width*height; i++){
-        ray r = rays[i];
-        color c = r.c;
-        if(r.hit)
-            pixels[i] = SDL_MapRGB(format, c.r,c.g,c.b);
-        else{
-            r = get_ray(width, height, i%width, i/width, cam);
-            rays[i] = r;
-            get_sky(r.dir, cam, &r.c);
-            color c = r.c;
-            pixels[i] = SDL_MapRGB(format, c.r,c.g,c.b);
+        size_t x = i%width;
+        size_t y = i/width;
+        if(small[(x/ratio)+(y/ratio)*(width/ratio)].hit && !rays[x+y*width].hit){
+            render_scale(small, x, y, width, height, ratio, cam ,w, rays);
         }
+        color c = rays[x+y*width].c;
+        pixels[i] = SDL_MapRGB(format, c.r,c.g,c.b);
+        /*        else{
+                  r = get_ray(width, height, i%width, i/width, cam);
+                  rays[i] = r;
+                  get_sky(r.dir, cam, &r.c);
+                  color c = r.c;
+                  pixels[i] = SDL_MapRGB(format, c.r,c.g,c.b);
+                  }
+                  */
     }
     SDL_FreeFormat(format);
     free(rays);
@@ -93,7 +120,6 @@ int render_camera(app_params* params){
     SDL_LockTexture(texture, NULL, (void**)&pixels, &pitch);
     while (!quit)
     {
-        SDL_RenderClear(params->renderer);
         render(pixels, params->width, params->height, params->cam, params->wd);
         SDL_UnlockTexture(texture);
         SDL_RenderCopy(params->renderer, texture, NULL, NULL); 
