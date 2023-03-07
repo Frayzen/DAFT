@@ -178,6 +178,6 @@ void ray_cast_neighbour(world* wd, camera* cam, size_t x, size_t y, size_t w, si
                 if(i != 0 || j != 0)
                     ray_cast_neighbour(wd, cam, x+i, y+j, w, h, rays, target_id, max_rec-1);
     }else
-        rays[id].c.r = 250;
+        rays[id].computed = 2;
 
 }

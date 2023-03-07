@@ -81,6 +81,7 @@ typedef struct color{
 } color;
 typedef struct ray
 {
+    int computed;
 	point pos;
 	point dir;
 

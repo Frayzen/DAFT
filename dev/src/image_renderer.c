@@ -102,7 +102,7 @@ void render(Uint32* pixels, int width, int height, camera* cam, world* w)
     checker_board(width, height, cam, w, rays);
     #pragma omp parallel for
     for(size_t i = 0; i < width*height; i++){
-        if(rays[i].c.r != 250)
+        if(rays[i].computed != 2)
             continue;
         int dx, dy;
         int touch = 0;
