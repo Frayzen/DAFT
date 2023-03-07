@@ -102,6 +102,35 @@ void render(Uint32* pixels, int width, int height, camera* cam, world* w)
     checker_board(width, height, cam, w, rays);
     #pragma omp parallel for
     for(size_t i = 0; i < width*height; i++){
+        if(rays[i].c.r != 250)
+            continue;
+        int dx, dy;
+        int touch = 0;
+        int av = 0;
+        for(dx = -1; dx <= 1; dx++){
+            for(dy = -1; dy <= 1; dy++){
+                size_t k = i+dx+dy*width;
+                if(k < 0 || k >= width*height)
+                    continue;
+                if(rays[k].hit == 1){
+                    av+=rays[k].c.r;
+                    touch++;
+                }
+            }
+        }
+        if(touch > 4){
+            av/=touch;
+            rays[i].c.r = av;
+            rays[i].c.g = av;
+            rays[i].c.b = av;
+        }
+        else{
+            get_sky(rays[i].dir, cam, &rays[i].c);
+            rays[i].hit = 0;
+        }
+    }
+    #pragma omp parallel for
+    for(size_t i = 0; i < width*height; i++){
         color c = rays[i].c;
         pixels[i] = SDL_MapRGB(format, c.r,c.g,c.b);
         /*        else{
