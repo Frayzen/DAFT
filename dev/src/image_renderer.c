@@ -35,14 +35,11 @@ void cover_surface(size_t fromx, size_t tox, size_t fromy, size_t toy, size_t wi
         size_t x_pix = i;
         size_t y_pix = j;
         ray r;
-        if(!rays[k].hit){
-            r = ray_cast_pixel(cam, w, x_pix, y_pix, width, height);
-            rays[k] = r;
-            if(r.hit)
-                ray_cast_neighbour(w, cam, x_pix, y_pix, width, height, rays, k, -1);
-        }
-        else
-            r = rays[k];
+        r = ray_cast_pixel(cam, w, x_pix, y_pix, width, height);
+        rays[k] = r;
+        if(r.hit)
+            ray_cast_neighbour(w, cam, x_pix, y_pix, width, height, rays, k, -1);
+        r = rays[k];
         //printf("COLORS %i %i %i\n", c.r, c.g, c.b);
     }
 }
@@ -54,23 +51,19 @@ void checker_board(size_t w, size_t h, camera* cam,world* wd,ray* rays){
         for(i = j%2; i < w; i+=2){
 
             size_t k = j*w+i;
-            if(rays[k].hit)
-                continue;
             size_t x_pix = i;
             size_t y_pix = j;
             ray r;
-            if(!rays[k].hit){
-                r = ray_cast_pixel(cam, wd, x_pix, y_pix, w, h);
-                rays[k] = r;
-                if(r.hit)
-                    ray_cast_neighbour(wd, cam, i, j, w, h,rays, k, -1);
-            }
-            //printf("COLORS %i %i %i\n", c.r, c.g, c.b);
+            r = ray_cast_pixel(cam, wd, x_pix, y_pix, w, h);
+            rays[k] = r;
+            if(r.hit)
+                ray_cast_neighbour(wd, cam, i, j, w, h,rays, k, -1);
         }
-
+        //printf("COLORS %i %i %i\n", c.r, c.g, c.b);
     }
 
 }
+
 void render_scale(ray* small, size_t x, size_t y, size_t width, size_t height, size_t ratio, camera* cam , world*w, ray* rays){
     ray r = get_ray(width, height, x, y, cam);
     size_t sx = x/ratio;
@@ -98,9 +91,9 @@ void render(Uint32* pixels, int width, int height, camera* cam, world* w)
     SDL_PixelFormat *format;
     format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
     ray *rays = calloc(sizeof(ray), height*width);
-//    cover_surface(0, width, 0, height, width, height, 3, cam, w, rays);
-    checker_board(width, height, cam, w, rays);
-    #pragma omp parallel for
+    cover_surface(0, width, 0, height, width, height, 2, cam, w, rays);
+    //    checker_board(width, height, cam, w, rays);
+#pragma omp parallel for
     for(size_t i = 0; i < width*height; i++){
         if(rays[i].computed != 2)
             continue;
@@ -129,7 +122,7 @@ void render(Uint32* pixels, int width, int height, camera* cam, world* w)
             rays[i].hit = 0;
         }
     }
-    #pragma omp parallel for
+#pragma omp parallel for
     for(size_t i = 0; i < width*height; i++){
         color c = rays[i].c;
         pixels[i] = SDL_MapRGB(format, c.r,c.g,c.b);

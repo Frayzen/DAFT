@@ -133,9 +133,7 @@ ray get_ray(size_t width, size_t height, size_t x_pix, size_t y_pix, camera* cam
     ry.dir = dir;
     ry.hit = 0;
     ry.mint = -1;
-    ry.c.r = 0;
-    ry.c.g = 0;
-    ry.c.b = 0;
+    ry.computed = 1;
     return ry;
 }
 ray ray_cast_pixel(camera* cam, world* wd, size_t x, size_t y, size_t w, size_t h){
@@ -161,17 +159,15 @@ int cast_neighbour(ray* origin, ray* src){
 }
 void ray_cast_neighbour(world* wd, camera* cam, size_t x, size_t y, size_t w, size_t h, ray* rays, size_t target_id, size_t max_rec){
     int id = get_id(w, h, x, y);
-    if(id == -1 || (rays[id].hit && target_id != id) || !max_rec){
+    if(id == -1 || (rays[id].tri == rays[target_id].tri && id != target_id) || !max_rec){
         return;
     }
-    ray r;
-    if(target_id != id){
-        r = get_ray(w, h, x, y, cam);
-        cast_neighbour(&rays[target_id], &r);
-    }else
-        r = rays[id];
-    if(r.hit || target_id == id){
-        rays[id] = r;
+    if(!rays[id].computed)
+        rays[id] = get_ray(w, h, x, y, cam);
+    cast_neighbour(&rays[target_id], &rays[id]);
+    if(rays[id].hit){
+        if(rays[id].tri != rays[target_id].tri)
+            return;
         int rg = 1;
         for(int i=-rg; i <= rg; i++)
             for(int j=-rg; j <= rg; j++)
