@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #pragma once
 #include "triangle.h"
 
@@ -8,6 +9,7 @@
     triangle* triangles;
 }mesh;
 
-float * get_middle(triangle t, mesh *m);
+float * get_middle(triangle * t, mesh *m);
 float * get_max_points(mesh *m);
 float * get_min_points(mesh *m);
+void free_mesh(mesh* msh);
