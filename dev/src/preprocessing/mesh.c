@@ -1,6 +1,4 @@
 #include "../../include/architecture/mesh.h"
-#include
-
 
 float * get_middle(triangle t, mesh *m)
 {

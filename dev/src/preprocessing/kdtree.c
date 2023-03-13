@@ -1,6 +1,6 @@
 
 #include <stdlib.h>
-#include "architecture/kdtree.h"
+#include "../../include/architecture/kdtree.h"
 
 triangle * sort_triangles(triangle * tris, int nb_tris, int axis, mesh * m)
 {
@@ -47,12 +47,12 @@ kdtree * kdtree_create(triangle *triangles, int nb_triangles, int depth, mesh * 
         kdtree * node  = malloc(sizeof(kdtree));
         node->axis = depth % 3;
         node->nb_triangles = nb_triangles;
-        node->triangles = sort_triangles(triangles, nb_triangles, node->axis);
+        node->triangles = sort_triangles(triangles, nb_triangles, node->axis, m);
         node->value = get_middle(node->triangles[nb_triangles / 2], m)[node->axis];
 
-        node->left = kdtree_create(node->triangles, nb_triangles / 2, depth + 1);
-        node->right = kdtree_create(node->triangles + nb_triangles / 2, nb_triangles - nb_triangles / 2, depth + 1);
-        node->box = init_bbox(node->left->bbox->min, node->right->bbox->max);
+        node->left = kdtree_create(node->triangles, nb_triangles / 2, depth + 1, m);
+        node->right = kdtree_create(node->triangles + nb_triangles / 2, nb_triangles - nb_triangles / 2, depth + 1, m);
+        node->box = init_bbox(node->left->box->min, node->right->box->max);
 
         return node;
     }
