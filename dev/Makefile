@@ -14,12 +14,12 @@ LFLAGS   = -Wall -Werror
 
 # change these to proper directories where each file should be
 SRCDIR   = src
+INCLUDEDIR = include
 OBJDIR   = obj
 BINDIR   = bin
 
-SOURCES  := $(wildcard $(SRCDIR)/*.c)
-INCLUDES := $(wildcard $(SRCDIR)/*.h)
-OBJECTS  := $(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
+SOURCES  := $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/*/*.c)
+OBJECTS  := $(subst $(SRCDIR), $(OBJDIR), $(SOURCES:.c=.o))
 rm       = rm -f
 
 
@@ -28,7 +28,8 @@ $(BINDIR)/$(TARGET): $(OBJECTS)
 	@echo "Linking complete!"
 
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
-	@$(CC) $(CFLAGS) -c $< $(LIBS) -o $@
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< $(LIBS) -o $@
 	@echo "Compiled "$<" successfully!"
 
 .PHONY: clean
