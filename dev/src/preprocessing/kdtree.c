@@ -7,7 +7,7 @@ triangle * sort_triangles(triangle * tris, int nb_tris, int axis, mesh * m)
     float values[nb_tris];
     for (int i = 0; i < nb_tris; i++)
     {
-        values[i] = get_middle(tris[i], m)[axis];
+        values[i] = get_middle(tris+i, m)[axis];
     }
     for (int i = 0; i < nb_tris; i++)
     {
@@ -48,7 +48,7 @@ kdtree * kdtree_create(triangle *triangles, int nb_triangles, int depth, mesh * 
         node->axis = depth % 3;
         node->nb_triangles = nb_triangles;
         node->triangles = sort_triangles(triangles, nb_triangles, node->axis, m);
-        node->value = get_middle(node->triangles[nb_triangles / 2], m)[node->axis];
+        node->value = get_middle(node->triangles + nb_triangles / 2, m)[node->axis];
 
         node->left = kdtree_create(node->triangles, nb_triangles / 2, depth + 1, m);
         node->right = kdtree_create(node->triangles + nb_triangles / 2, nb_triangles - nb_triangles / 2, depth + 1, m);
@@ -68,7 +68,7 @@ kdtree * init_kdtree(mesh * m)
     kdtree->axis = 0;
     kdtree->nb_triangles = m->nb_triangles;
     kdtree->triangles = sort_triangles(m->triangles, m->nb_triangles, 0, m);
-    kdtree->value = get_middle(kdtree->triangles[m->nb_triangles / 2], m)[0];
+    kdtree->value = get_middle(kdtree->triangles +m->nb_triangles / 2, m)[0];
 
     kdtree->left = kdtree_create(kdtree->triangles, m->nb_triangles / 2, 1, m);
     kdtree->right = kdtree_create(kdtree->triangles + m->nb_triangles / 2, m->nb_triangles - m->nb_triangles / 2, 1, m);
