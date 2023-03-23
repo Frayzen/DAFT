@@ -1,6 +1,7 @@
 #include "triangle.h"
 #include "mesh.h"
 #include <stdlib.h>
+#include "../utils/daft_math.h"
 
 #pragma once
 typedef struct ray_hit
@@ -25,6 +26,9 @@ typedef struct ray
 }ray;
 
 
-ray* create_rays(int width, int height);
+ray* init_rays(int width, int height);
 void free_rays(ray* rays);
-void ray_hit(ray* r, triangle* tri, float new_mint, float color[3]);
+void ray_hit_triangle(ray* r, triangle* tri, float new_mint, float color[3]);
+
+// FOV is in degrees
+ray get_ray(int width, int height, int x_pix, int y_pix, float FOV, float yaw, float pitch, float pos[3]);

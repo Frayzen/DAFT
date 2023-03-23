@@ -35,7 +35,7 @@ int launch_screen(app_params* params){
     SDL_LockTexture(texture, NULL, (void**)&pixels, &pitch);
     while (!quit)
     {
-        render(pixels, params->width, params->height, params->cam, params->wd);
+        render_screen(pixels, params->width, params->height, params->cam, params->wd);
         SDL_UnlockTexture(texture);
         SDL_RenderCopy(params->renderer, texture, NULL, NULL); 
         SDL_RenderPresent(params->renderer);
