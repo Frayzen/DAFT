@@ -7,13 +7,3 @@ void ray_cast(ray* r, world* w){
         mesh_render(m, r);
     }
 }
-
-ray ray_cast_for_pixel(camera* cam, world* wd, size_t x, size_t y, size_t w, size_t h){
-    ray ry = get_ray(w,h,x,y,cam->FOV, cam->yaw, cam->pitch, cam->pos);
-    ray_cast(&ry, wd);
-    // if(!ry.hit && cam->skybox != NULL){
-    //     get_sky(ry.dir, cam, &ry.c);
-    // }
-    // TODO
-    return ry;
-}
