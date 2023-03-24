@@ -18,13 +18,13 @@ void load_object(world* w, char* file, float scale, float pos[3]){
             face_count++;
         }
     }
-    mesh* m = init_mesh(vertex_count, face_count, w->size_m);
+    mesh* m = build_mesh(vertex_count, face_count, w->size_meshes);
     rewind(fp);
     float p[3];
     int faceloaded = 0;
     while(fgets(line, sizeof(line), fp) != NULL){
         if(line[0] == 'v' && line[1] == ' '){
-            sscanf(line, "v %le %le %le", &p[0], &p[1], &p[2]);
+            sscanf(line, "v %f %f %f", &p[0], &p[1], &p[2]);
             scale(p, scale, p);
             add(p, pos, p);
             add_vertex(m, p);
@@ -40,7 +40,7 @@ void load_object(world* w, char* file, float scale, float pos[3]){
         }
     }
     add_mesh(w, m);
-    printf("Loaded %lu verticles and %lu faces \n", m->v_size, faceloaded);
+    printf("Loaded %i verticles and %i faces \n", m->nb_vertices, faceloaded);
     fclose(fp);
 }
 

@@ -15,5 +15,4 @@ typedef struct bbox
     //also maxtotal
     size_t c_size;
 }bbox;
-
-bbox * init_bbox(float min[3], float max[3]);
+void free_bbox(bbox *b);

@@ -1,5 +1,5 @@
 #include "../utils/daft_math.h"
-#include "./obj_builder.h"
+#include "./mesh_builder.h"
 
 #pragma once
 
