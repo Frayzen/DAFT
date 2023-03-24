@@ -2,10 +2,11 @@
 #include "../constants.h"
 
 #pragma once
-void copy(float a[3], float* r);
-void crossProduct(float a[3], float b[3], float* r);
-float dotProduct(float a[3], float b[3]);
-void normalize(float a[3], float* r);
-void add(float a[3], float b[3], float* r);
-void minus(float a[3], float b[3], float* r);
-void scale(float a[3], float b, float* r);
+#define copy(a, r) r[0] = a[0]; r[1] = a[1]; r[2] = a[2];
+#define crossProduct(a, b, r) r[0] = a[1] * b[2] - a[2] * b[1]; r[1] = a[2] * b[0] - a[0] * b[2]; r[2] = a[0] * b[1] - a[1] * b[0];
+#define dotProduct(a, b) a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+#define add(a, b, r) r[0] = a[0] + b[0]; r[1] = a[1] + b[1]; r[2] = a[2] + b[2];
+#define minus(a, b, r) r[0] = a[0] - b[0]; r[1] = a[1] - b[1]; r[2] = a[2] - b[2];
+#define scale(a, b, r) r[0] = a[0] * b; r[1] = a[1] * b; r[2] = a[2] * b;
+
+void normalize(float* p, float* r);

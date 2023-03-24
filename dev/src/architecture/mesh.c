@@ -1,71 +1,20 @@
 #include "../../include/architecture/mesh.h"
 
-float * get_middle(triangle * t, mesh *m)
+
+mesh * init_mesh(size_t no_vert, size_t no_tri, size_t id)
 {
-    //static float result[3] = {m->vertices[t->vert[0]][0] + m->vertices[t->vert[1]][0] + m->vertices[t->vert[2]][0] /3,
-   // m->vertices[t->vert[0]][1] + m->vertices[t->vert[1]][1] + m->vertices[t->vert[2]][1] /3,
-    //m->vertices[t->vert[0]][2] + m->vertices[t->vert[1]][2] + m->vertices[t->vert[2]][2] /3};
-    static float result[3];
-    for(int i = 0; i < 3; i++){
-        float tmp = 0;
-        for (int j = 0; j < 3; ++j) {
-            tmp+= m->vertices[t->vert[j]][i];
-        }
-        result[i] = tmp/3;
-    }
 
-    return result;
+    mesh * m = (mesh *)malloc(sizeof(mesh));
+    m->depth = compute_depth(no_tri-1);
+    m->tri_last_level = compute_tri_last_level(m->depth, no_tri);
+    m->no_extra = compute_no_extra(no_tri, m->tri_last_level, m->depth);
+    m->bounding_box = build_bbox(m->depth, m->tri_last_level, m->no_extra);
+	m->id_m = id;
+	m->v_size = 0;
+	m->vertexes = malloc(sizeof(point)*no_vert);
+
+	return m;
 }
-
-float * get_max_points(mesh *m)
-{
-    static float res[3];
-    res[0] = m->vertices[0][0];
-    res[1] =  m->vertices[0][1];
-    res[2] =  m->vertices[0][2];
-    for (int i = 1; i < m->nb_vertices; i++)
-    {
-        if (m->vertices[i][0] > res[0])
-        {
-            res[0] = m->vertices[i][0];
-        }
-        if (m->vertices[i][1] > res[1])
-        {
-            res[1] = m->vertices[i][1];
-        }
-        if (m->vertices[i][2] > res[2])
-        {
-            res[2] = m->vertices[i][2];
-        }
-    }
-    return res;
-}
-
-
-float *  get_min_points(mesh *m)
-{
-    static float res[3];
-    for (int i = 0; i < 3; ++i) {
-        res[i] = m->vertices[0][i];
-    }
-    for (int i = 1; i < m->nb_vertices; i++)
-    {
-        if (m->vertices[i][0] < res[0])
-        {
-            res[0] = m->vertices[i][0];
-        }
-        if (m->vertices[i][1] < res[1])
-        {
-            res[1] = m->vertices[i][1];
-        }
-        if (m->vertices[i][2] < res[2])
-        {
-            res[2] = m->vertices[i][2];
-        }
-    }
-    return res;
-}
-
 void free_mesh(mesh* msh){
     free(msh->vertices);
     free(msh->triangles);

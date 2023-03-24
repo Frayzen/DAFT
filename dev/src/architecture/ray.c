@@ -13,7 +13,7 @@ ray create_ray(int width, int height, int x_pix, int y_pix, float FOV, float yaw
     float flat[3], xz[3], dir[3];
     minus(p2, p1, flat);
     scale(flat, yaw_ratio, flat);
-    add(p1, xz, p1);
+    add(p1, flat, xz);
     deg1 = hFOV;
     float p3[3] = {0, cos(deg1), 0};
     scale(p3, -1, p2);
