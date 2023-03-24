@@ -1,6 +1,10 @@
 #include "../architecture/world.h"
-#include "../render/render.h"
-#include<omp.h>
+#include "../render/rendering_tools.h"
+#include <omp.h>
+#include <SDL2/SDL.h>
 
-#pragma once
-void render_screen(Uint32* pixels, int width, int height, camera* cam, world* w);
+#ifndef WINDOW_RENDERER_H
+#define WINDOW_RENDERER_H
+
+void render_screen(raycast_params* rcp);
+#endif

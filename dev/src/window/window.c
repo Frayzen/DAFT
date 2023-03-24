@@ -15,6 +15,7 @@ int setup_window(app_params* params){
     for(Uint32 i = 0; i < info.num_texture_formats; i++){
         printf("Format: %s\n", SDL_GetPixelFormatName(info.texture_formats[i]));
     }
+    params->rcp = init_raycast_params(params->wd, params->width, params->height, params->cam, params->pixels);
     return 0;
 }
 

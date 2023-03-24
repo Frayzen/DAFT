@@ -1,7 +1,8 @@
 #include <SDL2/SDL.h>
 #include <stdlib.h>
 
-#pragma once
+#ifndef CAMERA_H
+#define CAMERA_H
 typedef struct camera
 {
     //position of the camera
@@ -20,3 +21,4 @@ typedef struct camera
 camera* init_camera(float pos[3], float pitch, float yaw, int FOV, SDL_Surface* skybox);
 //free camera
 void free_camera(camera* cam);
+#endif

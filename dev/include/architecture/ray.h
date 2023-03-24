@@ -3,16 +3,17 @@
 #include "mesh.h"
 #include <stdlib.h>
 #include "../utils/daft_math.h"
+#include "../render/rendering_tools.h"
 #include <omp.h>
-
-#pragma once
-typedef struct ray_hit
+#ifndef RAY_H
+#define RAY_H
+typedef struct ray_result
 {
     float mint;
     triangle* tri;
     mesh* m;
     float color[3];
-} ray_hit;
+} ray_result;
 typedef struct ray
 {
 	float pos[3];
@@ -22,12 +23,12 @@ typedef struct ray
     float maxt;
 
     //last mesh is the mesh that the ray was in last
-    ray_hit* last_hit;
+    ray_result* last_hit;
     //current mesh is the mesh that the ray is currently in
     mesh* current_mesh;
 }ray;
 
-
-ray* init_rays(int width, int height, camera* cam);
-void free_rays(ray* rays);
-void ray_hit_triangle(ray* r, triangle* tri, float new_mint, float color[3]);
+void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3]);
+ray* update_sides(struct raycast_params* rdo);
+ray create_ray_interpolate(raycast_params* rcp, int x_pix, int y_pix);
+#endif

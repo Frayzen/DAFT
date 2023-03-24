@@ -4,5 +4,7 @@
 #include "../utils/daft_math.h"
 #include "./mesh_renderer.h"
 
-#pragma once
+#ifndef RENDER_H
+#define RENDER_H
 void ray_cast(ray* r, world* w);
+#endif

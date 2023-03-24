@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
-#pragma once
+#ifndef LIGHT_H
+#define LIGHT_H
 typedef struct light
 {
 	float pos[3];
@@ -12,3 +13,4 @@ typedef struct light
 light* init_light(float pos[3], float color[3], float intensity);
 //free
 void free_light(light* lt);
+#endif

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "triangle.h"
-#pragma once
+#ifndef BBOX_H
+#define BBOX_H
 
 //LBBOX  is the max number of children in a bounding box
 #define LBBOX 4
@@ -16,3 +17,5 @@ typedef struct bbox
     size_t c_size;
 }bbox;
 void free_bbox(bbox *b);
+
+#endif

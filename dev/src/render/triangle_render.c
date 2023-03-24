@@ -39,7 +39,7 @@ int triangle_render(triangle * tri, ray * r) {
             val*=-1;
         if(val > 1)
             val = 1;
-        ray_hit_triangle(r, tri, t, (float[3]){val, val, val});
+        ray_update_result(r, tri, t, (float[3]){val, val, val});
         return 1; // Hit, win
     }
     return 0; // No hit, no win

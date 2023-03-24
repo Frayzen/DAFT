@@ -10,7 +10,9 @@
 #include "../architecture/camera.h"
 #include "renderer.h"
 #include "../constants.h"
-#pragma once
+#include "../render/rendering_tools.h"
+#ifndef WINDOW_H
+#define WINDOW_H
 struct app_params{
     size_t width;
     size_t height;
@@ -19,7 +21,9 @@ struct app_params{
     SDL_Renderer* renderer;
     world* wd;
     camera* cam;
+    raycast_params* rcp;
 } typedef app_params;
 
 int setup_window(app_params* params);
 int launch_screen(app_params* params);
+#endif
