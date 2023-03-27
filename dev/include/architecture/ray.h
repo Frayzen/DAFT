@@ -29,6 +29,5 @@ typedef struct ray
 
 void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3]);
 void update_sides(raycast_params* rdo);
-void free_sides(raycast_params* rdo);
 ray create_ray_interpolate(raycast_params* rcp, int x_pix, int y_pix);
 #endif

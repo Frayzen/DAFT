@@ -1,6 +1,7 @@
 #include "../../include/architecture/mesh.h"
 
 void free_mesh(mesh* msh){
+    free_bbox(msh->box);
     free(msh->vertices);
     free(msh->triangles);
     free(msh);

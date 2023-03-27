@@ -15,8 +15,25 @@ int setup_window(app_params* params){
     for(Uint32 i = 0; i < info.num_texture_formats; i++){
         printf("Format: %s\n", SDL_GetPixelFormatName(info.texture_formats[i]));
     }
-    params->rcp = init_raycast_params(params->wd, params->width, params->height, params->cam);
+    //pixels
+    params->texture = SDL_CreateTexture(params->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, params->width, params->height);
+    Uint32* pixels;
+    int pitch;
+    SDL_LockTexture(params->texture, NULL, (void**)&pixels, &pitch);
+    params->rcp = init_raycast_params(params->wd, params->width, params->height, params->cam, pixels);
+    //camera
+    SDL_Surface* old = params->cam->skybox;
+    params->cam->skybox = SDL_ConvertSurfaceFormat(old, SDL_PIXELFORMAT_RGBA8888, 0);
+    SDL_FreeSurface(old);
     return 0;
+}
+
+void free_window(app_params* params){
+    free_raycast_params(params->rcp);
+    SDL_DestroyRenderer(params->renderer); 
+    SDL_DestroyWindow(params->window);
+    SDL_DestroyTexture(params->texture);
+    SDL_Quit();
 }
 
 int launch_screen(app_params* params){
@@ -24,22 +41,14 @@ int launch_screen(app_params* params){
     SDL_Event event;
     time_t last = time(NULL);
     int fps = 0;
-    SDL_Texture* texture = SDL_CreateTexture(params->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, params->width, params->height);
-    int pitch;
-    Uint32* pixels;
     int once = 0;
     float angle = 0;
     float ro = 4;
-    SDL_Surface* old = params->cam->skybox;
-    params->cam->skybox = SDL_ConvertSurfaceFormat(old, SDL_PIXELFORMAT_RGBA8888, 0);
-    SDL_FreeSurface(old);
-    SDL_LockTexture(texture, NULL, (void**)&pixels, &pitch);
-    params->rcp->pixels = pixels;
     while (!quit)
     {
         render_screen(params->rcp);
-        SDL_UnlockTexture(texture);
-        SDL_RenderCopy(params->renderer, texture, NULL, NULL); 
+        SDL_UnlockTexture(params->texture);
+        SDL_RenderCopy(params->renderer, params->texture, NULL, NULL); 
         SDL_RenderPresent(params->renderer);
         fps++;
         if(last != time(NULL)){
@@ -49,33 +58,16 @@ int launch_screen(app_params* params){
         }
         if(SDL_PollEvent(&event))
         {
-            if(event.type == SDL_QUIT)
+            if(event.type == SDL_QUIT || once)
             {
-                free(texture);
-                //SDL_DestroyRenderer(params->renderer); 
-                SDL_DestroyWindow(params->window);
-                SDL_DestroyTexture(texture);
-                SDL_Quit();
-                free(pixels);
-                return 0;
+                quit = 1;
             }
-        }
-        if(once){
-            free(texture);
-            //SDL_DestroyRenderer(params->renderer); 
-            SDL_DestroyWindow(params->window);
-            SDL_DestroyTexture(texture);
-            SDL_Quit();
-            free(pixels);
-            return 0;
         }
         params->cam->pos[0] = ro*cos(angle);
         params->cam->pos[2] = ro*sin(angle);
         params->cam->yaw = M_PI + angle;
         angle+=.03;
     }
-    SDL_DestroyTexture(texture);
-    free(pixels);
     return 0;
 }
 

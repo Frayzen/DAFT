@@ -19,6 +19,7 @@ struct app_params{
     size_t FPS_UPPER_LIMIT;
     SDL_Window* window;
     SDL_Renderer* renderer;
+    SDL_Texture *texture;
     world* wd;
     camera* cam;
     raycast_params* rcp;
@@ -26,4 +27,5 @@ struct app_params{
 
 int setup_window(app_params* params);
 int launch_screen(app_params* params);
+void free_window(app_params* params);
 #endif

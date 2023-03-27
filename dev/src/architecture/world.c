@@ -9,7 +9,6 @@ void free_world(world* wd){
     for(size_t i = 0; i < wd->size_meshes; i++){
         free_mesh(wd->meshes[i]);
     }
-    free(wd->meshes);
     for(size_t i = 0; i < wd->size_lights; i++){
         free_light(wd->lights[i]);
     }
@@ -18,6 +17,8 @@ void free_world(world* wd){
         free_camera(wd->cameras[i]);
     }
     free(wd->cameras);
+    free(wd->lights);
+    free(wd->meshes);
     free(wd);
 }
 

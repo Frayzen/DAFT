@@ -4,15 +4,20 @@
 #include "../include/architecture/world.h"
 #include "../include/window/window.h"
 #include "../include/architecture/camera.h"
+#include "../include/preprocessing/obj_parser.h"
 
 int main(){
     world* wd = init_world();
     printf("LOADING OBJ...");
-
-    printf("OK\n");
+    load_object(wd, "assets/objs/cube.obj", 1, (float[]){0,0,0});
     printf("WORDL OBJ COUNT: %d \n", wd->size_meshes);
+    //print all meshes
+    for(int i = 0; i < wd->size_meshes; i++){
+        printf("MESH %d: %d vertices, %d triangles\n", i, wd->meshes[i]->nb_vertices, wd->meshes[i]->nb_triangles);
+    }
 
     camera* cam = init_camera((float[]){0,0,0}, 0, 0, 120, NULL);
+    add_camera(wd, cam);
 
     app_params params;
     params.width = 500;
@@ -26,7 +31,7 @@ int main(){
 
     cam->skybox = IMG_Load("assets/textures/Sky.jpg");
     launch_screen(&params);
-    free(cam);
+    free_window(&params);
     free_world(wd);
     return 0;
 }

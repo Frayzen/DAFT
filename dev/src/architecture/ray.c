@@ -1,6 +1,6 @@
 #include "../../include/architecture/ray.h"
 
-void create_ray(float result[3], int width, int height, int x_pix, int y_pix, camera* cam){
+void create_ray(float* result, int width, int height, int x_pix, int y_pix, camera* cam){
     //float pitch = cam->pitch;
     float yaw = cam->yaw;
     float FOV = cam->FOV;
@@ -62,7 +62,8 @@ void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3]){
     new_hit->m = r->current_mesh;
     for(int i = 0; i < 3; i++)
         new_hit->color[i] = color[i];
-    free(r->last_hit);
+    if(r->last_hit != NULL)
+        free(r->last_hit);
     r->last_hit = new_hit;
 }
 
@@ -75,15 +76,8 @@ ray create_ray_interpolate(raycast_params* rcp, int x_pix, int y_pix){
     add(rcp->botSide, rcp->topSide, yaxis);
     scale(yaxis, y_pix/(float)rcp->height, yaxis);
     add(xaxis, yaxis, r.dir);
-    r.last_hit = calloc(sizeof(ray_result), 1);
+    r.last_hit = NULL;
     copy(rcp->cam->pos, r.pos);
     r.mint = INFINITY;
     return r;
-}
-
-void free_sides(struct raycast_params* rdo){
-    free(rdo->leftSide);
-    free(rdo->rightSide);
-    free(rdo->topSide);
-    free(rdo->botSide);
 }

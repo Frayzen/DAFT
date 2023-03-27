@@ -41,8 +41,7 @@ void compute_bounds_bbox(bbox* b){
     }
 }
 bbox* init_bbox(){
-    bbox * b = malloc(sizeof(bbox));
-    memset(b, 0, sizeof(bbox));
+    bbox * b = calloc(sizeof(bbox), 1);
     return b;
 }
 int compute_depth(int nb_tri){
@@ -93,9 +92,10 @@ bbox* build_bbox(int depth, int no_tri, int no_extra)
         return b;
     }
 }
-void add_tri_to_bbox(mesh* m, bbox *b, int depth, triangle *t){
+void add_tri_to_bbox(mesh* m, bbox *b, int depth, int points[3]){
     if(depth == 1){
-        b->tris[b->total] = *t;
+        for(int i = 0; i < 3; i++)
+            b->tris[b->total].vert[i] = points[i];
         b->total++;
         if(b->total == b->maxtotal)
             compute_bounds_tri(m, b);
@@ -105,16 +105,15 @@ void add_tri_to_bbox(mesh* m, bbox *b, int depth, triangle *t){
     b->total++;
     while(b->children[j]->total == b->children[j]->maxtotal)
         j++;
-    add_tri_to_bbox(m, b->children[j], depth-1, t);
+    add_tri_to_bbox(m, b->children[j], depth-1, points);
     if(b->total == b->maxtotal)
         compute_bounds_bbox(b);
     return;
-}void add_tri(mesh * m, int a, int b, int c)
-{
-    triangle* t = init_triangle(a, b, c);
-    add_tri_to_bbox(m, m->box, m->depth, t);
 }
-
+void add_tri(mesh* m, int points[3]){
+    add_tri_to_bbox(m, m->box, m->depth, points);
+    m->nb_triangles++;
+}
 mesh * build_mesh(int no_vert, int no_tri, int id)
 {
 
@@ -124,7 +123,9 @@ mesh * build_mesh(int no_vert, int no_tri, int id)
     m->no_extra = compute_no_extra(no_tri, m->tri_last_level, m->depth);
     m->box = build_bbox(m->depth, m->tri_last_level, m->no_extra);
 	m->nb_vertices = 0;
+    m->nb_triangles = 0;
 	m->vertices = malloc(sizeof(float[3])*no_vert);
+    m->triangles = malloc(sizeof(triangle)*no_tri);
 
 	return m;
 }
