@@ -3,7 +3,7 @@
 #include "mesh.h"
 #include <stdlib.h>
 #include "../utils/daft_math.h"
-#include "../render/rendering_tools.h"
+#include "../render/ray_cast_params.h"
 #include <omp.h>
 #ifndef RAY_H
 #define RAY_H
@@ -20,7 +20,6 @@ typedef struct ray
 	float dir[3];
 
     float mint;
-    float maxt;
 
     //last mesh is the mesh that the ray was in last
     ray_result* last_hit;
@@ -29,6 +28,7 @@ typedef struct ray
 }ray;
 
 void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3]);
-ray* update_sides(struct raycast_params* rdo);
+void update_sides(raycast_params* rdo);
+void free_sides(raycast_params* rdo);
 ray create_ray_interpolate(raycast_params* rcp, int x_pix, int y_pix);
 #endif

@@ -1,14 +1,10 @@
 #include "../../include/architecture/ray.h"
 
+void create_ray(float result[3], int width, int height, int x_pix, int y_pix, camera* cam){
+    //float pitch = cam->pitch;
+    float yaw = cam->yaw;
+    float FOV = cam->FOV;
 
-void update_sides(raycast_params* rcp){
-    create_ray(rcp->leftSide, rcp->width, rcp->height, 0, rcp->height/2, rcp->cam->FOV);
-    create_ray(rcp->rightSide, rcp->width, rcp->height, rcp->width, rcp->height/2, rcp->cam->FOV);
-    create_ray(rcp->topSide, rcp->width, rcp->height, rcp->width/2, 0, rcp->cam->FOV);
-    create_ray(rcp->botSide, rcp->width, rcp->height, rcp->width/2, rcp->height, rcp->cam->FOV);
-}
-void create_ray(float result[3], int width, int height, int x_pix, int y_pix, float FOV){
-    //float pitch = orientation[1];
     FOV = FOV*M_PI/180;
     float hFOV = FOV/2;
     float pitch_ratio = (float)y_pix/(height-1);
@@ -33,13 +29,27 @@ void create_ray(float result[3], int width, int height, int x_pix, int y_pix, fl
     copy(dir, result);
 }
 
-ray* init_rays(renderer* rdr){
-    ray* rays = calloc(sizeof(ray), widht * height);
+void update_sides(struct raycast_params* rcp){
+    create_ray(rcp->leftSide, rcp->width, rcp->height, 0, rcp->height/2, rcp->cam);
+    create_ray(rcp->rightSide, rcp->width, rcp->height, rcp->width, rcp->height/2, rcp->cam);
+    create_ray(rcp->topSide, rcp->width, rcp->height, rcp->width/2, 0, rcp->cam);
+    create_ray(rcp->botSide, rcp->width, rcp->height, rcp->width/2, rcp->height, rcp->cam);
+}
+
+ray* init_rays(struct raycast_params* rdr){
+    int width = rdr->width;
+    int height = rdr->height;
+    camera* cam = rdr->cam;
+    ray* rays = calloc(sizeof(ray), width * height);
     #pragma omp parallel for
     for(int j = 0; j < height; j++){
         #pragma omp parallel for
-        for(int i = 0; i < widht; i++)
-            rays[i+j*widht] = create_ray(widht, height, i, j, cam->FOV, cam->yaw, cam->pitch, cam->pos);
+        for(int i = 0; i < width; i++){
+            create_ray(rays[i+j*width].dir, width, height, i, j, cam);
+            copy(cam->pos, rays[i+j*width].pos);
+            rays[i+j*width].last_hit = malloc(sizeof(ray_result));
+            
+        }
     }
     
     return rays;
@@ -50,7 +60,6 @@ void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3]){
     new_hit->mint = new_mint;
     new_hit->tri = tri;
     new_hit->m = r->current_mesh;
-    new_hit.hitpt = r->pos+r->dir*new_mint;
     for(int i = 0; i < 3; i++)
         new_hit->color[i] = color[i];
     free(r->last_hit);
@@ -65,10 +74,16 @@ ray create_ray_interpolate(raycast_params* rcp, int x_pix, int y_pix){
     scale(xaxis, x_pix/(float)rcp->width, xaxis);
     add(rcp->botSide, rcp->topSide, yaxis);
     scale(yaxis, y_pix/(float)rcp->height, yaxis);
-    add(xaxis, yaxis, r->dir);
+    add(xaxis, yaxis, r.dir);
     r.last_hit = calloc(sizeof(ray_result), 1);
-    r.pos = rcp->cam->pos;
+    copy(rcp->cam->pos, r.pos);
     r.mint = INFINITY;
     return r;
 }
 
+void free_sides(struct raycast_params* rdo){
+    free(rdo->leftSide);
+    free(rdo->rightSide);
+    free(rdo->topSide);
+    free(rdo->botSide);
+}

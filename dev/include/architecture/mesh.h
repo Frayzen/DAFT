@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "triangle.h"
 #include "bbox.h"
+#include "../render/ray_cast_params.h"
 
 #ifndef MESH_H
 #define MESH_H

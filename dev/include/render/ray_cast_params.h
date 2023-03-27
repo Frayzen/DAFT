@@ -1,5 +1,6 @@
-#ifndef RENDERING_TOOLS_H
-#define RENDERING_TOOLS_H
+#ifndef RAY_CAST_PARAMS_H
+#define RAY_CAST_PARAMS_H
+#include <SDL2/SDL.h>
 typedef struct raycast_params{
     SDL_PixelFormat* format;
     struct world* w;
@@ -16,7 +17,4 @@ typedef struct raycast_params{
     //the rays that will be casted
     struct ray* rays;
 } raycast_params;
-
-raycast_params* init_raycast_params(struct world *w, int width, int height, camera* cam);
-void free_raycast_params(raycast_params* rcp);
 #endif

@@ -15,7 +15,7 @@ int setup_window(app_params* params){
     for(Uint32 i = 0; i < info.num_texture_formats; i++){
         printf("Format: %s\n", SDL_GetPixelFormatName(info.texture_formats[i]));
     }
-    params->rcp = init_raycast_params(params->wd, params->width, params->height, params->cam, params->pixels);
+    params->rcp = init_raycast_params(params->wd, params->width, params->height, params->cam);
     return 0;
 }
 
@@ -26,7 +26,7 @@ int launch_screen(app_params* params){
     int fps = 0;
     SDL_Texture* texture = SDL_CreateTexture(params->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, params->width, params->height);
     int pitch;
-    Uint32* pixels;;
+    Uint32* pixels;
     int once = 0;
     float angle = 0;
     float ro = 4;
@@ -34,9 +34,10 @@ int launch_screen(app_params* params){
     params->cam->skybox = SDL_ConvertSurfaceFormat(old, SDL_PIXELFORMAT_RGBA8888, 0);
     SDL_FreeSurface(old);
     SDL_LockTexture(texture, NULL, (void**)&pixels, &pitch);
+    params->rcp->pixels = pixels;
     while (!quit)
     {
-        render_screen(pixels, params->width, params->height, params->cam, params->wd);
+        render_screen(params->rcp);
         SDL_UnlockTexture(texture);
         SDL_RenderCopy(params->renderer, texture, NULL, NULL); 
         SDL_RenderPresent(params->renderer);

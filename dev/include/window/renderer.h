@@ -1,5 +1,6 @@
 #include "../architecture/world.h"
 #include "../render/rendering_tools.h"
+#include "../render/render.h"
 #include <omp.h>
 #include <SDL2/SDL.h>
 
