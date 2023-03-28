@@ -18,7 +18,7 @@ void get_ray_direction(float* r, int width, int height, int x_pix, int y_pix, ca
     scale(flat, yaw_ratio, flat_scale);
     add(p1, flat_scale, xz);
 
-    deg1 = FOV;
+    deg1 = hFOV;
     float p3[3] = {0, cos(deg1), 0};
     float p4[3];
     scale(p3, -1, p4);

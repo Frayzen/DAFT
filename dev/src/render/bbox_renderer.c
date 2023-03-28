@@ -39,15 +39,6 @@ int intersect_bbox(bbox* b, ray* r){
 
 int bbox_render(bbox* b, ray* r){
     if(intersect_bbox(b, r)){
-        if(r->last_hit == NULL){
-            r->last_hit = malloc(sizeof(bbox));
-            r->last_hit->m = r->current_mesh;
-            r->last_hit->mint = 0;
-            r->last_hit->color[0] = 1;
-            r->last_hit->color[1] = 1;
-            r->last_hit->color[2] = 1;
-        }
-        return 1;
         if(b->tris){
             for(int i = 0; i < b->c_size; i++)
                 triangle_render(&b->tris[i], r);

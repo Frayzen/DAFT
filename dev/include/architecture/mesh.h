@@ -3,6 +3,7 @@
 #include "bbox.h"
 #include "../render/ray_cast_params.h"
 #include "./camera.h"
+#include "../utils/daft_math.h"
 #ifndef MESH_H
 #define MESH_H
 
