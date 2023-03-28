@@ -9,10 +9,9 @@ typedef struct raycast_params{
     int height;
     struct camera* cam;
     //point in the middle of each side of the screen
-    float leftSide[3];
-    float rightSide[3];
-    float topSide[3];
-    float botSide[3];
+    float topDir[3];
+    float rightDir[3];
+    float botLeftCorner[3];
     
     //the rays that will be casted
     struct ray* rays;
