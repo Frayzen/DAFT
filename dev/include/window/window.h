@@ -14,9 +14,9 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 struct app_params{
-    size_t width;
-    size_t height;
-    size_t FPS_UPPER_LIMIT;
+    int width;
+    int height;
+    int FPS_UPPER_LIMIT;
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Texture *texture;

@@ -6,14 +6,14 @@ world* init_world(){
 }
 
 void free_world(world* wd){
-    for(size_t i = 0; i < wd->size_meshes; i++){
+    for(int i = 0; i < wd->size_meshes; i++){
         free_mesh(wd->meshes[i]);
     }
-    for(size_t i = 0; i < wd->size_lights; i++){
+    for(int i = 0; i < wd->size_lights; i++){
         free_light(wd->lights[i]);
     }
     free(wd->lights);
-    for(size_t i = 0; i < wd->size_cameras; i++){
+    for(int i = 0; i < wd->size_cameras; i++){
         free_camera(wd->cameras[i]);
     }
     free(wd->cameras);

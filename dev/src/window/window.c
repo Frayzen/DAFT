@@ -43,9 +43,13 @@ int launch_screen(app_params* params){
     int fps = 0;
     int once = 0;
     float angle = 0;
-    float ro = 4;
+    // float ro = 5;
     while (!quit)
     {
+        // params->cam->pos[0] = ro*cos(angle);
+        // params->cam->pos[2] = ro*sin(angle);
+         params->cam->yaw = angle;
+         angle+=.03;
         render_screen(params->rcp);
         SDL_UnlockTexture(params->texture);
         SDL_RenderCopy(params->renderer, params->texture, NULL, NULL); 
@@ -63,10 +67,6 @@ int launch_screen(app_params* params){
                 quit = 1;
             }
         }
-        params->cam->pos[0] = ro*cos(angle);
-        params->cam->pos[2] = ro*sin(angle);
-        params->cam->yaw = M_PI + angle;
-        angle+=.03;
     }
     return 0;
 }

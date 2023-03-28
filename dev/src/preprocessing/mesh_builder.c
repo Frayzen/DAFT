@@ -2,7 +2,8 @@
 
 void add_vertex(mesh * m, float p[3])
 {
-	m->vertices[m->nb_vertices] = (float[3]){p[0], p[1], p[2]};
+    m->vertices[m->nb_vertices] = malloc(sizeof(float)*3);
+	copy(p, m->vertices[m->nb_vertices])
 	m->nb_vertices++;
 }
 
@@ -124,8 +125,6 @@ mesh * build_mesh(int no_vert, int no_tri, int id)
     m->box = build_bbox(m->depth, m->tri_last_level, m->no_extra);
 	m->nb_vertices = 0;
     m->nb_triangles = 0;
-	m->vertices = malloc(sizeof(float[3])*no_vert);
-    m->triangles = malloc(sizeof(triangle)*no_tri);
-
+	m->vertices = malloc(sizeof(float*)*no_vert);
 	return m;
 }

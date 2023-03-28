@@ -10,13 +10,11 @@ raycast_params* init_raycast_params(world* wd, int width, int height, camera* ca
     rcp->width = width;
     rcp->height = height;
     rcp->cam = cam;
-    rcp->rays = malloc(sizeof(ray)*width*height);
     rcp->pixels = pixels;
     return rcp;
 }
 void free_raycast_params(raycast_params* rcp){
     SDL_FreeFormat(rcp->format);
-    free(rcp->rays);
     free(rcp);
 }
 #endif

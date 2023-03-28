@@ -60,8 +60,7 @@ void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3]){
     new_hit->mint = new_mint;
     new_hit->tri = tri;
     new_hit->m = r->current_mesh;
-    for(int i = 0; i < 3; i++)
-        new_hit->color[i] = color[i];
+    copy(color, new_hit->color);
     if(r->last_hit != NULL)
         free(r->last_hit);
     r->last_hit = new_hit;
@@ -76,8 +75,44 @@ ray create_ray_interpolate(raycast_params* rcp, int x_pix, int y_pix){
     add(rcp->botSide, rcp->topSide, yaxis);
     scale(yaxis, y_pix/(float)rcp->height, yaxis);
     add(xaxis, yaxis, r.dir);
+    normalize(r.dir, r.dir);
     r.last_hit = NULL;
     copy(rcp->cam->pos, r.pos);
     r.mint = INFINITY;
     return r;
+}
+
+ray get_ray(size_t width, size_t height, size_t x_pix, size_t y_pix, camera* cam){
+    
+    float yaw = cam->yaw;
+    //float pitch = params.cam->pitch;
+    float FOV = cam->FOV*M_PI/180;
+    float hFOV = FOV/2;
+    float pitch_ratio = (float)y_pix/(height-1);
+    float yaw_ratio = (float)x_pix/(width-1);
+
+    float deg1 = yaw+hFOV;
+    float deg2 = yaw-hFOV;
+    float p1[3] = {cos(deg1), 0, sin(deg1)}; 
+    float p2[3] = {cos(deg2), 0, sin(deg2)};
+    float flat[3], xz[3], dir[3], flat_scale[3];
+    minus(p2, p1, flat);
+    scale(flat, yaw_ratio, flat_scale);
+    add(p1, flat_scale, xz);
+
+    deg1 = hFOV;
+    float p3[3] = {0, cos(deg1), 0};
+    float p4[3];
+    scale(p3, -1, p4);
+    minus(p4,p3,flat);
+    scale(flat, pitch_ratio, flat_scale);
+    float y[3];
+    add(p3, flat_scale, y);
+    add(xz, y, dir);
+    ray ry;
+    ry.last_hit = NULL;
+    copy(dir, ry.dir);
+    copy(cam->pos, ry.pos);
+    ry.mint = INFINITY;
+    return ry;
 }

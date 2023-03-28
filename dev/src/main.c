@@ -11,13 +11,8 @@ int main(){
     printf("LOADING OBJ...");
     load_object(wd, "assets/objs/cube.obj", 1, (float[]){0,0,0});
     printf("WORDL OBJ COUNT: %d \n", wd->size_meshes);
-    //print all meshes
-    for(int i = 0; i < wd->size_meshes; i++){
-        printf("MESH %d: %d vertices, %d triangles\n", i, wd->meshes[i]->nb_vertices, wd->meshes[i]->nb_triangles);
-    }
-
-    camera* cam = init_camera((float[]){0,0,0}, 0, 0, 120, NULL);
-    add_camera(wd, cam);
+    camera* cam = init_camera((float[]){-8,0,0}, 90, 0, 120, NULL);
+    add_camera(wd, cam);   
 
     app_params params;
     params.width = 500;
