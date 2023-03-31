@@ -42,7 +42,7 @@ int launch_screen(app_params* params){
     time_t last = time(NULL);
     int fps = 0;
     int once = 0;
-    float angle = 0;
+    float angle = 1;
     float ro = 5;
     while (!quit)
     {

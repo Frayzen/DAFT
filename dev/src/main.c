@@ -11,8 +11,12 @@ int main(){
     printf("LOADING OBJ...");
     load_object(wd, "assets/objs/cube.obj", 1, (float[]){0,0,0});
     printf("WORDL OBJ COUNT: %d \n", wd->size_meshes);
-    camera* cam = init_camera((float[]){-8,0,0}, 90, 0, 120, NULL);
+    camera* cam = init_camera((float[]){0,0,0}, 0, 0, 120, NULL);
     add_camera(wd, cam);   
+
+    float r[3];
+    get_ray_direction(r, 500, 500, 100, 100, cam);
+    printf("RAY DIRECTION: %f %f %f\n", r[0], r[1], r[2]);
 
     app_params params;
     params.width = 500;

@@ -54,16 +54,11 @@ void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3]){
 }
 
 ray create_ray_interpolate(raycast_params* rcp, int x_pix, int y_pix){
+    float dir[3];
+    get_ray_direction(dir, rcp->width, rcp->height, x_pix, y_pix, rcp->cam);
+    
     ray r;
-    float x_ratio = (float)x_pix/(rcp->width-1);
-    float y_ratio = (float)y_pix/(rcp->height-1);
-    copy(rcp->botLeftCorner, r.dir);
-    float x[3], y[3];
-    scale(rcp->rightDir, x_ratio, x);
-    scale(rcp->topDir, y_ratio, y);
-    add(r.dir, y, r.dir);
-    add(r.dir, x, r.dir);
-    normalize(r.dir, r.dir);
+    normalize(dir, r.dir);
     r.last_hit = NULL;
     copy(rcp->cam->pos, r.pos);
     r.mint = INFINITY;

@@ -38,7 +38,7 @@ int intersect_bbox(bbox* b, ray* r){
 }
 
 int bbox_render(bbox* b, ray* r){
-    if(intersect_bbox(b, r)){
+    //if(intersect_bbox(b, r)){
         if(b->tris){
             for(int i = 0; i < b->c_size; i++)
                 triangle_render(&b->tris[i], r);
@@ -47,6 +47,6 @@ int bbox_render(bbox* b, ray* r){
                 bbox_render(b->children[i], r);
         }
         return r->last_hit != NULL;
-    }
+    //}
     return 0;
 }
