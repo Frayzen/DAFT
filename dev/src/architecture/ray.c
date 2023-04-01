@@ -3,31 +3,13 @@
 void get_ray_direction(float* r, int width, int height, int x_pix, int y_pix, camera* cam){
     
     float yaw = cam->yaw;
-    //float pitch = params.cam->pitch;
+    float pitch = cam->pitch;
     float FOV = cam->FOV*M_PI/180;
-    float hFOV = FOV/2;
-    float pitch_ratio = (float)y_pix/(height-1);
-    float yaw_ratio = (float)x_pix/(width-1);
-
-    float deg1 = yaw+hFOV;
-    float deg2 = yaw-hFOV;
-    float p1[3] = {cos(deg1), 0, sin(deg1)}; 
-    float p2[3] = {cos(deg2), 0, sin(deg2)};
-    float flat[3], xz[3], dir[3], flat_scale[3];
-    minus(p2, p1, flat);
-    scale(flat, yaw_ratio, flat_scale);
-    add(p1, flat_scale, xz);
-
-    deg1 = hFOV;
-    float p3[3] = {0, cos(deg1), 0};
-    float p4[3];
-    scale(p3, -1, p4);
-    minus(p4,p3,flat);
-    scale(flat, pitch_ratio, flat_scale);
-    float y[3];
-    add(p3, flat_scale, y);
-    add(xz, y, dir);
-    normalize(dir, dir);
+    float ratioX = ((float) x_pix/(float)  width) - 0.5;
+    float ratioY = ((float) y_pix/(float) height) - 0.5;
+    yaw += ratioX*FOV;
+    pitch += ratioY*FOV;
+    float dir[3] = {cos(pitch)*cos(yaw), sin(pitch), -cos(pitch)*sin(yaw)};
     copy(dir, r);
 }
 void update_sides(struct raycast_params* rcp){

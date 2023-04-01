@@ -4,6 +4,7 @@
 #include "../include/architecture/world.h"
 #include "../include/window/window.h"
 #include "../include/architecture/camera.h"
+#include "../include/architecture/ray.h"
 #include "../include/preprocessing/obj_parser.h"
 
 int main(){
@@ -13,10 +14,6 @@ int main(){
     printf("WORDL OBJ COUNT: %d \n", wd->size_meshes);
     camera* cam = init_camera((float[]){0,0,0}, 0, 0, 120, NULL);
     add_camera(wd, cam);   
-
-    float r[3];
-    get_ray_direction(r, 500, 500, 100, 100, cam);
-    printf("RAY DIRECTION: %f %f %f\n", r[0], r[1], r[2]);
 
     app_params params;
     params.width = 500;

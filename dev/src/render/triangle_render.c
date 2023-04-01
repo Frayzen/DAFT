@@ -14,17 +14,20 @@ int triangle_render(triangle* tri, ray* r){
     }
     float f = 1.0 / a;
     minus(r->pos, v0, s);
-    float u = f * dotProduct(s, h);
+    float u = dotProduct(s, h);
+    u*=f;
     if (u < 0.0 || u > 1.0){
         return 0;
     }
     crossProduct(s, edge1, q);
-    float v = f * dotProduct(r->dir, q);
+    float v = dotProduct(r->dir, q);
+    v*=f;
     if (v < 0 || u+v > 1){
         return 0;
     }
-    float t = f*dotProduct(edge2, q);
-    if(t > 0){
+    float t = dotProduct(edge2, q);
+    t*=f;
+    if(t > EPSILON){
         if(r->last_hit && r->last_hit->mint < t) //previous was closer
             return 0;
         float normal[3];
