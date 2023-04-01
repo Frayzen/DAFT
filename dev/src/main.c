@@ -10,7 +10,7 @@
 int main(){
     world* wd = init_world();
     printf("LOADING OBJ...");
-    load_object(wd, "assets/objs/cube.obj", 1, (float[]){0,0,0});
+    load_object(wd, "assets/objs/teddy.obj", .1, (float[]){0,0,0});
     printf("WORDL OBJ COUNT: %d \n", wd->size_meshes);
     camera* cam = init_camera((float[]){0,0,0}, 0, 0, 120, NULL);
     add_camera(wd, cam);   

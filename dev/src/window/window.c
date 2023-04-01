@@ -49,7 +49,7 @@ int launch_screen(app_params* params){
         params->cam->pos[0] = ro*cos(angle);
         params->cam->pos[2] = ro*sin(angle);
         params->cam->yaw = angle;
-        angle+=.03;
+        angle+=0.003;
         render_screen(params->rcp);
         SDL_UnlockTexture(params->texture);
         SDL_RenderCopy(params->renderer, params->texture, NULL, NULL); 
