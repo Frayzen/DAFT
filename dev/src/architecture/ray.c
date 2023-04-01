@@ -1,7 +1,6 @@
 #include "../../include/architecture/ray.h"
 
 void get_ray_direction(float* r, int width, int height, int x_pix, int y_pix, camera* cam){
-    
     float yaw = cam->yaw;
     float pitch = cam->pitch;
     float FOV = cam->FOV*M_PI/180;
@@ -13,13 +12,13 @@ void get_ray_direction(float* r, int width, int height, int x_pix, int y_pix, ca
     copy(dir, r);
 }
 void update_sides(struct raycast_params* rcp){
-    get_ray_direction(rcp->botLeftCorner, rcp->width, rcp->height, 0, 0, rcp->cam);
+    get_ray_direction(rcp->botLeftCorner, rcp->width, rcp->height, 0, rcp->width-1, rcp->cam);
     float top[3], right[3], left[3], bot[3];
     get_ray_direction(top, rcp->width, rcp->height, 0, rcp->height-1, rcp->cam);
     get_ray_direction(right, rcp->width, rcp->height, rcp->width-1, 0, rcp->cam);
     get_ray_direction(left, rcp->width, rcp->height, 0, 0, rcp->cam);
     get_ray_direction(bot, rcp->width, rcp->height, 0, 0, rcp->cam);
-    minus(top, bot, rcp->topDir);
+    minus(bot, top, rcp->topDir);
     minus(right, left, rcp->rightDir);
     
 }
