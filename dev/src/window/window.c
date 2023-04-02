@@ -1,4 +1,5 @@
 #include "../../include/window/window.h"
+#include "../../include/window/event_handler.h"
 
 int setup_window(app_params* params){
     omp_set_num_threads(omp_get_num_procs());
@@ -41,7 +42,6 @@ int launch_screen(app_params* params){
     SDL_Event event;
     time_t last = time(NULL);
     int fps = 0;
-    int once = 0;
     float angle = 0;
     float ro = 5;
     while (!quit)
@@ -65,26 +65,7 @@ int launch_screen(app_params* params){
         }
         if(SDL_PollEvent(&event))
         {
-            if(event.type == SDL_QUIT || once)
-            {
-                quit = 1;
-            }
-            if(event.type == SDL_KEYDOWN){
-                if(event.key.keysym.sym == SDLK_q){
-                    quit = 1;
-                }
-                if(event.key.keysym.sym == SDLK_SPACE){
-                    camera* quality_cam = malloc(sizeof(camera));
-                    copy(params->cam->pos, quality_cam->pos);
-                    quality_cam->FOV = 90;
-                    quality_cam->yaw = params->cam->yaw;
-                    quality_cam->pitch = params->cam->pitch;
-                    quality_cam->skybox = params->cam->skybox;
-                    raycast_params* quality_rcp = init_raycast_params(params->wd, QUALITY_WIDTH, QUALITY_HEIGHT, quality_cam, NULL);
-                    printf("COPYING...\n");
-                    render_quality(quality_rcp);
-                }
-            }
+            handle_events(event, &quit, params);
         }
     }
     return 0;
