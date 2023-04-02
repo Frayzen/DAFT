@@ -8,6 +8,9 @@
 #ifndef WINDOW_RENDERER_H
 #define WINDOW_RENDERER_H
 
+#define QUALITY_WIDTH 3000
+#define QUALITY_HEIGHT 3000
+
 void render_screen(raycast_params* rcp);
 void render_quality(raycast_params* rcp);
 #endif

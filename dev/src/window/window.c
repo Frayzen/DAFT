@@ -42,13 +42,13 @@ int launch_screen(app_params* params){
     time_t last = time(NULL);
     int fps = 0;
     int once = 0;
-    float angle = 1;
+    float angle = 0;
     float ro = 5;
     while (!quit)
     {
         params->cam->pos[0] = ro*cos(angle);
         params->cam->pos[2] = ro*sin(angle);
-        params->cam->yaw = angle;
+        params->cam->yaw = M_PI-angle;
         angle+=0.003;
         if(angle > 2*M_PI){
             angle -= 2*M_PI;
