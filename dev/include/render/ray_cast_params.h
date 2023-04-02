@@ -13,7 +13,6 @@ typedef struct raycast_params{
     float rightDir[3];
     float botLeftCorner[3];
     
-    //the rays that will be casted
-    struct ray* rays;
 } raycast_params;
+
 #endif

@@ -3,9 +3,11 @@
 #include "../render/render.h"
 #include <omp.h>
 #include <SDL2/SDL.h>
+#include <pthread.h>
 
 #ifndef WINDOW_RENDERER_H
 #define WINDOW_RENDERER_H
 
 void render_screen(raycast_params* rcp);
+void render_quality(raycast_params* rcp);
 #endif

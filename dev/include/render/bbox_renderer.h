@@ -4,5 +4,8 @@
 #include <math.h>
 #ifndef BBOX_RENDERER_H
 #define BBOX_RENDERER_H
+#define QUALITY_WIDTH 1920
+#define QUALITY_HEIGHT 1080
+
 int bbox_render(bbox * b, ray * r);
 #endif

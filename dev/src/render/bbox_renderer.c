@@ -18,6 +18,8 @@ int intersect_bbox(bbox* b, ray* r){
         tmin = max(tmin, min(tx1, tx2));
         tmax = min(tmax, max(tx1, tx2));
     }
+    if(tmax < tmin)
+        return 0;
     float y = r->dir[1];
     if(y != 0){
         float oy = r->pos[1];
@@ -26,6 +28,8 @@ int intersect_bbox(bbox* b, ray* r){
         tmin = max(tmin, min(ty1, ty2));
         tmax = min(tmax, max(ty1, ty2));
     }
+    if(tmax < tmin)
+        return 0;
     float z = r->dir[2];
     if(z != 0){
         float oz = r->pos[2];
@@ -38,7 +42,8 @@ int intersect_bbox(bbox* b, ray* r){
 }
 
 int bbox_render(bbox* b, ray* r){
-    if(intersect_bbox(b, r)){
+    int intersect = intersect_bbox(b, r);
+    if(intersect){
         if(b->tris){
             for(int i = 0; i < b->c_size; i++)
                 triangle_render(&b->tris[i], r);
