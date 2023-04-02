@@ -10,6 +10,7 @@ int setup_window(app_params* params){
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
             params->width, params->height ,0);
     params->renderer = SDL_CreateRenderer(params->window, -1, SDL_RENDERER_ACCELERATED);
+    SDL_SetRelativeMouseMode(SDL_TRUE);
     SDL_RendererInfo info;
     SDL_GetRendererInfo(params->renderer, &info );
     printf("Renderer Name: %s\n", info.name);

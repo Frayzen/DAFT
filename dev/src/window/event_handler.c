@@ -68,6 +68,13 @@ void handle_events(int* quit, app_params* params){
             case SDL_KEYUP:
                 handle_key(event.key.keysym.sym, params, 0);
                 break;
+            case SDL_MOUSEMOTION:
+                params->cam->yaw += event.motion.xrel/100.0;
+                if(params->cam->yaw > 2*M_PI)
+                    params->cam->yaw -= 2*M_PI;
+                if(params->cam->yaw < 0)
+                    params->cam->yaw += 2*M_PI;
+                break;
             default:
                 break;
         }
