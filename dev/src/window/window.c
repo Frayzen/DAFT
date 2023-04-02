@@ -39,20 +39,19 @@ void free_window(app_params* params){
 
 int launch_screen(app_params* params){
     int quit = 0;
-    SDL_Event event;
     time_t last = time(NULL);
     int fps = 0;
-    float angle = 0;
-    float ro = 5;
+    // float angle = 0;
+    // float ro = 5;
     while (!quit)
     {
-        params->cam->pos[0] = ro*cos(angle);
-        params->cam->pos[2] = ro*sin(angle);
-        params->cam->yaw = M_PI-angle;
-        angle+=0.003;
-        if(angle > 2*M_PI){
-            angle -= 2*M_PI;
-        }
+        // params->cam->pos[0] = ro*cos(angle);
+        // params->cam->pos[2] = ro*sin(angle);
+        // params->cam->yaw = M_PI-angle;
+        // angle+=0.003;
+        // if(angle > 2*M_PI){
+        //     angle -= 2*M_PI;
+        // }
         render_screen(params->rcp);
         SDL_UnlockTexture(params->texture);
         SDL_RenderCopy(params->renderer, params->texture, NULL, NULL); 
@@ -63,10 +62,7 @@ int launch_screen(app_params* params){
             fps = 0;
             last = time(NULL);
         }
-        if(SDL_PollEvent(&event))
-        {
-            handle_events(event, &quit, params);
-        }
+        handle_events(&quit, params);
     }
     return 0;
 }

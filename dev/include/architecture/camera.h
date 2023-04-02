@@ -14,6 +14,7 @@ typedef struct camera
     int FOV;
     //skybox texture, NULL if no skybox
     SDL_Surface* skybox;
+    float movement_speed[3];
 
 }camera;
 

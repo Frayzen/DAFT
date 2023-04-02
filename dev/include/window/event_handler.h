@@ -6,6 +6,7 @@
 #ifndef EVENT_HANDLER_H
 #define EVENT_HANDLER_H
 
-void handle_events(SDL_Event event, int* quit, app_params* params);
+#define MOVING_SPEED 0.1
+void handle_events(int* quit, app_params* params);
 
 #endif

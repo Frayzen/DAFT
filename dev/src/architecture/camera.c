@@ -9,6 +9,8 @@ camera* init_camera(float pos[3], float pitch, float yaw, int FOV, SDL_Surface* 
     cam->yaw = yaw;
     cam->FOV = FOV;
     cam->skybox = skybox;
+    cam->movement_speed[0] = 0;
+    cam->movement_speed[1] = 0;
     return cam;
 }
 

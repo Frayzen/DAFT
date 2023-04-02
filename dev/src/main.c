@@ -12,7 +12,7 @@ int main(){
     printf("LOADING OBJ...");
     load_object(wd, "assets/objs/teddy.obj", .1, (float[]){0,0,0});
     printf("WORDL OBJ COUNT: %d \n", wd->size_meshes);
-    camera* cam = init_camera((float[]){0,0,0}, 0, 0, 90, NULL);
+    camera* cam = init_camera((float[]){-3,0,0}, 0, 0, 90, NULL);
     add_camera(wd, cam);   
 
     app_params params;
