@@ -6,4 +6,9 @@ void ray_cast(ray* r, world* w){
         r->current_mesh = m;
         mesh_render(m, r);
     }
+    for(int ids = 0; ids < w->size_spheres; ids++){
+        sphere* s = &w->spheres[ids];
+        r->current_mesh = NULL;
+        sphere_render(s, r);
+    }
 }

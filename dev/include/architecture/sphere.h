@@ -1,10 +1,10 @@
-#include <stdio.h>
+#include <stdlib.h>
 #ifndef SPHERE_H
 #define SPHERE_H
 
 typedef struct sphere
 {
-    float center[3];
+    float pos[3];
     float color[3];
     float radius;
 } sphere;

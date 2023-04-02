@@ -6,7 +6,7 @@
 #ifndef EVENT_HANDLER_H
 #define EVENT_HANDLER_H
 
-#define MOVING_SPEED 0.1
+#define MOVING_SPEED 0.01
 void handle_events(int* quit, app_params* params);
 
 #endif

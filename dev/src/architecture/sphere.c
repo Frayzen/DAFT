@@ -9,4 +9,5 @@ sphere* sphere_init(float x, float y, float z, float radius, float r, float g, f
     s->color[0] = r;
     s->color[1] = g;
     s->color[2] = b;
+    return s;
 }

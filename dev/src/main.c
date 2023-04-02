@@ -10,10 +10,13 @@
 int main(){
     world* wd = init_world();
     printf("LOADING OBJ...");
-    load_object(wd, "assets/objs/teddy.obj", .1, (float[]){0,0,0});
+    //load_object(wd, "assets/objs/teddy.obj", .1, (float[]){0,0,0});
+    load_object(wd, "assets/objs/cube.obj", 1, (float[]){0,0,0});
     printf("WORDL OBJ COUNT: %d \n", wd->size_meshes);
     camera* cam = init_camera((float[]){-6,0,0}, 0, 0, 90, 90*(200/180.0),NULL);
-    add_camera(wd, cam);   
+    add_camera(wd, cam);
+    //sphere* s = sphere_init(0,0,0,1,1,0,0);
+    //add_sphere(wd, s);
 
     app_params params;
     params.width = 200;

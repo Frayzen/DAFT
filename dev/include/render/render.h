@@ -3,6 +3,7 @@
 #include "../architecture/world.h"
 #include "../utils/daft_math.h"
 #include "./mesh_renderer.h"
+#include "./sphere_renderer.h"
 
 #ifndef RENDER_H
 #define RENDER_H
