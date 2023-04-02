@@ -3,7 +3,8 @@
 void launch_quality_render(app_params* params){
     camera* quality_cam = malloc(sizeof(camera));
     copy(params->cam->pos, quality_cam->pos);
-    quality_cam->FOV = 90;
+    quality_cam->FOV_x = 90;
+    quality_cam->FOV_y = 90;
     quality_cam->yaw = params->cam->yaw;
     quality_cam->pitch = params->cam->pitch;
     quality_cam->skybox = params->cam->skybox;
@@ -69,24 +70,22 @@ void handle_events(int* quit, app_params* params){
                 handle_key(event.key.keysym.sym, params, 0);
                 break;
             case SDL_MOUSEMOTION:
-                params->cam->yaw += event.motion.xrel/100.0;
-                if(params->cam->yaw > 2*M_PI)
-                    params->cam->yaw -= 2*M_PI;
-                if(params->cam->yaw < 0)
-                    params->cam->yaw += 2*M_PI;
+                params->cam->rotation_speed[0] = event.motion.xrel;
                 break;
             default:
                 break;
         }
     }
-    float forward[3] = {cos(params->cam->yaw), 0, sin(params->cam->yaw)};
-    float right[3] = {cos(params->cam->yaw+M_PI/2), 0, sin(params->cam->yaw+M_PI/2)};
+    float yaw = -params->cam->yaw;
+    float forward[3] = {cos(yaw), 0, sin(yaw)};
+    float right[3] = {cos(yaw+M_PI/2), 0, sin(yaw+M_PI/2)};
     float up[3] = {0, 1, 0};
     scale(forward, params->cam->movement_speed[0], forward);
     scale(right, params->cam->movement_speed[1], right);
     scale(up, params->cam->movement_speed[2], up);
-
     add(params->cam->pos, forward, params->cam->pos);
     add(params->cam->pos, right, params->cam->pos);
     add(params->cam->pos, up, params->cam->pos);
+    params->cam->yaw += params->cam->rotation_speed[0]/100;
+    params->cam->rotation_speed[0] = 0;
 }

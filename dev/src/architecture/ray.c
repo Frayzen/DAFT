@@ -3,11 +3,12 @@
 void get_ray_direction(float* r, int width, int height, int x_pix, int y_pix, camera* cam){
     float yaw = cam->yaw;
     float pitch = cam->pitch;
-    float FOV = cam->FOV*M_PI/180;
+    float FOV_x = cam->FOV_x*M_PI/180;
+    float FOV_y = cam->FOV_x*M_PI/180;
     float ratioX = ((float) x_pix/(float)  width) - 0.5;
     float ratioY = ((float) y_pix/(float) height) - 0.5;
-    yaw += ratioX*FOV;
-    pitch += ratioY*FOV;
+    yaw += ratioX*FOV_x;
+    pitch += ratioY*FOV_y;
     float dir[3] = {cos(pitch)*cos(yaw), sin(pitch), -cos(pitch)*sin(yaw)};
     copy(dir, r);
 }

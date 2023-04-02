@@ -11,15 +11,16 @@ typedef struct camera
     float pitch;
     float yaw;
     //field of view in degree (90 - 120 degrees)
-    int FOV;
+    int FOV_x;
+    int FOV_y;
     //skybox texture, NULL if no skybox
     SDL_Surface* skybox;
     float movement_speed[3];
-
+    float rotation_speed[2];
 }camera;
 
 //init camera
-camera* init_camera(float pos[3], float pitch, float yaw, int FOV, SDL_Surface* skybox);
+camera* init_camera(float pos[3], float pitch, float yaw, int FOV_x, int FOV_y, SDL_Surface* skybox);
 //free camera
 void free_camera(camera* cam);
 #endif
