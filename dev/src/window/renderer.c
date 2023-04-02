@@ -57,7 +57,7 @@ void* render_quality_process(void* rcpptr){
     int width = rcp->width;
     int height = rcp->height;
     SDL_PixelFormat* format = image->format;
-    struct world* w = rcp->w;
+    world* w = rcp->w;
     update_sides(rcp);
     for(int i = 0; i < width*height; i++){
         ray r = create_ray_interpolate(rcp, i%width, i/width);
@@ -68,7 +68,7 @@ void* render_quality_process(void* rcpptr){
         }
         else
             setPixel(image, i%width, i/width, SDL_MapRGBA(format, 0, 0, 0, 255));
-        if(i%1000000 == 0){
+        if(i%100000 == 0){
             printf("%f%%\n", (float)i/(width*height)*100);
         }
     }

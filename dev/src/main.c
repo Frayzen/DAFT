@@ -16,8 +16,8 @@ int main(){
     add_camera(wd, cam);   
 
     app_params params;
-    params.width = 500;
-    params.height = 500;
+    params.width = 200;
+    params.height = 200;
     params.wd = wd;
     params.cam = cam;
     params.FPS_UPPER_LIMIT=30;

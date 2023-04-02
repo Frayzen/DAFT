@@ -50,6 +50,9 @@ int launch_screen(app_params* params){
         params->cam->pos[2] = ro*sin(angle);
         params->cam->yaw = angle;
         angle+=0.003;
+        if(angle > 2*M_PI){
+            angle -= 2*M_PI;
+        }
         render_screen(params->rcp);
         SDL_UnlockTexture(params->texture);
         SDL_RenderCopy(params->renderer, params->texture, NULL, NULL); 
@@ -67,19 +70,19 @@ int launch_screen(app_params* params){
                 quit = 1;
             }
             if(event.type == SDL_KEYDOWN){
-                if(event.key.keysym.sym == SDLK_ESCAPE){
+                if(event.key.keysym.sym == SDLK_q){
                     quit = 1;
                 }
                 if(event.key.keysym.sym == SDLK_SPACE){
                     camera* quality_cam = malloc(sizeof(camera));
                     copy(params->cam->pos, quality_cam->pos);
-                    quality_cam->FOV = params->cam->FOV;
+                    quality_cam->FOV = 90;
                     quality_cam->yaw = params->cam->yaw;
                     quality_cam->pitch = params->cam->pitch;
                     quality_cam->skybox = params->cam->skybox;
                     raycast_params* quality_rcp = init_raycast_params(params->wd, QUALITY_WIDTH, QUALITY_HEIGHT, quality_cam, NULL);
-                    render_quality(quality_rcp);
                     printf("COPYING...\n");
+                    render_quality(quality_rcp);
                 }
             }
         }
