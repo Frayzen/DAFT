@@ -4,6 +4,7 @@
 #include "../render/ray_cast_params.h"
 #include "./camera.h"
 #include "../utils/daft_math.h"
+#include "sphere.h"
 #ifndef MESH_H
 #define MESH_H
 

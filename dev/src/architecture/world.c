@@ -37,3 +37,8 @@ void add_mesh(world* wd, mesh* msh){
     wd->meshes = realloc(wd->meshes, sizeof(mesh*) * wd->size_meshes);
     wd->meshes[wd->size_meshes - 1] = msh;
 }
+void add_sphere(world* wd, sphere* s){
+    wd->size_spheres++;
+    wd->spheres = realloc(wd->spheres, sizeof(sphere) * wd->size_spheres);
+    wd->spheres[wd->size_spheres - 1] = *s;
+}
