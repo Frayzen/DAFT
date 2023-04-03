@@ -25,7 +25,6 @@ int setup_window(app_params* params){
     params->rcp = init_raycast_params(params->wd, params->width, params->height, params->cam, pixels);
     //camera
     SDL_Surface* old = params->cam->skybox;
-    params->cam->skybox = SDL_ConvertSurfaceFormat(old, SDL_PIXELFORMAT_RGBA8888, 0);
     SDL_FreeSurface(old);
     return 0;
 }

@@ -23,3 +23,7 @@ void free_camera(camera* cam){
     }
     free(cam);
 }
+
+void load_skybox(camera* cam, char* path){
+    cam->skybox = SDL_ConvertSurfaceFormat(IMG_Load("assets/textures/Sky.jpg"), SDL_PIXELFORMAT_RGBA8888, 0);
+}
