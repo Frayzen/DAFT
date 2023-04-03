@@ -71,7 +71,7 @@ void load_object(char* path, world* w, float scale, float pos[3], float reflecti
                         if (spc == 3)
                             p = realloc(p, sizeof(int)*(spc+1));
                         else
-                            p = realloc(p, sizeof(int)*spc);
+                            p = realloc(p, sizeof(int)*(spc+1));
                     }
 
                     if (line[i+1] != '\0' && line[i+1] != '\r')
