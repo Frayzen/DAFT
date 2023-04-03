@@ -11427,8 +11427,25 @@ section.resume-section {
   padding-left: 1em;
   border-left: 1px solid #d48a6e;
 }
+#timeline ul li{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
 #timeline ul li span{
+  height: 50px;
+  width: 50px;
+  border-radius: 100px;
+  border: 1px solid #d48a6e;
   background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#timeline ul li small{
+  margin-left: 50px;
+  margin-right: 15px;
 }
 
 #team p{
