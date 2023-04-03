@@ -5,7 +5,7 @@
 #include "../include/window/window.h"
 #include "../include/architecture/camera.h"
 #include "../include/architecture/ray.h"
-#include "../include/preprocessing/obj_parser.h"
+#include "../include/preprocessing/obj.h"
 
 int main(){
     world* wd = init_world();
