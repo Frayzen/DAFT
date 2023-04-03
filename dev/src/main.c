@@ -11,7 +11,7 @@ int main(){
     world* wd = init_world();
     printf("LOADING OBJ...");
     //load_object(wd, "assets/objs/teddy.obj", .1, (float[]){0,0,0});
-    parse("assets/objs/shuttle.obj", wd, .3, (float[]){0,0,0});
+    parse("assets/objs/powerlines.obj", wd, .3, (float[]){0,0,0});
     printf("WORDL OBJ COUNT: %d \n", wd->size_meshes);
     camera* cam = init_camera((float[]){-6,0,0}, 0, 0, 90, 90,NULL);
     add_camera(wd, cam);
