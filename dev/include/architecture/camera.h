@@ -18,6 +18,7 @@ typedef struct camera
     SDL_Surface* skybox;
     float movement_speed[3];
     float rotation_speed[2];
+    int quailty;
 }camera;
 
 //init camera

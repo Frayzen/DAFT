@@ -38,7 +38,7 @@ int triangle_render(triangle* tri, ray* r){
             val*=-1;
         if(val > 1)
             val = 1;
-        ray_update_result(r, tri, t, (float[3]){val, val, val});
+        ray_update_result(r, tri, t, (float[3]){val, val, val}, normal, r->current_mesh->reflectivity);
         return 1; // Hit, win
     }
     // This means that there is a line intersection but not a ray intersection. 

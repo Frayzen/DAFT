@@ -14,6 +14,7 @@ camera* init_camera(float pos[3], float pitch, float yaw, int FOV_x, int FOV_y, 
     cam->movement_speed[1] = 0;
     cam->rotation_speed[0] = 0;
     cam->rotation_speed[1] = 0;
+    cam->quailty = 0;
     return cam;
 }
 

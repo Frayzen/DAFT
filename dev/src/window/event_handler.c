@@ -5,6 +5,7 @@ void launch_quality_render(app_params* params){
     copy(params->cam->pos, quality_cam->pos);
     quality_cam->FOV_x = 90;
     quality_cam->FOV_y = 90;
+    quality_cam->quailty = 1;
     quality_cam->yaw = params->cam->yaw;
     quality_cam->pitch = params->cam->pitch;
     quality_cam->skybox = params->cam->skybox;

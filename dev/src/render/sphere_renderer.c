@@ -34,6 +34,6 @@ int sphere_render(sphere * s, ray * r){
         val = 1;
     float color[3];
     scale(s->color, val, color);
-    ray_update_result(r, NULL, t, color);
+    ray_update_result(r, NULL, t, color, normal, s->reflectivity);
     return 1;
 }

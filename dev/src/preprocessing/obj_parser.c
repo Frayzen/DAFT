@@ -1,6 +1,6 @@
 #include "../../include/preprocessing/obj_parser.h"
 
-void load_object(world* w, char* file, float scale, float pos[3]){
+void load_object(world* w, char* file, float scale, float pos[3], float reflectivity){
     FILE *fp;
     fp = fopen(file, "r");
     if(fp == NULL){
@@ -18,7 +18,7 @@ void load_object(world* w, char* file, float scale, float pos[3]){
             face_count++;
         }
     }
-    mesh* m = build_mesh(vertex_count, face_count, w->size_meshes);
+    mesh* m = build_mesh(vertex_count, face_count);
     rewind(fp);
     float p[3];
     int faceloaded = 0;
@@ -39,6 +39,7 @@ void load_object(world* w, char* file, float scale, float pos[3]){
             faceloaded++;
         }
     }
+    m->reflectivity = reflectivity;
     add_mesh(w, m);
     printf("Loaded %i verticles and %i faces \n", m->nb_vertices, faceloaded);
     fclose(fp);

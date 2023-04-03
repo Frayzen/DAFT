@@ -16,6 +16,7 @@
     int depth;
     int no_extra;
     bbox* box;
+    float reflectivity;
 }mesh;
 
 void free_mesh(mesh* msh);

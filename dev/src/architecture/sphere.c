@@ -1,7 +1,8 @@
 #include "../../include/architecture/sphere.h"
 
-sphere* sphere_init(float x, float y, float z, float radius, float r, float g, float b){
+sphere* sphere_init(float x, float y, float z, float radius, float r, float g, float b, float reflectivity){
     sphere* s = malloc(sizeof(sphere));
+    s->reflectivity = reflectivity;
     s->pos[0] = x;
     s->pos[1] = y;
     s->pos[2] = z;

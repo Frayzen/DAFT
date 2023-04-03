@@ -24,11 +24,13 @@ void update_sides(struct raycast_params* rcp){
     
 }
 
-void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3]){
-    ray_result* new_hit = calloc(sizeof(ray_result), 1); 
+void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3], float normal[3], float reflectivity){
+    ray_result* new_hit = calloc(sizeof(ray_result), 1);
     new_hit->mint = new_mint;
     new_hit->tri = tri;
     new_hit->m = r->current_mesh;
+    copy(normal, new_hit->normal);
+    new_hit->reflectivity = reflectivity;
     copy(color, new_hit->color);
     if(r->last_hit != NULL)
         free(r->last_hit);

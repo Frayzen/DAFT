@@ -15,7 +15,7 @@ int main(){
     printf("WORDL OBJ COUNT: %d \n", wd->size_meshes);
     camera* cam = init_camera((float[]){-6,0,0}, 0, 0, 90, 90,NULL);
     add_camera(wd, cam);
-    sphere* s = sphere_init(0,0,0,1,1,0,0);
+    sphere* s = sphere_init(0,0,0,1,1,0,0, .5);
     add_sphere(wd, s);
 
     app_params params;

@@ -115,7 +115,7 @@ void add_tri(mesh* m, int points[3]){
     add_tri_to_bbox(m, m->box, m->depth, points);
     m->nb_triangles++;
 }
-mesh * build_mesh(int no_vert, int no_tri, int id)
+mesh * build_mesh(int no_vert, int no_tri)
 {
 
     mesh * m = (mesh *)malloc(sizeof(mesh));
