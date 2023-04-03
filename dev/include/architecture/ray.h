@@ -9,6 +9,7 @@
 #define RAY_H
 typedef struct ray_result
 {
+
     float mint;
     triangle* tri;
     mesh* m;
@@ -19,10 +20,9 @@ typedef struct ray_result
 } ray_result;
 typedef struct ray
 {
+    
 	float pos[3];
 	float dir[3];
-
-    float mint;
 
     //last mesh is the mesh that the ray was in last
     ray_result* last_hit;

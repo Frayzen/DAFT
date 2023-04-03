@@ -18,6 +18,10 @@ void load_object(world* w, char* file, float scale, float pos[3], float reflecti
             face_count++;
         }
     }
+    if(face_count == 0 || vertex_count == 0){
+        printf("File '%s' is not a valid obj file\n", file);
+        return;
+    }
     mesh* m = build_mesh(vertex_count, face_count);
     rewind(fp);
     float p[3];

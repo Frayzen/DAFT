@@ -7,7 +7,6 @@ void add_vertex(mesh * m, float p[3])
 	m->nb_vertices++;
 }
 
-
 void take_min(float p[3], float o[3]){
     p[0] = p[0] < o[0] ? p[0] : o[0];
     p[1] = p[1] < o[1] ? p[1] : o[1];
@@ -117,7 +116,6 @@ void add_tri(mesh* m, int points[3]){
 }
 mesh * build_mesh(int no_vert, int no_tri)
 {
-
     mesh * m = (mesh *)malloc(sizeof(mesh));
     m->depth = compute_depth(no_tri-1);
     m->tri_last_level = compute_tri_last_level(m->depth, no_tri);

@@ -20,6 +20,8 @@ int sphere_render(sphere * s, ray * r){
     xsqr = s->radius*s->radius - nshyp + side*side;
     //on sphere
     t = side - sqrt(xsqr);
+    if(r->last_hit != NULL && r->last_hit->mint < t)
+        return 0;
     normalize(r->dir, dir);
     scale(dir, t, onSphere);
     add(r->pos, onSphere, onSphere);

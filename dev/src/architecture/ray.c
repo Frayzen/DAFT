@@ -29,7 +29,7 @@ void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3], fl
     new_hit->mint = new_mint;
     new_hit->tri = tri;
     new_hit->m = r->current_mesh;
-    copy(normal, new_hit->normal);
+    normalize(normal, new_hit->normal);
     new_hit->reflectivity = reflectivity;
     copy(color, new_hit->color);
     if(r->last_hit != NULL)
@@ -46,6 +46,5 @@ ray create_ray_interpolate(raycast_params* rcp, int x_pix, int y_pix){
     r.dir[2] = rcp->botLeftCorner[2] + ratioX*rcp->rightDir[2] + ratioY*rcp->topDir[2];
     r.last_hit = NULL;
     copy(rcp->cam->pos, r.pos);
-    r.mint = INFINITY;
     return r;
 }

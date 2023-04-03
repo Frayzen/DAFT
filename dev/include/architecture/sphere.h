@@ -11,5 +11,5 @@ typedef struct sphere
 } sphere;
 
 sphere* sphere_init(float x, float y, float z, float r, float r2, float g, float b, float reflectivity);
-
+void free_sphere(sphere* s);
 #endif

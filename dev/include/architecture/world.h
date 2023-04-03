@@ -15,6 +15,8 @@ typedef struct world
     light** lights;
     mesh** meshes;
     sphere* spheres;
+    //skybox texture, NULL if no skybox
+    SDL_Surface* skybox;
 }world;
 
 
@@ -25,4 +27,5 @@ void add_sphere(world* wd, sphere* s);
 
 world* init_world();
 void free_world(world* wd);
+void load_skybox(world* wd, char* path);
 #endif

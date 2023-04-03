@@ -4,7 +4,6 @@
 #define BBOX_H
 
 //LBBOX  is the max number of children in a bounding box
-#define LBBOX 4
 typedef struct bbox
 {//either children or tris is null
     float min[3];

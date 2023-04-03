@@ -12,3 +12,6 @@ sphere* sphere_init(float x, float y, float z, float radius, float r, float g, f
     s->color[2] = b;
     return s;
 }
+void free_sphere(sphere* s){
+    free(s);
+}

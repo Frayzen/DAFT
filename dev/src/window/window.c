@@ -23,9 +23,6 @@ int setup_window(app_params* params){
     int pitch;
     SDL_LockTexture(params->texture, NULL, (void**)&pixels, &pitch);
     params->rcp = init_raycast_params(params->wd, params->width, params->height, params->cam, pixels);
-    //camera
-    SDL_Surface* old = params->cam->skybox;
-    SDL_FreeSurface(old);
     return 0;
 }
 
