@@ -10,20 +10,20 @@
 int main(){
     world* wd = init_world();
     printf("LOADING OBJ...");
-    load_object("assets/objs/car.obj", wd, .1, (float[]){0,0,0}, 1);
+load_object("assets/objs/character.obj", wd, 1, (float[]){0,0,0}, .1);
     //load_object(wd, "assets/objs/cube.obj", 1, (float[]){0,0,0}, .4);
     printf("WORDL OBJ COUNT: %d \n", wd->size_meshes);
     camera* cam = init_camera((float[]){-2,0,0}, 0, 0, 90, 90);
     add_camera(wd, cam);
-    int bound = 3;
-    for(int i = 0; i < bound; i++){
-        for(int j = 0; j < bound; j++){
-            for(int k = 0; k < bound; k++){
-                 sphere* s = sphere_init(i,j,k,0.3*((i+j+k)%2+1),(i+k)%2,(i+j)%2,(j+k)%2,.7);
-                add_sphere(wd, s);
-            }
-        }
-    }
+    // int bound = 3;
+    // for(int i = 0; i < bound; i++){
+    //     for(int j = 0; j < bound; j++){
+    //         for(int k = 0; k < bound; k++){
+    //              sphere* s = sphere_init(i,j,k,0.3*((i+j+k)%2+1),(i+k)%2,(i+j)%2,(j+k)%2,.7);
+    //             add_sphere(wd, s);
+    //         }
+    //     }
+    // }
 
     app_params params;
     params.width = 100;
@@ -35,7 +35,7 @@ int main(){
     if(setup_window(&params))
         return 1;
 
-    load_skybox(wd, "assets/textures/Studio.jpg");
+    load_skybox(wd, "assets/textures/Sky.jpg");
     launch_screen(&params);
     free_window(&params);
     free_world(wd);
