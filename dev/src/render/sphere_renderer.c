@@ -18,14 +18,16 @@ int sphere_render(sphere * s, ray * r){
     if (s->radius*s->radius <= nshyp - side*side)
         return 0;
     xsqr = s->radius*s->radius - nshyp + side*side;
+    //on sphere
     t = side - sqrt(xsqr);
+    normalize(r->dir, dir);
     scale(dir, t, onSphere);
-    add(onSphere, r->pos, onSphere);
+    add(r->pos, onSphere, onSphere);
+
+    //normal
     minus(onSphere, s->pos, normal);
-    normalize(normal, normal);
     float val = dotProduct(normal, r->dir);
-    val/=s->radius;
-    
+
     if(val < 0)
         val*=-1;
     if(val > 1)
