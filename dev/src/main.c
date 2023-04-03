@@ -17,6 +17,8 @@ int main(){
     add_camera(wd, cam);
     sphere* s = sphere_init(0,0,0,1,1,0,0);
     add_sphere(wd, s);
+    light* haha = init_light((float[]){10,5,0}, (float[]){0,0,0}, 5);
+    add_light(wd,haha);
 
     app_params params;
     params.width = 200;
