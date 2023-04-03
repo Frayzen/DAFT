@@ -44,6 +44,5 @@ ray create_ray_interpolate(raycast_params* rcp, int x_pix, int y_pix){
     r.dir[2] = rcp->botLeftCorner[2] + ratioX*rcp->rightDir[2] + ratioY*rcp->topDir[2];
     r.last_hit = NULL;
     copy(rcp->cam->pos, r.pos);
-    r.mint = INFINITY;
     return r;
 }

@@ -7,5 +7,5 @@
 
 #ifndef RENDER_H
 #define RENDER_H
-void ray_cast(ray* r, world* w, camera* cam);
+void ray_cast(ray* r, world* w, camera* cam, int shadow);
 #endif

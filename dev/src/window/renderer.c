@@ -11,7 +11,7 @@ void render_screen(raycast_params* rcp)
     #pragma omp parallel for
     for(int i = 0; i < width*height; i++){
         ray r = create_ray_interpolate(rcp, i%width, i/width);
-        ray_cast(&r, w, rcp->cam);
+        ray_cast(&r, w, rcp->cam,1);
         if(r.last_hit != NULL){
             pixels[i] = SDL_MapRGBA(format, r.last_hit->color[0]*255, r.last_hit->color[1]*255, r.last_hit->color[2]*255, 255);
             free(r.last_hit);
@@ -61,7 +61,7 @@ void* render_quality_process(void* rcpptr){
     update_sides(rcp);
     for(int i = 0; i < width*height; i++){
         ray r = create_ray_interpolate(rcp, i%width, i/width);
-        ray_cast(&r, w, rcp->cam);
+        ray_cast(&r, w, rcp->cam,1);
         if(r.last_hit != NULL){
             setPixel(image, i%width, i/width, SDL_MapRGBA(format, r.last_hit->color[0]*255, r.last_hit->color[1]*255, r.last_hit->color[2]*255, 255));
             free(r.last_hit);
