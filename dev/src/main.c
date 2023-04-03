@@ -15,7 +15,7 @@ int main(){
     printf("WORDL OBJ COUNT: %d \n", wd->size_meshes);
     camera* cam = init_camera((float[]){-2,0,0}, 0, 0, 90, 90);
     add_camera(wd, cam);
-    int bound = 3;
+    int bound = 2;
     for(int i = 0; i < bound; i++){
         for(int j = 0; j < bound; j++){
             for(int k = 0; k < bound; k++){
