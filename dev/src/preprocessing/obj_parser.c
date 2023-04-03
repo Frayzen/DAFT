@@ -1,51 +1,100 @@
 #include "../../include/preprocessing/obj_parser.h"
 
-void load_object(world* w, char* file, float scale, float pos[3], float reflectivity){
-    FILE *fp;
-    fp = fopen(file, "r");
-    if(fp == NULL){
-        printf("File '%s' not found\n", file);
+void load_object(char* path, world* w, float scale, float pos[3], float reflectivity)
+{
+    FILE* file;
+    file = fopen(path, "r");
+    if (file == NULL)
+    {
+        printf("cant open youre file man\n");
         return;
     }
-    char line[128];
-    int vertex_count = 0;
-    int face_count = 0;
-    while(fgets(line, sizeof(line), fp) != NULL){
-        if(line[0] == 'v'){
-            vertex_count++;
+
+    size_t vert = 0;
+    size_t tri = 0;
+    //size_t norm = 0;
+    //size_t texture = 0;
+
+    char line[200];
+
+    while (fgets(line, sizeof(line), file) != NULL)
+    {
+        if (line[0] == 'v')
+        {
+            if (line[1] == ' ')
+                vert++;
         }
-        if(line[0] == 'f'){
-            face_count++;
+        else if (line[0] == 'f')
+        {
+            int space = 0;
+            for (size_t i = 0; line[i] != 0 && line[i] != '\r'; i++)
+            {
+                if (line[i] == ' ')
+                    space++;
+            }
+            tri = tri + (space-3) +1;
         }
     }
-    if(face_count == 0 || vertex_count == 0){
-        printf("File '%s' is not a valid obj file\n", file);
+    if(vert == 0 || tri == 0){
+        printf("The %s file is not a valid obj file\n", path);
         return;
     }
-    mesh* m = build_mesh(vertex_count, face_count);
-    rewind(fp);
-    float p[3];
-    int faceloaded = 0;
-    while(fgets(line, sizeof(line), fp) != NULL){
-        if(line[0] == 'v' && line[1] == ' '){
-            sscanf(line, "v %f %f %f", &p[0], &p[1], &p[2]);
-            scale(p, scale, p);
-            add(p, pos, p);
-            add_vertex(m, p);
+
+    printf("tri %ld v %ld\n",tri, vert);
+    mesh* new_mesh = build_mesh(vert, tri);
+    fseek(file, 0, SEEK_SET);
+
+    float v[3];
+    while(fgets(line, sizeof(line), file) != NULL)
+    {
+        if (line[0] == 'v')
+        {
+            if (line[1] == ' ')
+            {
+                sscanf(line, "v %f %f %f", &v[0], &v[1], &v[2]);
+                scale(v, scale, v);
+                add(v, pos, v);
+                add_vertex(new_mesh, v);
+            }
         }
-        if(line[0] == 'f'){
-            int v1, v2, v3;
-            int vt1, vt2, vt3;
-            int vn1, vn2, vn3;
-            if(sscanf(line, "f %d/%d/%d %d/%d/%d %d/%d/%d", &v1, &vt1, &vn1, &v2, &vt2, &vn2, &v3, &vt3, &vn3) != 6)
-                sscanf(line, "f %d %d %d", &v1,&v2,&v3);
-            add_tri(m, (int[3]){v1-1, v2-1, v3-1});
-            faceloaded++;
+
+        if (line[0] == 'f')
+        {
+            int spc = 0;
+            int* p = calloc(3,sizeof(int));
+            for (size_t i = 0; line[i] != '\0' && line[i] != '\r'; i ++)
+            {
+                if (line[i] == ' ')
+                {
+                    if (spc >= 3)
+                    {
+                        if (spc == 3)
+                            p = realloc(p, sizeof(int)*(spc+1));
+                        else
+                            p = realloc(p, sizeof(int)*spc);
+                    }
+
+                    if (line[i+1] != '\0' && line[i+1] != '\r')
+                        p[spc] = atoi(&line[i+1]);
+                    spc++;
+                }
+            }
+
+            for (size_t i = 1; i <= spc-2; i++)
+            {
+                int points[3];
+                points[0] = p[0]-1;
+                points[1] = p[i]-1;
+                points[2] = p[i+1]-1;
+                add_tri(new_mesh, points);
+            }
+            free(p);
+
         }
     }
-    m->reflectivity = reflectivity;
-    add_mesh(w, m);
-    printf("Loaded %i verticles and %i faces \n", m->nb_vertices, faceloaded);
-    fclose(fp);
+    new_mesh->reflectivity = reflectivity;
+    add_mesh(w, new_mesh);
+    fclose(file);
 }
+
 

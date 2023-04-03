@@ -5,12 +5,12 @@
 #include "../include/window/window.h"
 #include "../include/architecture/camera.h"
 #include "../include/architecture/ray.h"
-#include "../include/preprocessing/obj.h"
+#include "../include/preprocessing/obj_parser.h"
 
 int main(){
     world* wd = init_world();
     printf("LOADING OBJ...");
-    load_object(wd, "assets/objs/car.obj", .1, (float[]){0,0,0}, 1);
+    load_object("assets/objs/car.obj", wd, .1, (float[]){0,0,0}, 1);
     //load_object(wd, "assets/objs/cube.obj", 1, (float[]){0,0,0}, .4);
     printf("WORDL OBJ COUNT: %d \n", wd->size_meshes);
     camera* cam = init_camera((float[]){-2,0,0}, 0, 0, 90, 90);
