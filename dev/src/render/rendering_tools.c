@@ -11,6 +11,8 @@ raycast_params* init_raycast_params(world* wd, int width, int height, camera* ca
     rcp->height = height;
     rcp->cam = cam;
     rcp->pixels = pixels;
+    rcp->shadow = 0;
+    rcp->reflection = 0;
     return rcp;
 }
 void free_raycast_params(raycast_params* rcp){

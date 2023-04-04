@@ -13,6 +13,8 @@ typedef struct raycast_params{
     float rightDir[3];
     float botLeftCorner[3];
     
+    int shadow;
+    int reflection;
 } raycast_params;
 
 #endif

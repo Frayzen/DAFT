@@ -40,7 +40,6 @@ void load_object(char* path, world* w, float scale, float pos[3], float reflecti
         return;
     }
 
-    printf("tri %ld v %ld\n",tri, vert);
     mesh* new_mesh = build_mesh(vert, tri);
     fseek(file, 0, SEEK_SET);
 

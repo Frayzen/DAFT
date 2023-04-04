@@ -13,10 +13,6 @@ int setup_window(app_params* params){
     SDL_SetRelativeMouseMode(SDL_TRUE);
     SDL_RendererInfo info;
     SDL_GetRendererInfo(params->renderer, &info );
-    printf("Renderer Name: %s\n", info.name);
-    for(Uint32 i = 0; i < info.num_texture_formats; i++){
-        printf("Format: %s\n", SDL_GetPixelFormatName(info.texture_formats[i]));
-    }
     //pixels
     params->texture = SDL_CreateTexture(params->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, params->width, params->height);
     Uint32* pixels;

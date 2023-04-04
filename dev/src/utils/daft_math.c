@@ -14,3 +14,9 @@ void normalize(float* p, float* r)
     r[1] = p[1] / sum;
     r[2] = p[2] / sum;
 }
+
+float distance(float* a, float* b){
+    float diff[3];
+    minus(a, b, diff);
+    return norm(diff);
+}

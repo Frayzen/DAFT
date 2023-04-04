@@ -29,8 +29,8 @@ void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3], fl
     new_hit->mint = new_mint;
     new_hit->tri = tri;
     new_hit->m = r->current_mesh;
-    normalize(normal, new_hit->normal);
     new_hit->reflectivity = reflectivity;
+    normalize(normal, new_hit->normal);
     copy(color, new_hit->color);
     if(r->last_hit != NULL)
         free(r->last_hit);

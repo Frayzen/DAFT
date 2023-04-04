@@ -9,7 +9,8 @@ void launch_quality_render(app_params* params){
     quality_cam->yaw = params->cam->yaw;
     quality_cam->pitch = params->cam->pitch;
     raycast_params* quality_rcp = init_raycast_params(params->wd, QUALITY_WIDTH, QUALITY_HEIGHT, quality_cam, NULL);
-    printf("COPYING...\n");
+    quality_rcp->shadow = params->rcp->shadow;
+    quality_rcp->reflection = params->rcp->reflection;
     render_quality(quality_rcp);
 }
 
@@ -23,6 +24,14 @@ void handle_key(SDL_Keycode key, app_params* params, int pressed){
         case SDLK_p:
             if(pressed)
                 launch_quality_render(params);
+            break;
+        case SDLK_u:
+            if(pressed)
+                params->rcp->reflection = !params->rcp->reflection;
+            break;
+        case SDLK_i:
+            if(pressed)
+                params->rcp->shadow = !params->rcp->shadow;
             break;
         case SDLK_w:
             params->cam->movement_speed[0] += delta;

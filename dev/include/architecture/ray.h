@@ -16,7 +16,6 @@ typedef struct ray_result
     mesh* m;
     float normal[3];
     float color[3];
-    float normal[3];
     float reflectivity;
 
 } ray_result;

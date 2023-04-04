@@ -1,41 +1,36 @@
 #include "../../include/render/sphere_renderer.h"
 
 int sphere_render(sphere * s, ray * r){
-    float dir[3], hyp[3], onSphere[3], normal[3];
-    double angle, side, xsqr, t;
-    
-    copy(r->dir, dir);
-    minus(s->pos, r->pos, hyp);
-    float dphp = dotProduct(hyp, dir);
-    float nd = norm(dir);
-    float nh = norm(hyp);
-    angle = (acos(dphp/(nh*nd)))*180/M_PI;
-    if (angle > 90) {return 0;}
-    side = dotProduct(hyp, dir);
-    side/=nd;
-    
-    float nshyp = normSquared(hyp);
-    if (s->radius*s->radius <= nshyp - side*side)
-        return 0;
-    xsqr = s->radius*s->radius - nshyp + side*side;
-    //on sphere
-    t = side - sqrt(xsqr);
-    if(r->last_hit != NULL && r->last_hit->mint < t)
-        return 0;
+    float diff[3], onSphere[3], normal[3], dir[3];
     normalize(r->dir, dir);
+    float a = 1;
+    minus(r->pos, s->pos, diff);
+    float b = dotProduct(diff, dir);
+    b*=2;
+    float c = normSquared(diff) - s->radius*s->radius;
+    float discriminant = b*b - 4*a*c;
+    if(discriminant < 0)
+        return 0;
+    float sqrtDisc = sqrt(discriminant);
+    float t = -b - sqrtDisc;
+    if(t < 0)
+        t = -b + sqrtDisc;
+    t/=(2*a);
+    if(t < 0)
+        return 0;
+    if(r->last_hit && r->last_hit->mint < t) //previous was closer
+        return 0;
     scale(dir, t, onSphere);
     add(r->pos, onSphere, onSphere);
-
-    //normal
     minus(onSphere, s->pos, normal);
+    normalize(normal, normal);
     float val = dotProduct(normal, r->dir);
-
     if(val < 0)
         val*=-1;
     if(val > 1)
         val = 1;
-    float color[3];
-    scale(s->color, val, color);
-    ray_update_result(r, NULL, t, color, normal, s->reflectivity);
+    val++;
+    //scale(s->color, val, color);
+    ray_update_result(r, NULL, t, s->color, normal, s->reflectivity);
     return 1;
 }

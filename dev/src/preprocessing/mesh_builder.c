@@ -3,7 +3,7 @@
 void add_vertex(mesh * m, float p[3])
 {
     m->vertices[m->nb_vertices] = malloc(sizeof(float)*3);
-	copy(p, m->vertices[m->nb_vertices])
+	copy(p, m->vertices[m->nb_vertices]);
 	m->nb_vertices++;
 }
 
