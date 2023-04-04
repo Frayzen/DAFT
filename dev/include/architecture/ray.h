@@ -5,6 +5,7 @@
 #include "../utils/daft_math.h"
 #include "../render/ray_cast_params.h"
 #include <omp.h>
+
 #ifndef RAY_H
 #define RAY_H
 typedef struct ray_result
@@ -13,6 +14,7 @@ typedef struct ray_result
     float mint;
     triangle* tri;
     mesh* m;
+    float normal[3];
     float color[3];
     float normal[3];
     float reflectivity;
@@ -23,7 +25,6 @@ typedef struct ray
     
 	float pos[3];
 	float dir[3];
-
     //last mesh is the mesh that the ray was in last
     ray_result* last_hit;
     //current mesh is the mesh that the ray is currently in
