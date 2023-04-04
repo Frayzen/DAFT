@@ -1,14 +1,20 @@
 #include "../../include/window/renderer.h"
 
+int percentage = 0;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
 void render_screen(raycast_params* rcp)
 {
+    //pixels = wodth*height-1
     Uint32* pixels = rcp->pixels;
     int width = rcp->width;
     int height = rcp->height;
     SDL_PixelFormat* format = rcp->format;
     struct world* w = rcp->w;
     update_sides(rcp);
-    #pragma omp parallel for
+    int ppixels = (percentage*(width*height))/100;
+
+#pragma omp parallel for
     for(int i = 0; i < width*height; i++){
         ray r = create_ray_interpolate(rcp, i%width, i/width);
         ray_cast(&r, w, 1);
@@ -18,6 +24,21 @@ void render_screen(raycast_params* rcp)
         }
         else
             pixels[i] = SDL_MapRGBA(format, 0, 0, 0, 255);
+    }
+    for (int w = 0; w < width; w++)
+    {
+        for (int h = 0; h < height/20; h++)
+        {
+            if (w*h >= ppixels)
+                break;
+            else
+            {
+                if (w < percentage*width/100)
+                    pixels[h*width+w] = SDL_MapRGBA(format, 0, 0, 0, 0);
+                else
+                    pixels[h*width+w] = SDL_MapRGBA(format, 255, 255, 255, 255);;
+            }
+        }
     }
 }
 
@@ -69,6 +90,9 @@ void* render_quality_process(void* rcpptr){
         else
             setPixel(image, i%width, i/width, SDL_MapRGBA(format, 0, 0, 0, 255));
         if(i%100000 == 0){
+            pthread_mutex_lock(&mutex);
+            percentage = 100*i/(width*height);
+            pthread_mutex_unlock(&mutex);
             printf("%f%%\n", (float)i/(width*height)*100);
         }
     }
