@@ -13,6 +13,7 @@ typedef struct ray_result
     float mint;
     triangle* tri;
     mesh* m;
+    float normal[3];
     float color[3];
 } ray_result;
 typedef struct ray
@@ -25,7 +26,7 @@ typedef struct ray
     mesh* current_mesh;
 }ray;
 
-void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3]);
+void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3], float normal[3]);
 void update_sides(raycast_params* rdo);
 ray create_ray_interpolate(raycast_params* rcp, int x_pix, int y_pix);
 void get_ray_direction(float* r, int width, int height, int x_pix, int y_pix, camera* cam);

@@ -12,9 +12,9 @@ void get_background(ray* ry, camera* cam){
         Uint32 pixel = ((Uint32*)skybox->pixels)[y*skybox->w+x];
         Uint8 r, g, b;
         SDL_GetRGB(pixel, skybox->format, &r,&g,&b);
-        ray_update_result(ry, NULL, INFINITY, (float[]){r/255.0,g/255.0,b/255.0});
+        ray_update_result(ry, NULL, INFINITY, (float[]){r/255.0,g/255.0,b/255.0}, (float[]){0,0,0});
     }else
-        ray_update_result(ry, NULL, INFINITY, (float[]){0,0,0});
+        ray_update_result(ry, NULL, INFINITY, (float[]){0,0,0}, (float[]){0,0,0});
 }
 
 
@@ -32,40 +32,46 @@ int shadow_hit(ray* shadow_ray,float prevt){
 void shadow_render(ray* ray, world* w, int real_time)
 {
     struct ray* sRay = calloc(sizeof(struct ray),1);
+
     //Define the position of the shadow ray
-    scale(ray->dir, ray->last_hit->mint, sRay->pos);
+    scale(ray->dir, ray->last_hit->mint + 0.001, sRay->pos);
     add(ray->pos, sRay->pos, sRay->pos);
-    /*printf("Shadow ray pos:%f", sRay->pos[0]);
-    printf("%f", sRay->pos[1]);
-    printf("%f\n", sRay->pos[2]);*/
+    //printf("triangle : %f\n", ray->last_hit->tri->normal);
+    //Define the normal of the triangle hit by ray
+    float normal[3] ={0,0,0};
+    copy(normal,ray->last_hit->normal);
 
     int size = w->size_lights;
     for (int i = 0; i < size; i++){
         //Define the direction of the shadow ray
         minus(w->lights[i]->pos, sRay->pos, sRay->dir);
         
-        /*printf("Shadow ray direction :%f", sRay->dir[0]);
-        printf("%f", sRay->dir[1]);
-        printf("%f\n", sRay->dir[2]);*/
-
         //Normalize the direction vector
         normalize(sRay->dir,sRay->dir);
-
+        float x = dotProduct(normal, sRay->dir);
+        float c = x * w->lights[i]->intensity;
+        //float coeff[3] = {c,c,c};
         
         sRay->current_mesh = ray->current_mesh;
         sRay->last_hit = calloc(sizeof(struct ray_result),1);
         sRay->last_hit->mint = distance(sRay->pos, w->lights[i]->pos);
         float prevt = sRay->last_hit->mint;
         ray_cast(sRay, w, NULL,0);
-
+        
         //if we hit somthing, set the color in black
-        if (shadow_hit(sRay,prevt) == 1){
-            ray->last_hit->color[0] = 0;
-            ray->last_hit->color[1] = 0;
-            ray->last_hit->color[2] = 0;
-        }
-        free(sRay->last_hit);
+        if (shadow_hit(sRay,prevt) == 0){
+                //add(ray->last_hit->color, coeff, ray->last_hit->color);
+                ray->last_hit->color[0] = ((1 -ray->last_hit->color[0])*c+ray->last_hit->color[0]);
+                ray->last_hit->color[1] = ((1 -ray->last_hit->color[1])*c+ray->last_hit->color[1]);
+                ray->last_hit->color[2] = ((1 -ray->last_hit->color[2])*c+ray->last_hit->color[2]);
+
+            }     
+        else{
+                scale(ray->last_hit->color, c, ray->last_hit->color);
+                }
     }
+        free(sRay->last_hit);
+
     free(sRay);
 }
 //int shadow : 1 to compute shadows, 0 otherwise
