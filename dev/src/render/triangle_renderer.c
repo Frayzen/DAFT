@@ -1,4 +1,4 @@
-#include "../../include/render/triangle_render.h"
+#include "../../include/render/triangle_renderer.h"
 int triangle_render(triangle* tri, ray* r){
     mesh* m = r->current_mesh;
     float EPSILON = 0.0000001;
