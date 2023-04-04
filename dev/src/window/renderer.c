@@ -25,18 +25,20 @@ void render_screen(raycast_params* rcp)
         else
             pixels[i] = SDL_MapRGBA(format, 0, 0, 0, 255);
     }
-    for (int w = 0; w < width; w++)
-    {
-        for (int h = 0; h < height/20; h++)
+    if(percentage < 100 && percentage > 0){
+        for (int w = 0; w < width; w++)
         {
-            if (w*h >= ppixels)
-                break;
-            else
+            for (int h = 0; h < height/20; h++)
             {
-                if (w < percentage*width/100)
-                    pixels[h*width+w] = SDL_MapRGBA(format, 0, 0, 0, 0);
+                if (w*h >= ppixels)
+                    break;
                 else
-                    pixels[h*width+w] = SDL_MapRGBA(format, 255, 255, 255, 255);;
+                {
+                    if (w < percentage*width/100)
+                        pixels[h*width+w] = SDL_MapRGBA(format, 0, 255, 0, 255);
+                    else
+                        pixels[h*width+w] = SDL_MapRGBA(format, 0, 0, 0, 0);
+                }
             }
         }
     }
@@ -89,13 +91,15 @@ void* render_quality_process(void* rcpptr){
         }
         else
             setPixel(image, i%width, i/width, SDL_MapRGBA(format, 0, 0, 0, 255));
-        if(i%100000 == 0){
+        if(i%100 == 0){
             pthread_mutex_lock(&mutex);
             percentage = 100*i/(width*height);
             pthread_mutex_unlock(&mutex);
-            printf("%f%%\n", (float)i/(width*height)*100);
         }
     }
+    pthread_mutex_lock(&mutex);
+    percentage = 100;
+    pthread_mutex_unlock(&mutex);
 
 
     SDL_SaveBMP(image, "out.png");
