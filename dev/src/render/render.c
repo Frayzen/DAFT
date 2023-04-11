@@ -56,7 +56,10 @@ void shadow_render(ray* ry, world* w)
                 ry->last_hit->color[2] = ((1 -ry->last_hit->color[2])*c+ry->last_hit->color[2]);
         }       
         else //shadow
-            scale(ry->last_hit->color, sqrt(c), ry->last_hit->color);
+        {
+            float sqtc = sqrt(c);
+            scale(ry->last_hit->color, sqtc, ry->last_hit->color);
+        }
         if(sRay->last_hit)
             free(sRay->last_hit);
     }
