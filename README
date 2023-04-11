@@ -2,3 +2,14 @@ Restructure branch of DAFT
 This branch is for test and new implementations purposes only.
 Restructuration loading...
 Please do not remove the branch.
+
+Requirements:
+- make
+- gcc
+- sdl2
+- sdl2_image
+- gtk3
+
+Consider simply executing the following command:
+
+sudo apt-get install make gcc libsdl2-dev libsdl2-image-dev libgtk-3-dev
