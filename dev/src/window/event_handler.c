@@ -40,10 +40,10 @@ void handle_key(SDL_Keycode key, app_params* params, int pressed){
             params->cam->movement_speed[0] -= delta;
             break;
         case SDLK_a:
-            params->cam->movement_speed[1] += delta;
+            params->cam->movement_speed[1] -= delta;
             break;
         case SDLK_d:
-            params->cam->movement_speed[1] -= delta;
+            params->cam->movement_speed[1] += delta;
             break;
         case SDLK_SPACE:
             params->cam->movement_speed[2] += delta;

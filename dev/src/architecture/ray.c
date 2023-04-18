@@ -9,10 +9,10 @@ void get_ray_direction(float* r, int width, int height, int x_pix, int y_pix, ca
     float ratioY = ((float) y_pix/(float) height) - 0.5;
     yaw += ratioX*FOV_x;
     pitch += ratioY*FOV_y;
-    float dir[3] = {cos(pitch)*cos(yaw), sin(pitch), -cos(pitch)*sin(yaw)};
+    float dir[3] = {cos(pitch)*cos(yaw), sin(pitch), cos(pitch)*sin(yaw)};
     copy(dir, r);
 }
-void update_sides(struct raycast_params* rcp){
+void update_cam_sides(struct raycast_params* rcp){
     get_ray_direction(rcp->botLeftCorner, rcp->width, rcp->height, 0, rcp->width-1, rcp->cam);
     float top[3], right[3], left[3], bot[3];
     get_ray_direction(top, rcp->width, rcp->height, 0, rcp->height-1, rcp->cam);
@@ -21,7 +21,7 @@ void update_sides(struct raycast_params* rcp){
     get_ray_direction(bot, rcp->width, rcp->height, 0, 0, rcp->cam);
     minus(bot, top, rcp->topDir);
     minus(right, left, rcp->rightDir);
-    
+
 }
 
 void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3], float normal[3], float reflectivity){

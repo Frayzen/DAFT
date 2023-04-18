@@ -17,6 +17,7 @@ typedef struct bbox
     //number of children (either bbox or tris) in the bbox
     int c_size;
 }bbox;
+
 void free_bbox(bbox *b);
 
 #endif

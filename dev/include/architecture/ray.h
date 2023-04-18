@@ -23,6 +23,7 @@ typedef struct ray
 {
     
 	float pos[3];
+    //direction of the ray
 	float dir[3];
     //last mesh is the mesh that the ray was in last
     ray_result* last_hit;
@@ -30,7 +31,7 @@ typedef struct ray
     mesh* current_mesh;
 }ray;
 
-void update_sides(raycast_params* rdo);
+void update_cam_sides(raycast_params* rcp);
 ray create_ray_interpolate(raycast_params* rcp, int x_pix, int y_pix);
 void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3], float normal[3], float reflectivity);
 #endif

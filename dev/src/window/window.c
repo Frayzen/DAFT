@@ -38,6 +38,8 @@ int launch_screen(app_params* params){
     // float ro = 5;
     while (!quit)
     {
+
+        quit = 1;
         // params->cam->pos[0] = ro*cos(angle);
         // params->cam->pos[2] = ro*sin(angle);
         // params->cam->yaw = M_PI-angle;

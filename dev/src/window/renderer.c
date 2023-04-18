@@ -10,21 +10,34 @@ void render_screen(raycast_params* rcp)
     int width = rcp->width;
     int height = rcp->height;
     SDL_PixelFormat* format = rcp->format;
-    struct world* w = rcp->w;
-    update_sides(rcp);
-    int ppixels = (percentage*(width*height))/100;
 
-#pragma omp parallel for
+    update_cam_sides(rcp);
+    
+    int* pixels_rasterize = malloc(sizeof(int)*width*height);
+    render_rasterize_bbox(rcp, pixels_rasterize);
+
+    #pragma omp parallel for
     for(int i = 0; i < width*height; i++){
+        if(pixels_rasterize[i])
+            pixels[i] = SDL_MapRGBA(format, 0, 255, 0, 0);
+        else{
+            
         ray r = create_ray_interpolate(rcp, i%width, i/width);
-        ray_cast(&r, w, rcp->reflection, rcp->shadow);
+        ray_cast(&r, rcp->w, rcp->reflection, rcp->shadow);
         if(r.last_hit != NULL){
             pixels[i] = SDL_MapRGBA(format, r.last_hit->color[0]*255, r.last_hit->color[1]*255, r.last_hit->color[2]*255, 255);
             free(r.last_hit);
         }
         else
             pixels[i] = SDL_MapRGBA(format, 0, 0, 0, 255);
+        }
+        /*
+            
+        */
     }
+
+    int ppixels = (percentage*width*height)/100;
+
     if(percentage < 100 && percentage > 0){
         for (int w = 0; w < width; w++)
         {
@@ -81,7 +94,7 @@ void* render_quality_process(void* rcpptr){
     int height = rcp->height;
     SDL_PixelFormat* format = image->format;
     world* w = rcp->w;
-    update_sides(rcp);
+    update_cam_sides(rcp);
     for(int i = 0; i < width*height; i++){
         ray r = create_ray_interpolate(rcp, i%width, i/width);
         ray_cast(&r, w, rcp->reflection, rcp->shadow);
