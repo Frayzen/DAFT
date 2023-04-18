@@ -17,4 +17,6 @@
 
 void normalize(float* p, float* r);
 float distance(float* a, float* b);
+float project(float* a, float* b);
+void project_onto(float* a, float* b, float* r);
 #endif

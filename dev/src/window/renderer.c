@@ -7,33 +7,27 @@ void render_screen(raycast_params* rcp)
 {
     //pixels = wodth*height-1
     Uint32* pixels = rcp->pixels;
+    memset(pixels, 0, rcp->width*rcp->height*sizeof(Uint32));
     int width = rcp->width;
     int height = rcp->height;
     SDL_PixelFormat* format = rcp->format;
 
     update_cam_sides(rcp);
     
-    int* pixels_rasterize = malloc(sizeof(int)*width*height);
+    int* pixels_rasterize = calloc(sizeof(int)*width*height, 1);
     render_rasterize_bbox(rcp, pixels_rasterize);
 
     #pragma omp parallel for
     for(int i = 0; i < width*height; i++){
-        if(pixels_rasterize[i])
-            pixels[i] = SDL_MapRGBA(format, 0, 255, 0, 0);
-        else{
-            
+        if(!pixels_rasterize[i])
+            continue;
+        
         ray r = create_ray_interpolate(rcp, i%width, i/width);
         ray_cast(&r, rcp->w, rcp->reflection, rcp->shadow);
         if(r.last_hit != NULL){
             pixels[i] = SDL_MapRGBA(format, r.last_hit->color[0]*255, r.last_hit->color[1]*255, r.last_hit->color[2]*255, 255);
             free(r.last_hit);
         }
-        else
-            pixels[i] = SDL_MapRGBA(format, 0, 0, 0, 255);
-        }
-        /*
-            
-        */
     }
 
     int ppixels = (percentage*width*height)/100;

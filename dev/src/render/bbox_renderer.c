@@ -1,12 +1,5 @@
 #include "../../include/render/bbox_renderer.h"
 
-float min(float x, float y){
-    return x < y ? x : y;
-}
-float max(float x, float y){
-    return x > y ? x : y;
-}
-
 int intersect_bbox(bbox* b, ray* r){
     float tmin = -INFINITY;
     float tmax = INFINITY;

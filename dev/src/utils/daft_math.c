@@ -20,3 +20,9 @@ float distance(float* a, float* b){
     minus(a, b, diff);
     return norm(diff);
 }
+
+float project(float* w, float* v){
+    float wv = dotProduct(w, v);
+    float nsqr = normSquared(v);
+    return wv / nsqr;
+}
