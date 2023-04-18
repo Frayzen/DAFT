@@ -23,8 +23,8 @@ int main(){
     add_light(wd, lt);
     
     app_params params;
-    params.width = 500;
-    params.height = 500;
+    params.width = 300;
+    params.height = 300;
     params.wd = wd; 
     params.cam = cam;
     params.FPS_UPPER_LIMIT=30;

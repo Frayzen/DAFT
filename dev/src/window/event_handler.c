@@ -85,7 +85,7 @@ void handle_events(int* quit, app_params* params){
                 break;
         }
     }
-    float yaw = -params->cam->yaw;
+    float yaw = params->cam->yaw;
     float forward[3] = {cos(yaw), 0, sin(yaw)};
     float right[3] = {cos(yaw+M_PI/2), 0, sin(yaw+M_PI/2)};
     float up[3] = {0, 1, 0};
