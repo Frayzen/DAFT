@@ -18,6 +18,7 @@ int setup_window(app_params* params){
     Uint32* pixels;
     int pitch;
     SDL_LockTexture(params->texture, NULL, (void**)&pixels, &pitch);
+
     params->rcp = init_raycast_params(params->wd, params->width, params->height, params->cam, pixels);
     return 0;
 }
@@ -36,9 +37,11 @@ int launch_screen(app_params* params){
     int fps = 0;
     // float angle = 0;
     // float ro = 5;
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(params->renderer, params->wd->skybox);
+    SDL_Rect srcRect = { 0, 0, params->wd->skybox->w, params->wd->skybox->h };
+    SDL_Rect dstRect = { 0, 0, params->width, params->height };
     while (!quit)
     {
-
         //quit = 1;
         // params->cam->pos[0] = ro*cos(angle);
         // params->cam->pos[2] = ro*sin(angle);
@@ -47,8 +50,11 @@ int launch_screen(app_params* params){
         // if(angle > 2*M_PI){
         //     angle -= 2*M_PI;
         // }
+        
         render_screen(params->rcp);
         SDL_UnlockTexture(params->texture);
+        SDL_RenderCopy(params->renderer, texture, &srcRect, &dstRect);
+        SDL_SetTextureBlendMode(params->texture, SDL_BLENDMODE_BLEND);
         SDL_RenderCopy(params->renderer, params->texture, NULL, NULL); 
         SDL_RenderPresent(params->renderer);
         fps++;

@@ -33,7 +33,7 @@ int main(){
         return 1;
 
     printf("WORDL OBJ COUNT: %d \n", wd->size_meshes);
-    //load_skybox(wd, "assets/textures/Sky.jpg");
+    load_skybox(wd, "assets/textures/Sky.jpg");
     launch_screen(&params);
     free_window(&params);
     free_world(wd);
