@@ -8,7 +8,7 @@ int setup_window(app_params* params){
     SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" );
     params->window = SDL_CreateWindow("SDL2 Displaying Image",
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            params->width, params->height ,0);
+            params->width * params->render_scale, params->height * params->render_scale, 0);
     params->renderer = SDL_CreateRenderer(params->window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRelativeMouseMode(SDL_TRUE);
     SDL_RendererInfo info;
@@ -39,7 +39,7 @@ int launch_screen(app_params* params){
     // float ro = 5;
     SDL_Texture* texture = SDL_CreateTextureFromSurface(params->renderer, params->wd->skybox);
     SDL_Rect srcRect = { 0, 0, params->wd->skybox->w, params->wd->skybox->h };
-    SDL_Rect dstRect = { 0, 0, params->width, params->height };
+    SDL_Rect dstRect = { 0, 0, params->width * params->render_scale, params->height * params->render_scale};
     while (!quit)
     {
         //quit = 1;
@@ -55,6 +55,7 @@ int launch_screen(app_params* params){
         SDL_UnlockTexture(params->texture);
         SDL_RenderCopy(params->renderer, texture, &srcRect, &dstRect);
         SDL_SetTextureBlendMode(params->texture, SDL_BLENDMODE_BLEND);
+
         SDL_RenderCopy(params->renderer, params->texture, NULL, NULL); 
         SDL_RenderPresent(params->renderer);
         fps++;

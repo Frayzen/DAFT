@@ -32,9 +32,7 @@ void _ray_cast(ray* r, world* w, int reflection_count, int compute_shadow){
         r->current_mesh = NULL;
         sphere_render(s, r);
     }
-    if(r->last_hit == NULL)
-        get_background(r, w);
-    else{
+    if(r->last_hit != NULL){
         if(reflection_count && r->last_hit->reflectivity > 0)
             reflection(r, w, reflection_count);
         if(compute_shadow)

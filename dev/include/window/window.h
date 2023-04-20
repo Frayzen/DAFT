@@ -16,6 +16,7 @@
 struct app_params{
     int width;
     int height;
+    int render_scale;
     int FPS_UPPER_LIMIT;
     SDL_Window* window;
     SDL_Renderer* renderer;

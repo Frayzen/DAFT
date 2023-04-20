@@ -21,10 +21,9 @@ void render_screen(raycast_params* rcp)
     for(int i = 0; i < width*height; i++){
         if(!pixels_rasterize[i])
             continue;
-        pixels[i] = SDL_MapRGBA(format, 0, 255, 0, 255);
         ray r = create_ray_interpolate(rcp, i%width, i/width);
+        pixels[i] = SDL_MapRGBA(format, 0, 255,0,255);
         ray_cast(&r, rcp->w, rcp->reflection, rcp->shadow);
-        pixels[i] = SDL_MapRGBA(format, 0, 255, 0, 255);
         if(r.last_hit != NULL){
             pixels[i] = SDL_MapRGBA(format, r.last_hit->color[0]*255, r.last_hit->color[1]*255, r.last_hit->color[2]*255, 255);
             free(r.last_hit);
