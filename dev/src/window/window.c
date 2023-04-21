@@ -38,7 +38,6 @@ int launch_screen(app_params* params){
     // float angle = 0;
     // float ro = 5;
     SDL_Texture* texture = SDL_CreateTextureFromSurface(params->renderer, params->wd->skybox);
-    SDL_Rect first_src, second_src, first_to, second_to;
     while (!quit)
     {
         //quit = 1;
@@ -52,10 +51,7 @@ int launch_screen(app_params* params){
         
         render_screen(params->rcp);
         SDL_UnlockTexture(params->texture);
-        define_sky_points(&first_src, &second_src, &first_to, &second_to, params->rcp);
-        printf("firstfromx %i firstwidth %i secondfromx %i secondwidth %i\n", first_src.x, first_src.w, second_src.x, second_src.w);
-        SDL_RenderCopy(params->renderer, texture, &first_src, &first_to);
-        SDL_RenderCopy(params->renderer, texture, &second_src, &second_to);
+        define_sky_points(params->renderer, texture, params->rcp);
         SDL_SetTextureBlendMode(params->texture, SDL_BLENDMODE_BLEND);
         SDL_RenderCopy(params->renderer, params->texture, NULL, NULL); 
         SDL_RenderPresent(params->renderer);

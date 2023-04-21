@@ -8,5 +8,5 @@
 #include "../architecture/world.h"
 
 //normalized dir
-void define_sky_points(SDL_Rect* first_src, SDL_Rect* second_src, SDL_Rect* first_to, SDL_Rect* second_to, raycast_params* rcp);
+void define_sky_points(SDL_Renderer* renderer, SDL_Texture* skybox_texture, raycast_params* rcp);
 #endif
