@@ -7,8 +7,9 @@ typedef struct raycast_params{
     Uint32* pixels;
     int width;
     int height;
+    float screen_scale;
     struct camera* cam;
-    //point in the middle of each side of the screen
+    //pointers to the corners of the screen
     float topDir[3];
     float rightDir[3];
     float botLeftCorner[3];

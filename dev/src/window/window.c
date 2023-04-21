@@ -8,7 +8,7 @@ int setup_window(app_params* params){
     SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" );
     params->window = SDL_CreateWindow("SDL2 Displaying Image",
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            params->width * params->render_scale, params->height * params->render_scale, 0);
+            params->width * params->screen_scale, params->height * params->screen_scale, 0);
     params->renderer = SDL_CreateRenderer(params->window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRelativeMouseMode(SDL_TRUE);
     SDL_RendererInfo info;
@@ -19,7 +19,7 @@ int setup_window(app_params* params){
     int pitch;
     SDL_LockTexture(params->texture, NULL, (void**)&pixels, &pitch);
 
-    params->rcp = init_raycast_params(params->wd, params->width, params->height, params->cam, pixels);
+    params->rcp = init_raycast_params(params->wd, params->width, params->height, params->cam, params->screen_scale, pixels);
     return 0;
 }
 
@@ -38,8 +38,7 @@ int launch_screen(app_params* params){
     // float angle = 0;
     // float ro = 5;
     SDL_Texture* texture = SDL_CreateTextureFromSurface(params->renderer, params->wd->skybox);
-    SDL_Rect srcRect = { 0, 0, params->wd->skybox->w, params->wd->skybox->h };
-    SDL_Rect dstRect = { 0, 0, params->width * params->render_scale, params->height * params->render_scale};
+    SDL_Rect first_src, second_src, first_to, second_to;
     while (!quit)
     {
         //quit = 1;
@@ -53,9 +52,11 @@ int launch_screen(app_params* params){
         
         render_screen(params->rcp);
         SDL_UnlockTexture(params->texture);
-        SDL_RenderCopy(params->renderer, texture, &srcRect, &dstRect);
+        define_sky_points(&first_src, &second_src, &first_to, &second_to, params->rcp);
+        printf("firstfromx %i firstwidth %i secondfromx %i secondwidth %i\n", first_src.x, first_src.w, second_src.x, second_src.w);
+        SDL_RenderCopy(params->renderer, texture, &first_src, &first_to);
+        SDL_RenderCopy(params->renderer, texture, &second_src, &second_to);
         SDL_SetTextureBlendMode(params->texture, SDL_BLENDMODE_BLEND);
-
         SDL_RenderCopy(params->renderer, params->texture, NULL, NULL); 
         SDL_RenderPresent(params->renderer);
         fps++;

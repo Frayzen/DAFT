@@ -8,7 +8,7 @@ void launch_quality_render(app_params* params){
     quality_cam->quality = 1;
     quality_cam->yaw = params->cam->yaw;
     quality_cam->pitch = params->cam->pitch;
-    raycast_params* quality_rcp = init_raycast_params(params->wd, QUALITY_WIDTH, QUALITY_HEIGHT, quality_cam, NULL);
+    raycast_params* quality_rcp = init_raycast_params(params->wd, QUALITY_WIDTH, QUALITY_HEIGHT, quality_cam, params->screen_scale, NULL);
     quality_rcp->shadow = params->rcp->shadow;
     quality_rcp->reflection = params->rcp->reflection;
     render_quality(quality_rcp);

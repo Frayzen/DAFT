@@ -1,3 +1,6 @@
+#ifndef WINDOW_H
+#define WINDOW_H
+
 #include <stdio.h>
 #include <omp.h>
 #include <pthread.h>
@@ -9,14 +12,14 @@
 #include "../architecture/world.h"
 #include "../architecture/camera.h"
 #include "renderer.h"
+#include "skybox.h"
 #include "../constants.h"
 #include "../render/rendering_tools.h"
-#ifndef WINDOW_H
-#define WINDOW_H
+
 struct app_params{
     int width;
     int height;
-    int render_scale;
+    float screen_scale;
     int FPS_UPPER_LIMIT;
     SDL_Window* window;
     SDL_Renderer* renderer;
