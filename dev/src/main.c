@@ -25,7 +25,7 @@ int main(){
     app_params params;
     params.width = 300;
     params.height = 300;
-    params.screen_scale = 3;
+    params.screen_scale = 1;
     params.wd = wd; 
     params.cam = cam;
     params.FPS_UPPER_LIMIT=30;

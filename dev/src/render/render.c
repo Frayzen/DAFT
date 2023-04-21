@@ -37,7 +37,8 @@ void _ray_cast(ray* r, world* w, int reflection_count, int compute_shadow){
             reflection(r, w, reflection_count);
         if(compute_shadow)
             shadow_render(r, w);
-    }
+    }else if(reflection_count > 0)
+        get_background(r, w);
 }
 
 void basic_ray_cast(ray* r, world* w){
