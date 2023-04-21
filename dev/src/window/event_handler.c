@@ -8,10 +8,10 @@ void launch_quality_render(app_params* params){
     quality_cam->quality = 1;
     quality_cam->yaw = params->cam->yaw;
     quality_cam->pitch = params->cam->pitch;
-    raycast_params* quality_rcp = init_raycast_params(params->wd, QUALITY_WIDTH, QUALITY_HEIGHT, quality_cam, params->screen_scale, NULL);
-    quality_rcp->shadow = params->rcp->shadow;
-    quality_rcp->reflection = params->rcp->reflection;
-    render_quality(quality_rcp);
+    rendering_params* quality_rdp = init_rendering_params(params->wd, QUALITY_WIDTH, QUALITY_HEIGHT, quality_cam, params->screen_scale, NULL);
+    quality_rdp->shadow = params->rdp->shadow;
+    quality_rdp->reflection = params->rdp->reflection;
+    render_quality(quality_rdp);
 }
 
 //pressed = 1 if key is pressed, 0 if released
@@ -27,11 +27,11 @@ void handle_key(SDL_Keycode key, app_params* params, int pressed){
             break;
         case SDLK_u:
             if(pressed)
-                params->rcp->reflection = !params->rcp->reflection;
+                params->rdp->reflection = !params->rdp->reflection;
             break;
         case SDLK_i:
             if(pressed)
-                params->rcp->shadow = !params->rcp->shadow;
+                params->rdp->shadow = !params->rdp->shadow;
             break;
         case SDLK_w:
             params->cam->movement_speed[0] += delta;

@@ -12,15 +12,15 @@ void get_ray_direction(float* r, int width, int height, int x_pix, int y_pix, ca
     float dir[3] = {cos(pitch)*cos(yaw), sin(pitch), cos(pitch)*sin(yaw)};
     copy(dir, r);
 }
-void update_cam_sides(struct raycast_params* rcp){
-    get_ray_direction(rcp->botLeftCorner, rcp->width, rcp->height, 0, rcp->width-1, rcp->cam);
+void update_cam_sides(rendering_params* rdp){
+    get_ray_direction(rdp->botLeftCorner, rdp->width, rdp->height, 0, rdp->width-1, rdp->cam);
     float top[3], right[3], left[3], bot[3];
-    get_ray_direction(top, rcp->width, rcp->height, 0, rcp->height-1, rcp->cam);
-    get_ray_direction(right, rcp->width, rcp->height, rcp->width-1, 0, rcp->cam);
-    get_ray_direction(left, rcp->width, rcp->height, 0, 0, rcp->cam);
-    get_ray_direction(bot, rcp->width, rcp->height, 0, 0, rcp->cam);
-    minus(bot, top, rcp->topDir);
-    minus(right, left, rcp->rightDir);
+    get_ray_direction(top, rdp->width, rdp->height, 0, rdp->height-1, rdp->cam);
+    get_ray_direction(right, rdp->width, rdp->height, rdp->width-1, 0, rdp->cam);
+    get_ray_direction(left, rdp->width, rdp->height, 0, 0, rdp->cam);
+    get_ray_direction(bot, rdp->width, rdp->height, 0, 0, rdp->cam);
+    minus(bot, top, rdp->topDir);
+    minus(right, left, rdp->rightDir);
 
 }
 
@@ -37,14 +37,14 @@ void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3], fl
     r->last_hit = new_hit;
 }
 
-ray create_ray_interpolate(raycast_params* rcp, int x_pix, int y_pix){
+ray create_ray_interpolate(rendering_params* rdp, int x_pix, int y_pix){
     ray r;
-    float ratioX = ((float) x_pix/(float)  rcp->width);
-    float ratioY = ((float) y_pix/(float) rcp->height);
-    r.dir[0] = rcp->botLeftCorner[0] + ratioX*rcp->rightDir[0] + ratioY*rcp->topDir[0];
-    r.dir[1] = rcp->botLeftCorner[1] + ratioX*rcp->rightDir[1] + ratioY*rcp->topDir[1];
-    r.dir[2] = rcp->botLeftCorner[2] + ratioX*rcp->rightDir[2] + ratioY*rcp->topDir[2];
+    float ratioX = ((float) x_pix/(float)  rdp->width);
+    float ratioY = ((float) y_pix/(float) rdp->height);
+    r.dir[0] = rdp->botLeftCorner[0] + ratioX*rdp->rightDir[0] + ratioY*rdp->topDir[0];
+    r.dir[1] = rdp->botLeftCorner[1] + ratioX*rdp->rightDir[1] + ratioY*rdp->topDir[1];
+    r.dir[2] = rdp->botLeftCorner[2] + ratioX*rdp->rightDir[2] + ratioY*rdp->topDir[2];
     r.last_hit = NULL;
-    copy(rcp->cam->pos, r.pos);
+    copy(rdp->cam->pos, r.pos);
     return r;
 }

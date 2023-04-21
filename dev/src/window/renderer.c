@@ -3,26 +3,26 @@
 int percentage = 0;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-void render_screen(raycast_params* rcp)
+void render_screen(rendering_params* rdp)
 {
     //pixels = wodth*height-1
-    Uint32* pixels = rcp->pixels;
-    memset(pixels, 0, rcp->width*rcp->height*sizeof(Uint32));
-    int width = rcp->width;
-    int height = rcp->height;
-    SDL_PixelFormat* format = rcp->format;
+    Uint32* pixels = rdp->pixels;
+    memset(pixels, 0, rdp->width*rdp->height*sizeof(Uint32));
+    int width = rdp->width;
+    int height = rdp->height;
+    SDL_PixelFormat* format = rdp->format;
         
-    update_cam_sides(rcp);
+    update_cam_sides(rdp);
     
     int* pixels_rasterize = calloc(sizeof(int)*width*height, 1);
-    render_rasterize_bbox(rcp, pixels_rasterize);
+    render_rasterize_bbox(rdp, pixels_rasterize);
 
     #pragma omp parallel for
     for(int i = 0; i < width*height; i++){
         if(!pixels_rasterize[i])
             continue;
-        ray r = create_ray_interpolate(rcp, i%width, i/width);
-        ray_cast(&r, rcp->w, rcp->reflection, rcp->shadow);
+        ray r = create_ray_interpolate(rdp, i%width, i/width);
+        ray_cast(&r, rdp->w, rdp->reflection, rdp->shadow);
         if(r.last_hit != NULL){
             pixels[i] = SDL_MapRGBA(format, r.last_hit->color[0]*255, r.last_hit->color[1]*255, r.last_hit->color[2]*255, 255);
             free(r.last_hit);
@@ -79,18 +79,18 @@ void setPixel(SDL_Surface *surface, int x, int y, Uint32 color)
 }
 
 // responsible for freeing the raycast_params struct and the image
-void* render_quality_process(void* rcpptr){
-    raycast_params* rcp = (raycast_params*)rcpptr;
-    SDL_Surface* image = SDL_CreateRGBSurface(0, rcp->width, rcp->height, 32, 0, 0, 0, 0);
+void* render_quality_process(void* rdpptr){
+    rendering_params* rdp = (rendering_params*)rdpptr;
+    SDL_Surface* image = SDL_CreateRGBSurface(0, rdp->width, rdp->height, 32, 0, 0, 0, 0);
     
-    int width = rcp->width;
-    int height = rcp->height;
+    int width = rdp->width;
+    int height = rdp->height;
     SDL_PixelFormat* format = image->format;
-    world* w = rcp->w;
-    update_cam_sides(rcp);
+    world* w = rdp->w;
+    update_cam_sides(rdp);
     for(int i = 0; i < width*height; i++){
-        ray r = create_ray_interpolate(rcp, i%width, i/width);
-        ray_cast(&r, w, rcp->reflection, rcp->shadow);
+        ray r = create_ray_interpolate(rdp, i%width, i/width);
+        ray_cast(&r, w, rdp->reflection, rdp->shadow);
         if(r.last_hit != NULL){
             setPixel(image, i%width, i/width, SDL_MapRGBA(format, r.last_hit->color[0]*255, r.last_hit->color[1]*255, r.last_hit->color[2]*255, 255));
             free(r.last_hit);
@@ -111,15 +111,15 @@ void* render_quality_process(void* rcpptr){
     SDL_SaveBMP(image, "out.png");
     printf("END OF COPY !\n");
     SDL_FreeSurface(image);
-    free(rcp->cam);
-    free_raycast_params(rcp);
+    free(rdp->cam);
+    free_rendering_params(rdp);
     return NULL;
 }
 
-void render_quality(raycast_params* rcp){
+void render_quality(rendering_params* rdp){
     if(percentage != 0)
         return;
     printf("RENDERING...\n");
     pthread_t thread;
-    pthread_create(&thread, NULL, render_quality_process, (void*)rcp);
+    pthread_create(&thread, NULL, render_quality_process, (void*)rdp);
 }

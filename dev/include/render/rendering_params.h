@@ -1,13 +1,15 @@
-#ifndef RAY_CAST_PARAMS_H
-#define RAY_CAST_PARAMS_H
+#ifndef RENDERING_PARAMS_H
+#define RENDERING_PARAMS_H
 #include <SDL2/SDL.h>
-typedef struct raycast_params{
+
+typedef struct rendering_params{
     SDL_PixelFormat* format;
     struct world* w;
     Uint32* pixels;
     int width;
     int height;
-    float screen_scale;
+    int screen_width;
+    int screen_height;
     struct camera* cam;
     //pointers to the corners of the screen
     float topDir[3];
@@ -16,6 +18,8 @@ typedef struct raycast_params{
     
     int shadow;
     int reflection;
-} raycast_params;
+} rendering_params;
+
+rendering_params* init_rendering_params(struct world *w, int width, int height, struct camera* cam, float screen_scale, Uint32* pixels);
 
 #endif

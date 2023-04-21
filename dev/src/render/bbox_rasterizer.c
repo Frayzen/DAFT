@@ -1,6 +1,6 @@
 #include "../../include/render/bbox_rasterizer.h"
 
-void rasterize_bbox(mesh* m, raycast_params* rcp, int* pixels){
+void rasterize_bbox(mesh* m, rendering_params* rdp, int* pixels){
     bbox* b = m->box;
 
     //rasterize the bbox
@@ -20,22 +20,22 @@ void rasterize_bbox(mesh* m, raycast_params* rcp, int* pixels){
     float maxtp = -1;
 
     float normal[3];
-    add(rcp->topDir, rcp->botLeftCorner, normal);
-    add(rcp->rightDir, normal, normal);
-    add(rcp->botLeftCorner, normal, normal);
+    add(rdp->topDir, rdp->botLeftCorner, normal);
+    add(rdp->rightDir, normal, normal);
+    add(rdp->botLeftCorner, normal, normal);
     scale(normal, 0.5, normal);
 
     for(int i = 0; i < 8; i++){
         float* p = points[i];
         float dir[3];
-        minus(p, rcp->cam->pos, dir);
+        minus(p, rdp->cam->pos, dir);
         normalize(dir, dir);
         float proj = project(dir, normal);
         if(proj < 0)
             continue;
         scale(dir, 1/proj, dir);
-        float rproj = project(dir, rcp->rightDir)+0.5;
-        float tproj = project(dir, rcp->topDir)+0.5;
+        float rproj = project(dir, rdp->rightDir)+0.5;
+        float tproj = project(dir, rdp->topDir)+0.5;
 
         if(rproj < minrp)
             minrp = rproj;
@@ -51,23 +51,23 @@ void rasterize_bbox(mesh* m, raycast_params* rcp, int* pixels){
         return;
     }
 
-    int fromx = max(minrp * rcp->width, 0);
-    int tox = min(maxrp * rcp->width, rcp->width);
-    int fromy = max(mintp * rcp->height, 0);
-    int toy = min(maxtp * rcp->height, rcp->height);
+    int fromx = max(minrp * rdp->width, 0);
+    int tox = min(maxrp * rdp->width, rdp->width);
+    int fromy = max(mintp * rdp->height, 0);
+    int toy = min(maxtp * rdp->height, rdp->height);
 
     //printf("fromx : %d, tox : %d, fromy : %d, toy : %d", fromx, tox, fromy, toy);
 
     //set all values between minu and maxu in x and mint and maxt in y to 1 using memset
     for(int i = fromy; i < toy; i++){
-        memset(pixels + i * rcp->width + fromx, 1, (tox - fromx) * sizeof(int));
+        memset(pixels + i * rdp->width + fromx, 1, (tox - fromx) * sizeof(int));
     }
 
 }
 
-void render_rasterize_bbox(raycast_params* rcp, int* pixels){
-    world* w = rcp->w;
+void render_rasterize_bbox(rendering_params* rdp, int* pixels){
+    world* w = rdp->w;
     for(int i = 0; i < w->size_meshes; i++){
-        rasterize_bbox(w->meshes[i], rcp, pixels);
+        rasterize_bbox(w->meshes[i], rdp, pixels);
     }
 }

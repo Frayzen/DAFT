@@ -19,12 +19,12 @@ int setup_window(app_params* params){
     int pitch;
     SDL_LockTexture(params->texture, NULL, (void**)&pixels, &pitch);
 
-    params->rcp = init_raycast_params(params->wd, params->width, params->height, params->cam, params->screen_scale, pixels);
+    params->rdp = init_rendering_params(params->wd, params->width, params->height, params->cam, params->screen_scale, pixels);
     return 0;
 }
 
 void free_window(app_params* params){
-    free_raycast_params(params->rcp);
+    free_rendering_params(params->rdp);
     SDL_DestroyRenderer(params->renderer); 
     SDL_DestroyWindow(params->window);
     SDL_DestroyTexture(params->texture);
@@ -49,9 +49,9 @@ int launch_screen(app_params* params){
         //     angle -= 2*M_PI;
         // }
         
-        render_screen(params->rcp);
+        render_screen(params->rdp);
         SDL_UnlockTexture(params->texture);
-        define_sky_points(params->renderer, texture, params->rcp);
+        define_sky_points(params->renderer, texture, params->rdp);
         SDL_SetTextureBlendMode(params->texture, SDL_BLENDMODE_BLEND);
         SDL_RenderCopy(params->renderer, params->texture, NULL, NULL); 
         SDL_RenderPresent(params->renderer);

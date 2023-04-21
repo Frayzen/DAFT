@@ -26,7 +26,7 @@ struct app_params{
     SDL_Texture *texture;
     world* wd;
     camera* cam;
-    raycast_params* rcp;
+    rendering_params* rdp;
 } typedef app_params;
 
 int setup_window(app_params* params);

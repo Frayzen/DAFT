@@ -9,6 +9,6 @@
 
 #ifndef WINDOW_RENDERER_H
 #define WINDOW_RENDERER_H
-void render_screen(raycast_params* rcp);
-void render_quality(raycast_params* rcp);
+void render_screen(rendering_params* rdp);
+void render_quality(rendering_params* rdp);
 #endif

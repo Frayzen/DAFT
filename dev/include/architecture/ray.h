@@ -1,13 +1,13 @@
+#ifndef RAY_H
+#define RAY_H
+#include "../render/rendering_params.h"
 #include "triangle.h"
 #include "camera.h"
 #include "mesh.h"
 #include <stdlib.h>
 #include "../utils/daft_math.h"
-#include "../render/ray_cast_params.h"
 #include <omp.h>
 
-#ifndef RAY_H
-#define RAY_H
 typedef struct ray_result
 {
 
@@ -31,7 +31,7 @@ typedef struct ray
     mesh* current_mesh;
 }ray;
 
-void update_cam_sides(raycast_params* rcp);
-ray create_ray_interpolate(raycast_params* rcp, int x_pix, int y_pix);
+void update_cam_sides(rendering_params* rdp);
+ray create_ray_interpolate(rendering_params* rdp, int x_pix, int y_pix);
 void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3], float normal[3], float reflectivity);
 #endif

@@ -1,12 +1,12 @@
+#ifndef MESH_H
+#define MESH_H
 #include <stdlib.h>
 #include "triangle.h"
 #include "bbox.h"
-#include "../render/ray_cast_params.h"
+#include "../render/rendering_params.h"
 #include "./camera.h"
 #include "../utils/daft_math.h"
 #include "sphere.h"
-#ifndef MESH_H
-#define MESH_H
 
  typedef struct mesh{
     int nb_vertices;
