@@ -117,8 +117,8 @@ void add_tri_to_bbox(mesh* m, bbox *b, int depth, int points[3]){
         compute_bounds_bbox(b);
     return;
 }
-void add_tri(mesh* m, int points[3]){
-    add_tri_to_bbox(m, m->box, m->depth, points);
+void add_tri(mesh* m, int v[3], int vt[3], int vn[3]){
+    add_tri_to_bbox(m, m->box, m->depth, v, vt, vn);
     m->nb_triangles++;
 }
 mesh * build_mesh(int no_vert, int no_tri, int text_vert)

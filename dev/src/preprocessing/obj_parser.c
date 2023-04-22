@@ -65,35 +65,58 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
             }
         }
 
-        if (line[0] == 'f')
+        if (line[0] == 'f' && line[1] == ' ')
         {
-            int spc = 0;
-            int* p = calloc(3,sizeof(int));
-            for (int i = 0; line[i] != '\0' && line[i] != '\r'; i ++)
+            int nb_v;
+            // v vt vn
+            int* vs[3] = {NULL,NULL,NULL} ;
+            int cur_v = 0;
+            int cur_nb = 0;
+            int i = 2;
+            while (line[i] != '\0' && line[i] != '\r')
             {
-                if (line[i] == ' ')
-                {
-                    if (spc >= 3)
+                    switch (line[i])
                     {
-                        if (spc == 3)
-                            p = realloc(p, sizeof(int)*(spc+1));
-                        else
-                            p = realloc(p, sizeof(int)*(spc+1));
+                    case '/':
+                        vs[cur_v][nb_v] = cur_nb;
+                        cur_v++;
+                        cur_nb = 0;
+                        break;
+                    case ' ':
+                        nb_v++;
+                        for(int i = 0; i < 3; i++)
+                            vs[i] = realloc(v, sizeof(int)*nb_v);
+                        cur_nb = 0;
+                        cur_v = 0;
+                        break;
+                    default:
+                        int val = atoi(&line[i]);
+                        cur_nb*=10;
+                        cur_nb+=val;
+                        break;
                     }
-
-                    if (line[i+1] != '\0' && line[i+1] != '\r')
-                        p[spc] = atoi(&line[i+1]);
-                    spc++;
                 }
+                i++;
+
             }
 
-            for (size_t i = 1; i <= spc-2; i++)
+            int v[3];
+            int vt[3];
+            int vn[3];
+            for (int j = 0; j < nb_v-2; j++)
             {
-                int points[3];
-                points[0] = p[0]-1;
-                points[1] = p[i]-1;
-                points[2] = p[i+1]-1;
-                add_tri(new_mesh, points);
+                v[0] = vs[0][j] -1;
+                v[1] = vs[0][j+1] -1;
+                v[2] = vs[0][j+2] -1;
+
+                vt[0] = vs[1][j];
+                vt[0] = vs[1][j+1];
+                vt[0] = vs[1][j+2];
+
+                vn[0] = vs[2][j];
+                vn[0] = vs[2][j+1];
+                vn[0] = vs[2][j+2];
+                add_tri(new_mesh, v, vt, vn);
             }
             free(p);
 
