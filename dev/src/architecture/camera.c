@@ -16,7 +16,3 @@ camera* init_camera(float pos[3], float pitch, float yaw, int FOV_x, int FOV_y){
     cam->quality = 0;
     return cam;
 }
-
-void free_camera(camera* cam){
-    free(cam);
-}

@@ -31,7 +31,6 @@ void shadow_render(raycast_param* rcp)
         
         raycast_param* shadow_rcp = init_raycast_param(shadow_ray, rcp->w, 0, 0, 0);
         ray_cast(shadow_rcp);
-        free(shadow_rcp);
         //if we hit somthing, set the color in black
         float x = dotProduct(normal, shadow_ray->dir);
         if (shadow_ray->last_hit->mint == mint && x > 0){

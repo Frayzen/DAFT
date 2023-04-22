@@ -22,6 +22,4 @@ typedef struct camera
 
 //init camera
 camera* init_camera(float pos[3], float pitch, float yaw, int FOV_x, int FOV_y);
-//free camera
-void free_camera(camera* cam);
 #endif

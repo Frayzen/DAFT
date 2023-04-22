@@ -14,7 +14,7 @@ int main(){
     add_camera(wd, cam);
     //sphere* s = sphere_init(0, 2, 0, 0.5, .5, 0 ,0, 1);
     //add_sphere(wd, s);
-    load_object("assets/objs/cube.obj", wd, 1, (float[]){0,0,0}, .1);
+    load_object("assets/objs/teddy.obj", wd, .1, (float[]){0,0,0}, .1);
     //load_object("assets/objs/cube.obj", wd, .5, (float[]){4,0.5,0}, .3);
     //load_object("assets/objs/cube.obj", wd, .5, (float[]){-4,0.5,0}, .5);
     //load_object("assets/objs/cube.obj", wd, .5, (float[]){0,0.5,4}, .7);

@@ -11,6 +11,4 @@ typedef struct light
 
 //init
 light* init_light(float pos[3], float color[3], float intensity);
-//free
-void free_light(light* lt);
 #endif

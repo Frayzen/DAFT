@@ -6,7 +6,7 @@ void load_object(char* path, world* w, float scale, float pos[3], float reflecti
     file = fopen(path, "r");
     if (file == NULL)
     {
-        printf("cant open youre file man\n");
+        printf("cant open the file named '%s'\n", path);
         return;
     }
 

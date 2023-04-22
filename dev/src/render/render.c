@@ -17,6 +17,7 @@ void get_background(raycast_param* rcp){
         ray_update_result(rcp->r, NULL, INFINITY, (float[]){0,0,0}, (float[]){0,0,0}, 0);
 }
 
+//free the raycast_param
 void ray_cast(raycast_param* rcp){
     ray* r = rcp->r;
     world* w = rcp->w;
@@ -41,6 +42,7 @@ void ray_cast(raycast_param* rcp){
             shadow_render(rcp);
     }else if(rcp->skybox)
         get_background(rcp);
+    free(rcp);
 }
 
 

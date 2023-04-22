@@ -11,6 +11,3 @@ light* init_light(float pos[3], float color[3], float intensity){
     lt->intensity = intensity;
     return lt;
 }
-void free_light(light* lt){
-    free(lt);
-}
