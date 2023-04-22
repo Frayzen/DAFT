@@ -1,6 +1,7 @@
 #include "../../include/preprocessing/mesh_builder.h"
 
 void add_texture_vertex(mesh * m, float vt[2]){
+    m->texture_vertices[m->nb_texture_vertices] = malloc(sizeof(float)*2);
     m->texture_vertices[m->nb_texture_vertices][0] = vt[0];
 	m->texture_vertices[m->nb_texture_vertices][1] = vt[1];
 	m->nb_texture_vertices++;

@@ -24,7 +24,7 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
         {
             if (line[1] == ' ')
                 vert++;
-            if(line[2] == 't')
+            if(line[1] == 't')
                 text_vert++;
         }
         else if (line[0] == 'f')
@@ -42,7 +42,8 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
         printf("The %s file is not a valid obj file\n", path);
         return;
     }
-
+    
+    printf("TEXT CVERT %d\n", text_vert);
     mesh* new_mesh = build_mesh(vert, tri, text_vert);
     fseek(file, 0, SEEK_SET);
 
