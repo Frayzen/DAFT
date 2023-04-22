@@ -10,8 +10,8 @@ void load_object(char* path, world* w, float scale, float pos[3], float reflecti
         return;
     }
 
-    size_t vert = 0;
-    size_t tri = 0;
+    int vert = 0;
+    int tri = 0;
     //size_t norm = 0;
     //size_t texture = 0;
 
@@ -27,7 +27,7 @@ void load_object(char* path, world* w, float scale, float pos[3], float reflecti
         else if (line[0] == 'f')
         {
             int space = 0;
-            for (size_t i = 0; line[i] != 0 && line[i] != '\r'; i++)
+            for (int i = 0; line[i] != 0 && line[i] != '\r'; i++)
             {
                 if (line[i] == ' ')
                     space++;
@@ -61,7 +61,7 @@ void load_object(char* path, world* w, float scale, float pos[3], float reflecti
         {
             int spc = 0;
             int* p = calloc(3,sizeof(int));
-            for (size_t i = 0; line[i] != '\0' && line[i] != '\r'; i ++)
+            for (int i = 0; line[i] != '\0' && line[i] != '\r'; i ++)
             {
                 if (line[i] == ' ')
                 {
@@ -91,9 +91,9 @@ void load_object(char* path, world* w, float scale, float pos[3], float reflecti
 
         }
     }
+    printf("OBJ LOADED: %s (%d vertices, %d triangles)\n", path, new_mesh->nb_vertices, new_mesh->nb_triangles);
     new_mesh->reflectivity = reflectivity;
     add_mesh(w, new_mesh);
     fclose(file);
 }
-
 

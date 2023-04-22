@@ -12,13 +12,10 @@ int main(){
     printf("LOADING OBJ...");
     camera* cam = init_camera((float[]){-4,0,0}, 0, 0, 90, 90);
     add_camera(wd, cam);
-    //sphere* s = sphere_init(0, 2, 0, 0.5, .5, 0 ,0, 1);
-    //add_sphere(wd, s);
-    load_object("assets/objs/teddy.obj", wd, .1, (float[]){0,0,0}, .1);
-    //load_object("assets/objs/cube.obj", wd, .5, (float[]){4,0.5,0}, .3);
-    //load_object("assets/objs/cube.obj", wd, .5, (float[]){-4,0.5,0}, .5);
-    //load_object("assets/objs/cube.obj", wd, .5, (float[]){0,0.5,4}, .7);
-    //load_object("assets/objs/cube.obj", wd, .5, (float[]){0,0.5,-4}, 1);
+    // sphere* s = sphere_init(0, 2, 0, 5, .5, 0 ,0, 1);
+    // add_sphere(wd, s);
+    // CHALLENGE : load_object("assets/objs/bunny.obj", wd, 10, (float[]){0,0,0}, .1);
+    load_object("assets/objs/cube.obj", wd, 1, (float[]){0,0,0}, 1);
     light* lt = init_light((float[]){0,5,0}, (float[]){1,1,1}, 1);
     add_light(wd, lt);
     
