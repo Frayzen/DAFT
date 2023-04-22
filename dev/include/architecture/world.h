@@ -27,5 +27,4 @@ void add_sphere(world* wd, sphere* s);
 
 world* init_world();
 void free_world(world* wd);
-void load_skybox(world* wd, char* path);
 #endif

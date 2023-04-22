@@ -5,4 +5,4 @@
 
 #pragma once
 
-void load_object(char* path, world* w, float scale, float p[3], float reflectivity);
+void load_object(char* path, world* w, float scale, float p[3], char* texture_path, float reflectivity);

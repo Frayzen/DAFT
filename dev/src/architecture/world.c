@@ -45,9 +45,3 @@ void add_sphere(world* wd, sphere* s){
     wd->spheres = realloc(wd->spheres, sizeof(sphere) * wd->size_spheres);
     wd->spheres[wd->size_spheres - 1] = *s;
 }
-
-void load_skybox(world* wd, char* path){
-    SDL_Surface* surface = IMG_Load(path);
-    wd->skybox = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGBA8888, 0);
-    SDL_FreeSurface(surface);
-}

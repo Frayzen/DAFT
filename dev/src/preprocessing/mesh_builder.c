@@ -1,9 +1,15 @@
 #include "../../include/preprocessing/mesh_builder.h"
 
+void add_texture_vertex(mesh * m, float vt[2]){
+    m->texture_vertices[m->nb_texture_vertices][0] = vt[0];
+	m->texture_vertices[m->nb_texture_vertices][1] = vt[1];
+	m->nb_texture_vertices++;
+}
+
 void add_vertex(mesh * m, float p[3])
 {
     m->vertices[m->nb_vertices] = malloc(sizeof(float)*3);
-	copy(p, m->vertices[m->nb_vertices]);
+    copy(p, m->vertices[m->nb_vertices]);
 	m->nb_vertices++;
 }
 
@@ -114,7 +120,7 @@ void add_tri(mesh* m, int points[3]){
     add_tri_to_bbox(m, m->box, m->depth, points);
     m->nb_triangles++;
 }
-mesh * build_mesh(int no_vert, int no_tri)
+mesh * build_mesh(int no_vert, int no_tri, int text_vert)
 {
     mesh * m = (mesh *)malloc(sizeof(mesh));
     m->depth = compute_depth(no_tri-1);
@@ -123,6 +129,8 @@ mesh * build_mesh(int no_vert, int no_tri)
     m->box = build_bbox(m->depth, m->tri_last_level, m->no_extra);
 	m->nb_vertices = 0;
     m->nb_triangles = 0;
+    m->nb_texture_vertices = 0;
 	m->vertices = malloc(sizeof(float*)*no_vert);
+	m->texture_vertices = malloc(sizeof(float*)*text_vert);
 	return m;
 }

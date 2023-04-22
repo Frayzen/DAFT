@@ -9,4 +9,5 @@
 
 //normalized dir
 void define_sky_points(SDL_Renderer* renderer, SDL_Texture* skybox_texture, rendering_params* rdp);
+void load_skybox(world* wd, char* path);
 #endif

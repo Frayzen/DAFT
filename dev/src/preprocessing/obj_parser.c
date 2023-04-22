@@ -1,6 +1,6 @@
 #include "../../include/preprocessing/obj_parser.h"
 
-void load_object(char* path, world* w, float scale, float pos[3], float reflectivity)
+void load_object(char* path, world* w, float scale, float pos[3], char* texture_path, float reflectivity)
 {
     FILE* file;
     file = fopen(path, "r");
@@ -12,6 +12,7 @@ void load_object(char* path, world* w, float scale, float pos[3], float reflecti
 
     int vert = 0;
     int tri = 0;
+    int text_vert = 0;
     //size_t norm = 0;
     //size_t texture = 0;
 
@@ -23,6 +24,8 @@ void load_object(char* path, world* w, float scale, float pos[3], float reflecti
         {
             if (line[1] == ' ')
                 vert++;
+            if(line[2] == 't')
+                text_vert++;
         }
         else if (line[0] == 'f')
         {
@@ -40,20 +43,24 @@ void load_object(char* path, world* w, float scale, float pos[3], float reflecti
         return;
     }
 
-    mesh* new_mesh = build_mesh(vert, tri);
+    mesh* new_mesh = build_mesh(vert, tri, text_vert);
     fseek(file, 0, SEEK_SET);
 
     float v[3];
+    float vt[2];
     while(fgets(line, sizeof(line), file) != NULL)
     {
         if (line[0] == 'v')
         {
-            if (line[1] == ' ')
-            {
+            if (line[1] == ' '){
                 sscanf(line, "v %f %f %f", &v[0], &v[1], &v[2]);
                 scale(v, scale, v);
                 add(v, pos, v);
                 add_vertex(new_mesh, v);
+            }
+            if(line[1] == 't'){
+                sscanf(line, "v %f %f", &vt[0], &vt[1]);
+                add_texture_vertex(new_mesh, vt);
             }
         }
 
@@ -91,7 +98,10 @@ void load_object(char* path, world* w, float scale, float pos[3], float reflecti
 
         }
     }
-    printf("OBJ LOADED: %s (%d vertices, %d triangles)\n", path, new_mesh->nb_vertices, new_mesh->nb_triangles);
+    if(texture_path != NULL){
+        load_texture(new_mesh, texture_path);
+    }
+    printf("Mesh loaded : %s (%d vertices, %d triangles)\n", path, new_mesh->nb_vertices, new_mesh->nb_triangles);
     new_mesh->reflectivity = reflectivity;
     add_mesh(w, new_mesh);
     fclose(file);

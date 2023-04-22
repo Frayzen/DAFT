@@ -1,5 +1,16 @@
 #include "../../include/window/skybox.h"
 
+void load_skybox(world* wd, char* path){
+SDL_Surface* surface = IMG_Load(path);
+    if(surface == NULL){
+        printf("The skybox '%s' could not be loaded\n", path);
+        return;
+    }
+    wd->skybox = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGBA8888, 0);
+    SDL_FreeSurface(surface);
+    printf("Skybox '%s' loaded !\n", path);
+}
+
 void get_skybox_point(float* direction, float* x, float* y){
     float dir[3];
     normalize(direction, dir);

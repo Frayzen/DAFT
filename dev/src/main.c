@@ -3,35 +3,38 @@
 #include "../include/constants.h"
 #include "../include/architecture/world.h"
 #include "../include/window/window.h"
+#include "../include/window/skybox.h"
 #include "../include/architecture/camera.h"
 #include "../include/architecture/ray.h"
 #include "../include/preprocessing/obj_parser.h"
 
 int main(){
     world* wd = init_world();
-    printf("LOADING OBJ...");
     camera* cam = init_camera((float[]){-4,0,0}, 0, 0, 90, 90);
     add_camera(wd, cam);
-    // sphere* s = sphere_init(0, 2, 0, 5, .5, 0 ,0, 1);
-    // add_sphere(wd, s);
-    // CHALLENGE : load_object("assets/objs/bunny.obj", wd, 10, (float[]){0,0,0}, .1);
-    load_object("assets/objs/cube.obj", wd, 1, (float[]){0,0,0}, 1);
-    light* lt = init_light((float[]){0,5,0}, (float[]){1,1,1}, 1);
-    add_light(wd, lt);
-    
     app_params params;
     params.width = 150;
     params.height = 150;
     params.screen_scale = 5;
-    params.wd = wd; 
+    params.wd = wd;
     params.cam = cam;
     params.FPS_UPPER_LIMIT=30;
 
     if(setup_window(&params))
         return 1;
 
-    printf("WORDL OBJ COUNT: %d \n", wd->size_meshes);
-    load_skybox(wd, "assets/textures/Sky.jpg");
+    printf("World initialized, loading objects\n");
+
+    // sphere* s = sphere_init(0, 2, 0, 5, .5, 0 ,0, 1);
+    // add_sphere(wd, s);
+    // CHALLENGE : load_object("assets/objs/bunny.obj", wd, 10, (float[]){0,0,0}, .1);
+    //1166 875 -> 388, 218
+    load_object("./assets/objs/cube.obj", wd, 1, (float[]){0,0,0}, "./assets/textures/dirt.webp", 1);
+    light* lt = init_light((float[]){0,5,0}, (float[]){1,1,1}, 1);
+    add_light(wd, lt);
+
+    printf("World object count: %d \n", wd->size_meshes);
+    load_skybox(wd, "./assets/skybox/Sky.jpg");
     launch_screen(&params);
     free_window(&params);
     free_world(wd);
