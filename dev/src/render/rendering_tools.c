@@ -18,3 +18,13 @@ void free_rendering_params(rendering_params* rdp){
     SDL_FreeFormat(rdp->format);
     free(rdp);
 }
+
+raycast_param* init_raycast_param(ray* r, world* w, int reflection, int shadow, int skybox){
+    raycast_param* rcp = malloc(sizeof(raycast_param));
+    rcp->r = r;
+    rcp->w = w;
+    rcp->reflection = max(reflection, 0);
+    rcp->shadow = shadow;
+    rcp->skybox = skybox;
+    return rcp;
+}

@@ -22,11 +22,13 @@ void render_screen(rendering_params* rdp)
         if(!pixels_rasterize[i])
             continue;
         ray r = create_ray_interpolate(rdp, i%width, i/width);
-        ray_cast(&r, rdp->w, rdp->reflection, rdp->shadow);
+        raycast_param* rcp = init_raycast_param(&r, rdp->w, rdp->reflection, rdp->shadow, 0);
+        ray_cast(rcp);
         if(r.last_hit != NULL){
             pixels[i] = SDL_MapRGBA(format, r.last_hit->color[0]*255, r.last_hit->color[1]*255, r.last_hit->color[2]*255, 255);
             free(r.last_hit);
         }
+        free(rcp);
     }
 
     int ppixels = (percentage*width*height)/100;
@@ -90,7 +92,9 @@ void* render_quality_process(void* rdpptr){
     update_cam_sides(rdp);
     for(int i = 0; i < width*height; i++){
         ray r = create_ray_interpolate(rdp, i%width, i/width);
-        ray_cast(&r, w, rdp->reflection, rdp->shadow);
+        raycast_param* rcp = init_raycast_param(&r, w, 1, 1, 1);
+        ray_cast(rcp);
+        free(rcp);
         if(r.last_hit != NULL){
             setPixel(image, i%width, i/width, SDL_MapRGBA(format, r.last_hit->color[0]*255, r.last_hit->color[1]*255, r.last_hit->color[2]*255, 255));
             free(r.last_hit);

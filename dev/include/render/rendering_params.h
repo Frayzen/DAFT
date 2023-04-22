@@ -20,6 +20,16 @@ typedef struct rendering_params{
     int reflection;
 } rendering_params;
 
-rendering_params* init_rendering_params(struct world *w, int width, int height, struct camera* cam, float screen_scale, Uint32* pixels);
+
+typedef struct raycast_param{
+    struct ray* r;
+    struct world* w;
+    //amout of reflection
+    int reflection;
+    //if the ray should compute shadow
+    int shadow;
+    //if the ray should return NULL or the background color if it doesn't hit anything
+    int skybox;
+} raycast_param;
 
 #endif

@@ -1,6 +1,7 @@
 #include "../../include/physic/reflection.h"
 
-void reflection(ray * ry, world * w, int depth){
+void reflection(raycast_param* rcp){
+    ray* ry = rcp->r;
     float d_n = dotProduct(ry->last_hit->normal, ry->dir);
     float new_dir[3];
     scale(ry->last_hit->normal, d_n*2, new_dir);
@@ -12,7 +13,9 @@ void reflection(ray * ry, world * w, int depth){
     float reflected = ry->last_hit->reflectivity;
     new_ray->last_hit = NULL;
     
-    ray_cast_reflection(new_ray, w, depth-1);
+    raycast_param* reflect_rcp = init_raycast_param(new_ray, rcp->w, rcp->reflection-1, 0, 1);
+    ray_cast(reflect_rcp);
+    free(reflect_rcp);
 
     float init_color[3];
     float reflect_color[3];
@@ -20,6 +23,5 @@ void reflection(ray * ry, world * w, int depth){
     scale(ry->last_hit->color, absorbed, init_color);
     scale(new_ray->last_hit->color, reflected, reflect_color);
     add(init_color, reflect_color, ry->last_hit->color);
-    free(new_ray->last_hit);
     free(new_ray);
 }
