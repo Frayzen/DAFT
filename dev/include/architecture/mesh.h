@@ -15,7 +15,7 @@
     float** vertices;
     
     int nb_texture_vertices;
-    int** texture_vertices;
+    float** texture_vertices;
 
 
     int nb_normal_vertices;

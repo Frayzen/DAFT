@@ -5,9 +5,12 @@ void free_mesh(mesh* msh){
     for(int i = 0; i < msh->nb_vertices; i++)
         free(msh->vertices[i]);
 
-    for(int i = 0; i < msh->nb_texture_vertices; i++)
+    for(int i = 0; i < msh->nb_normal_vertices; i++)
         free(msh->normal_vertices[i]);
+    for(int i = 0; i < msh->nb_texture_vertices; i++)
+        free(msh->texture_vertices[i]);
     free(msh->normal_vertices);
+    free(msh->texture_vertices);
     free(msh->vertices);
     if(msh->texture != NULL)
         SDL_FreeSurface(msh->texture);

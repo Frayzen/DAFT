@@ -13,6 +13,7 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
     int vert = 0;
     int tri = 0;
     int text_vert = 0;
+    int norm_vert = 0;
     //size_t norm = 0;
     //size_t texture = 0;
 
@@ -26,6 +27,8 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
                 vert++;
             if(line[1] == 't')
                 text_vert++;
+            if(line[1] == 'n')
+                norm_vert++;
         }
         else if (line[0] == 'f')
         {
@@ -43,13 +46,12 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
         return;
     }
     
-    printf("TEXT CVERT %d\n", text_vert);
-    mesh* new_mesh = build_mesh(vert, tri, text_vert);
+    mesh* new_mesh = build_mesh(vert, tri, text_vert, norm_vert);
     fseek(file, 0, SEEK_SET);
 
     float v[3];
     float vn[3];
-    int vt[2];
+    float vt[2];
     while(fgets(line, sizeof(line), file) != NULL)
     {
         if (line[0] == 'v')
@@ -61,29 +63,29 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
                 add_v(new_mesh, v);
             }
             if(line[1] == 't'){
-                sscanf(line, "vt %i %i", &vt[0], &vt[1]);
+                sscanf(line, "vt %f %f", &vt[0], &vt[1]);
                 add_vt(new_mesh, vt);
             }
             if(line[1] == 'n'){
                 sscanf(line, "vn %f %f %f", &vn[0], &vn[1], &vn[2]);
-                add_vt(new_mesh, vt);
+                add_vn(new_mesh, vn);
             }
         }
 
         if (line[0] == 'f' && line[1] == ' ')
         {
-            int nb_v;
+            int nb_v = 0;
             // v vt vn
             int* vs[3] = {NULL,NULL,NULL} ;
             int cur_v = 0;
             int cur_nb = 0;
-            int i = 2;
+            int i = 1;
             while (line[i] != '\0' && line[i] != '\r')
             {
                 switch (line[i])
                 {
                 case '/':
-                    vs[cur_v][nb_v] = cur_nb;
+                    vs[cur_v][nb_v-1] = cur_nb;
                     cur_v++;
                     cur_nb = 0;
                     break;
@@ -96,8 +98,12 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
                     break;
                 default:
                     int val = atoi(&line[i]);
-                    cur_nb*=10;
-                    cur_nb+=val;
+                    cur_nb = val;
+                    val/=10;
+                    while(val != 0){
+                        val/=10;
+                        i++;
+                    }
                     break;
                 }
                 i++;
@@ -111,13 +117,13 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
                 v[1] = vs[0][j+1] -1;
                 v[2] = vs[0][j+2] -1;
 
-                vt[0] = vs[1][j];
-                vt[0] = vs[1][j+1];
-                vt[0] = vs[1][j+2];
+                vt[0] = vs[1][j] - 1;
+                vt[1] = vs[1][j+1] - 1;
+                vt[2] = vs[1][j+2] - 1;
 
-                vn[0] = vs[2][j];
-                vn[0] = vs[2][j+1];
-                vn[0] = vs[2][j+2];
+                vn[0] = vs[2][j] - 1;
+                vn[1] = vs[2][j+1] - 1;
+                vn[2] = vs[2][j+2] - 1;
                 add_tri(new_mesh, v, vt, vn);
             }
             for (int i = 0; i < 3; i++)

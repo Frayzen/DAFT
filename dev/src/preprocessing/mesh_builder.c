@@ -7,8 +7,8 @@ void add_v(mesh * m, float v[3])
 	m->nb_vertices++;
 }
 
-void add_vt(mesh * m, int vt[2]){
-    m->texture_vertices[m->nb_texture_vertices] = malloc(sizeof(int)*2);
+void add_vt(mesh * m, float vt[2]){
+    m->texture_vertices[m->nb_texture_vertices] = malloc(sizeof(float)*2);
     m->texture_vertices[m->nb_texture_vertices][0] = vt[0];
 	m->texture_vertices[m->nb_texture_vertices][1] = vt[1];
 	m->nb_texture_vertices++;
@@ -131,7 +131,7 @@ void add_tri(mesh* m, int v[3], int vt[3], int vn[3]){
     add_tri_to_bbox(m, m->box, m->depth, v, vt, vn);
     m->nb_triangles++;
 }
-mesh * build_mesh(int no_vert, int no_tri, int text_vert)
+mesh * build_mesh(int no_vert, int no_tri, int text_vert, int norm_vert)
 {
     mesh * m = (mesh *)malloc(sizeof(mesh));
     m->depth = compute_depth(no_tri-1);
@@ -141,7 +141,9 @@ mesh * build_mesh(int no_vert, int no_tri, int text_vert)
 	m->nb_vertices = 0;
     m->nb_triangles = 0;
     m->nb_texture_vertices = 0;
+    m->nb_normal_vertices = 0;
 	m->vertices = malloc(sizeof(float*)*no_vert);
-	m->normal_vertices = malloc(sizeof(float*)*text_vert);
+	m->texture_vertices = malloc(sizeof(float*)*text_vert);
+    m->normal_vertices = malloc(sizeof(float*)*norm_vert);
 	return m;
 }

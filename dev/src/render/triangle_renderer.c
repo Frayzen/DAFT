@@ -1,4 +1,39 @@
 #include "../../include/render/triangle_renderer.h"
+
+void get_pixel_color(SDL_Surface* surface, int x, int y, Uint8* r, Uint8* g, Uint8* b)
+{
+  /*
+  Retrieve the address to a specific pixel
+  pSurface->pixels  = an array containing the SDL_Surface' pixels
+  pSurface->pitch       = the length of a row of pixels (in bytes)
+  X and Y               = the offset on where on the image to retrieve the pixel; (0, 0) is the upper left corner
+  */
+  Uint32 pixel = *( (Uint32*)surface->pixels + y * surface->w + x ) ;
+  SDL_GetRGB(pixel, surface->format, r, g, b);
+}
+
+void get_color_at(ray* ry, float pos[3], triangle* tri, float* color, float u, float v, float w){
+    mesh* m = ry->current_mesh;
+    if(m->texture == NULL){
+        color[0] = 1;
+        color[1] = 1;
+        color[2] = 1;
+        return;
+    }
+    float* pt0 = m->texture_vertices[tri->vt[0]];
+    float* pt1 = m->texture_vertices[tri->vt[1]];
+    float* pt2 = m->texture_vertices[tri->vt[2]];
+    float x = (pt0[0]*v + pt1[0]*u + pt2[0]*w);
+    float y = (pt0[1]*v + pt1[1]*u + pt2[1]*w);
+    int px = (int)(x * m->texture->w);
+    int py = (int)(y * m->texture->h);
+    Uint8 r, g, b;
+    get_pixel_color(m->texture, px, py, &r, &g, &b);
+    color[0] = r/255.0;
+    color[1] = g/255.0;
+    color[2] = b/255.0;
+}
+
 int triangle_render(triangle* tri, ray* r){
     mesh* m = r->current_mesh;
     float EPSILON = 0.0000001;
@@ -38,7 +73,11 @@ int triangle_render(triangle* tri, ray* r){
             val*=-1;
         if(val > 1)
             val = 1;
-        ray_update_result(r, tri, t, (float[3]){val*1, val*.2, val*.2}, normal, r->current_mesh->reflectivity);
+        float color[3], pos[3];
+        scale(r->dir, t, pos);
+        get_color_at(r, pos, tri, color, u, v, 1-u-v);
+        //scale(color, val, color);
+        ray_update_result(r, tri, t, color, normal, r->current_mesh->reflectivity);
         return 1; // Hit, win
     }
     // This means that there is a line intersection but not a ray intersection. 
