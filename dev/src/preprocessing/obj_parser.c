@@ -113,15 +113,15 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
             int vn[3];
             for (int j = 0; j < nb_v-2; j++)
             {
-                v[0] = vs[0][j] -1;
+                v[0] = vs[0][0] - 1;
                 v[1] = vs[0][j+1] -1;
                 v[2] = vs[0][j+2] -1;
 
-                vt[0] = vs[1][j] - 1;
+                vt[0] = vs[1][0] - 1;
                 vt[1] = vs[1][j+1] - 1;
                 vt[2] = vs[1][j+2] - 1;
 
-                vn[0] = vs[2][j] - 1;
+                vn[0] = vs[2][0] - 1;
                 vn[1] = vs[2][j+1] - 1;
                 vn[2] = vs[2][j+2] - 1;
                 add_tri(new_mesh, v, vt, vn);
@@ -131,9 +131,11 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
             
         }
     }
-    
+
     if(texture_path != NULL){
         load_texture(new_mesh, texture_path);
+    }else{
+        new_mesh->texture = NULL;
     }
     printf("Mesh loaded : %s (%d vertices, %d triangles)\n", path, new_mesh->nb_vertices, new_mesh->nb_triangles);
     new_mesh->reflectivity = reflectivity;
