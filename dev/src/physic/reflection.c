@@ -10,7 +10,10 @@ void reflection(raycast_param* rcp){
     
     ray* new_ray = malloc(sizeof(ray));
     
-    scale(ry->dir, ry->last_hit->mint - 0.001, new_ray->pos);
+    scale(ry->dir, ry->last_hit->mint, new_ray->pos);
+    float litl_norm[3];
+    scale(ry->last_hit->normal, 0.0001, litl_norm);
+    add(new_ray->pos, litl_norm, new_ray->pos);
     add(ry->pos, new_ray->pos, new_ray->pos);
 
     normalize(new_dir, new_ray->dir);
