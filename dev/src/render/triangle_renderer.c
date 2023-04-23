@@ -23,8 +23,8 @@ void get_color_at(ray* ry, float pos[3], triangle* tri, float* color, float u, f
     float* pt0 = m->texture_vertices[tri->vt[0]];
     float* pt1 = m->texture_vertices[tri->vt[1]];
     float* pt2 = m->texture_vertices[tri->vt[2]];
-    float x = (pt0[0]*v + pt1[0]*u + pt2[0]*w);
-    float y = (pt0[1]*v + pt1[1]*u + pt2[1]*w);
+    float x = (pt0[0]*w + pt1[0]*u + pt2[0]*v);
+    float y = (pt0[1]*w + pt1[1]*u + pt2[1]*v);
     int px = (int)(x * m->texture->w);
     int py = (int)(y * m->texture->h);
     Uint8 r, g, b;
