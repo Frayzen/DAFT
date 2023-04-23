@@ -26,7 +26,7 @@ void get_color_at(ray* ry, float pos[3], triangle* tri, float* color, float u, f
     float x = (pt0[0]*w + pt1[0]*u + pt2[0]*v);
     float y = (pt0[1]*w + pt1[1]*u + pt2[1]*v);
     int px = (int)(x * m->texture->w);
-    int py = (int)(y * m->texture->h);
+    int py = (int)((1-y) * m->texture->h);
     Uint8 r, g, b;
     get_pixel_color(m->texture, px, py, &r, &g, &b);
     color[0] = r/255.0;
