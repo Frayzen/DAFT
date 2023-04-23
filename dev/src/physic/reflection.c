@@ -2,14 +2,19 @@
 
 void reflection(raycast_param* rcp){
     ray* ry = rcp->r;
+
     float d_n = dotProduct(ry->last_hit->normal, ry->dir);
     float new_dir[3];
     scale(ry->last_hit->normal, d_n*2, new_dir);
     minus(ry->dir, new_dir, new_dir);
+    
     ray* new_ray = malloc(sizeof(ray));
-    normalize(ry->dir, new_ray->pos);
-    scale(new_ray->pos, ry->last_hit->mint, new_ray->pos);
+    
+    scale(ry->dir, ry->last_hit->mint - 0.001, new_ray->pos);
+    add(ry->pos, new_ray->pos, new_ray->pos);
+
     normalize(new_dir, new_ray->dir);
+
     float reflected = ry->last_hit->reflectivity;
     new_ray->last_hit = NULL;
     

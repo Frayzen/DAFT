@@ -6,7 +6,7 @@ CC       = gcc
 # compiling flags here
 CFLAGS   = -std=c99 -Wall -Werror 
 
-LIBS = -fopenmp -pthread -lm -ldl `pkg-config --cflags gtk+-3.0 --libs sdl2 SDL2_image` -g -fsanitize=address
+LIBS = -fopenmp -pthread -lm -ldl `pkg-config --cflags gtk+-3.0 --libs sdl2 SDL2_image` -g
 LINKER   = gcc
 # linking flags here
 LFLAGS   = -Wall -Werror 
