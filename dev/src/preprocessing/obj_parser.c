@@ -48,7 +48,8 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
     fseek(file, 0, SEEK_SET);
 
     float v[3];
-    float vt[2];
+    float vn[3];
+    int vt[2];
     while(fgets(line, sizeof(line), file) != NULL)
     {
         if (line[0] == 'v')
@@ -57,11 +58,15 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
                 sscanf(line, "v %f %f %f", &v[0], &v[1], &v[2]);
                 scale(v, scale, v);
                 add(v, pos, v);
-                add_vertex(new_mesh, v);
+                add_v(new_mesh, v);
             }
             if(line[1] == 't'){
-                sscanf(line, "v %f %f", &vt[0], &vt[1]);
-                add_texture_vertex(new_mesh, vt);
+                sscanf(line, "vt %i %i", &vt[0], &vt[1]);
+                add_vt(new_mesh, vt);
+            }
+            if(line[1] == 'n'){
+                sscanf(line, "vn %f %f %f", &vn[0], &vn[1], &vn[2]);
+                add_vt(new_mesh, vt);
             }
         }
 
@@ -75,31 +80,28 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
             int i = 2;
             while (line[i] != '\0' && line[i] != '\r')
             {
-                    switch (line[i])
-                    {
-                    case '/':
-                        vs[cur_v][nb_v] = cur_nb;
-                        cur_v++;
-                        cur_nb = 0;
-                        break;
-                    case ' ':
-                        nb_v++;
-                        for(int i = 0; i < 3; i++)
-                            vs[i] = realloc(v, sizeof(int)*nb_v);
-                        cur_nb = 0;
-                        cur_v = 0;
-                        break;
-                    default:
-                        int val = atoi(&line[i]);
-                        cur_nb*=10;
-                        cur_nb+=val;
-                        break;
-                    }
+                switch (line[i])
+                {
+                case '/':
+                    vs[cur_v][nb_v] = cur_nb;
+                    cur_v++;
+                    cur_nb = 0;
+                    break;
+                case ' ':
+                    nb_v++;
+                    for(int i = 0; i < 3; i++)
+                        vs[i] = realloc(vs[i], sizeof(int)*nb_v);
+                    cur_nb = 0;
+                    cur_v = 0;
+                    break;
+                default:
+                    int val = atoi(&line[i]);
+                    cur_nb*=10;
+                    cur_nb+=val;
+                    break;
                 }
                 i++;
-
             }
-
             int v[3];
             int vt[3];
             int vn[3];
@@ -118,10 +120,12 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
                 vn[0] = vs[2][j+2];
                 add_tri(new_mesh, v, vt, vn);
             }
-            free(p);
-
+            for (int i = 0; i < 3; i++)
+                free(vs[i]);
+            
         }
     }
+    
     if(texture_path != NULL){
         load_texture(new_mesh, texture_path);
     }

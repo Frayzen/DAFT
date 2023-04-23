@@ -1,17 +1,24 @@
 #include "../../include/preprocessing/mesh_builder.h"
 
-void add_texture_vertex(mesh * m, float vt[2]){
-    m->texture_vertices[m->nb_texture_vertices] = malloc(sizeof(float)*2);
+void add_v(mesh * m, float v[3])
+{
+    m->vertices[m->nb_vertices] = malloc(sizeof(float)*3);
+    copy(v, m->vertices[m->nb_vertices]);
+	m->nb_vertices++;
+}
+
+void add_vt(mesh * m, int vt[2]){
+    m->texture_vertices[m->nb_texture_vertices] = malloc(sizeof(int)*2);
     m->texture_vertices[m->nb_texture_vertices][0] = vt[0];
 	m->texture_vertices[m->nb_texture_vertices][1] = vt[1];
 	m->nb_texture_vertices++;
 }
 
-void add_vertex(mesh * m, float p[3])
+void add_vn(mesh * m, float vn[3])
 {
-    m->vertices[m->nb_vertices] = malloc(sizeof(float)*3);
-    copy(p, m->vertices[m->nb_vertices]);
-	m->nb_vertices++;
+    m->normal_vertices[m->nb_normal_vertices] = malloc(sizeof(float)*3);
+    copy(vn, m->normal_vertices[m->nb_normal_vertices]);
+	m->nb_normal_vertices++;
 }
 
 void take_min(float p[3], float o[3]){
@@ -99,10 +106,13 @@ bbox* build_bbox(int depth, int no_tri, int no_extra)
         return b;
     }
 }
-void add_tri_to_bbox(mesh* m, bbox *b, int depth, int points[3]){
+void add_tri_to_bbox(mesh* m, bbox *b, int depth, int v[3], int vt[3], int vn[3]){
     if(depth == 1){
-        for(int i = 0; i < 3; i++)
-            b->tris[b->total].vert[i] = points[i];
+        for(int i = 0; i < 3; i++){
+            b->tris[b->total].v[i] = v[i];
+            b->tris[b->total].vt[i] = vt[i];
+            b->tris[b->total].vn[i] = vn[i];
+        }
         b->total++;
         if(b->total == b->maxtotal)
             compute_bounds_tri(m, b);
@@ -112,7 +122,7 @@ void add_tri_to_bbox(mesh* m, bbox *b, int depth, int points[3]){
     b->total++;
     while(b->children[j]->total == b->children[j]->maxtotal)
         j++;
-    add_tri_to_bbox(m, b->children[j], depth-1, points);
+    add_tri_to_bbox(m, b->children[j], depth-1, v, vt, vn);
     if(b->total == b->maxtotal)
         compute_bounds_bbox(b);
     return;
@@ -132,6 +142,6 @@ mesh * build_mesh(int no_vert, int no_tri, int text_vert)
     m->nb_triangles = 0;
     m->nb_texture_vertices = 0;
 	m->vertices = malloc(sizeof(float*)*no_vert);
-	m->texture_vertices = malloc(sizeof(float*)*text_vert);
+	m->normal_vertices = malloc(sizeof(float*)*text_vert);
 	return m;
 }

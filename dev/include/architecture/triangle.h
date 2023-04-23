@@ -3,7 +3,8 @@
 #define TRIANGLE_H
 typedef struct triangle
 {
-	int vert[3];
-	int normal[3];
+	int v[3];
+	int vn[3];
+	int vt[3];
 }triangle;
 #endif
