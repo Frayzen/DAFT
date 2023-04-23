@@ -128,7 +128,6 @@ void add_tri_to_bbox(mesh* m, bbox *b, int depth, int v[3], int vt[3], int vn[3]
     return;
 }
 void add_tri(mesh* m, int v[3], int vt[3], int vn[3]){
-    printf("ADD TRI %d %d %d\n", v[0], v[1], v[2]);
     add_tri_to_bbox(m, m->box, m->depth, v, vt, vn);
     m->nb_triangles++;
 }

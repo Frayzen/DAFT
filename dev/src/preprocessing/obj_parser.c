@@ -33,9 +33,9 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
         else if (line[0] == 'f')
         {
             int space = 0;
-            for (int i = 0; line[i] != 0 && line[i] != '\r'; i++)
+            for (int i = 1; line[i] != 0 && line[i] != '\r'; i++)
             {
-                if (line[i] == ' ')
+                if (line[i] != ' ' && line[i-1] == ' ')
                     space++;
             }
             tri = tri + (space-3) +1;
@@ -80,6 +80,7 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
             int cur_v = 0;
             int cur_nb = 0;
             int i = 1;
+            int last_space = 1;
             while (line[i] != '\0' && line[i] != '\r')
             {
                 switch (line[i])
@@ -90,13 +91,17 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
                     cur_nb = 0;
                     break;
                 case ' ':
-                    nb_v++;
-                    for(int i = 0; i < 3; i++)
-                        vs[i] = realloc(vs[i], sizeof(int)*nb_v);
-                    cur_nb = 0;
-                    cur_v = 0;
+                    last_space = 1;
                     break;
                 default:
+                    if(last_space){
+                        nb_v++;
+                        for(int i = 0; i < 3; i++)
+                            vs[i] = realloc(vs[i], sizeof(int)*nb_v);
+                        cur_nb = 0;
+                        cur_v = 0;
+                        last_space = 0;
+                    }
                     int val = atoi(&line[i]);
                     cur_nb = val;
                     val/=10;
@@ -137,6 +142,7 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
     }else{
         new_mesh->texture = NULL;
     }
+    printf("Bbox of the object created: from %f %f %f to %f %f %f\n", new_mesh->box->min[0], new_mesh->box->min[1], new_mesh->box->min[2], new_mesh->box->max[0], new_mesh->box->max[1], new_mesh->box->max[2]);
     printf("Mesh loaded : %s (%d vertices, %d triangles)\n", path, new_mesh->nb_vertices, new_mesh->nb_triangles);
     new_mesh->reflectivity = reflectivity;
     add_mesh(w, new_mesh);
