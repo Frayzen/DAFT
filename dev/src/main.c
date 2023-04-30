@@ -30,7 +30,7 @@ int main(){
     // CHALLENGE : load_object("assets/objs/bunny.obj", wd, 10, (float[]){0,0,0}, .1);
     //1166 875 -> 388, 218
     //load_object("./assets/objs/grass.obj", wd, 1, (float[]){0,0,0}, NULL, .2);
-    load_object("./assets/objs/chopper.obj", wd, .1, (float[]){0,0,0}, NULL, 1);
+    load_object("./assets/objs/katana.obj", wd, 4, (float[]){0,0,0}, "./assets/textures/katana.png", 0);
     light* lt = init_light((float[]){0,5,0}, (float[]){1,1,1}, 1);
     add_light(wd, lt);
 
