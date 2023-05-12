@@ -70,4 +70,5 @@ void render_rasterize_bbox(rendering_params* rdp, int* pixels){
     for(int i = 0; i < w->size_meshes; i++){
         rasterize_bbox(w->meshes[i], rdp, pixels);
     }
+    
 }

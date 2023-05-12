@@ -13,16 +13,18 @@ void render_screen(rendering_params* rdp)
     SDL_PixelFormat* format = rdp->format;
         
     update_cam_sides(rdp);
-    
     int* pixels_rasterize = calloc(sizeof(int)*width*height, 1);
+    #if USE_RASTERIZE
     render_rasterize_bbox(rdp, pixels_rasterize);
+    #else
+    memset(pixels_rasterize, 1, width*height);
+    #endif
 
     #pragma omp parallel for
     for(int i = 0; i < width*height; i++){
-        if(!pixels_rasterize[i])
-            continue;
         ray r = create_ray_interpolate(rdp, i%width, i/width);
         raycast_param* rcp = init_raycast_param(&r, rdp->w, rdp->reflection, rdp->shadow, 0);
+        rcp->compute_meshes = pixels_rasterize[i];
         ray_cast(rcp);
         if(r.last_hit != NULL){
             pixels[i] = SDL_MapRGBA(format, r.last_hit->color[0]*255, r.last_hit->color[1]*255, r.last_hit->color[2]*255, 255);
@@ -53,7 +55,7 @@ void render_screen(rendering_params* rdp)
     }
 }
 
-void setPixel(SDL_Surface *surface, int x, int y, Uint32 color)
+void set_pixel(SDL_Surface *surface, int x, int y, Uint32 color)
 {
     int bpp = surface->format->BytesPerPixel;
     Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
@@ -96,11 +98,11 @@ void* render_quality_process(void* rdpptr){
         raycast_param* rcp = init_raycast_param(&r, w, 1, 1, 1);
         ray_cast(rcp);
         if(r.last_hit != NULL){
-            setPixel(image, i%width, i/width, SDL_MapRGBA(format, r.last_hit->color[0]*255, r.last_hit->color[1]*255, r.last_hit->color[2]*255, 255));
+            set_pixel(image, i%width, i/width, SDL_MapRGBA(format, r.last_hit->color[0]*255, r.last_hit->color[1]*255, r.last_hit->color[2]*255, 255));
             free(r.last_hit);
         }
         else
-            setPixel(image, i%width, i/width, SDL_MapRGBA(format, 0, 0, 0, 255));
+            set_pixel(image, i%width, i/width, SDL_MapRGBA(format, 0, 0, 0, 255));
         if(i%100 == 0){
             pthread_mutex_lock(&mutex);
             percentage = 100*i/(width*height);

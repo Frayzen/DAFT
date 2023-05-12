@@ -30,6 +30,8 @@ typedef struct raycast_param{
     int shadow;
     //if the ray should return NULL or the background color if it doesn't hit anything
     int skybox;
+    //the pixels that need to be computed for meshes
+    int compute_meshes;
 } raycast_param;
 
 #endif

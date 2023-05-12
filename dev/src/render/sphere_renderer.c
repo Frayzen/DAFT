@@ -24,13 +24,6 @@ int sphere_render(sphere * s, ray * r){
     add(r->pos, onSphere, onSphere);
     minus(onSphere, s->pos, normal);
     normalize(normal, normal);
-    float val = dotProduct(normal, r->dir);
-    if(val < 0)
-        val*=-1;
-    if(val > 1)
-        val = 1;
-    val++;
-    //scale(s->color, val, color);
     ray_update_result(r, NULL, t, s->color, normal, s->reflectivity);
     return 1;
 }

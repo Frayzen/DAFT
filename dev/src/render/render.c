@@ -25,11 +25,12 @@ void ray_cast(raycast_param* rcp){
         get_background(rcp);
         return;
     }
-    for(int idm = 0; idm < w->size_meshes; idm++){
-        mesh* m = w->meshes[idm];
-        r->current_mesh = m;
-        mesh_render(m, r);
-    }
+    if(rcp->compute_meshes)
+        for(int idm = 0; idm < w->size_meshes; idm++){
+            mesh* m = w->meshes[idm];
+            r->current_mesh = m;
+            mesh_render(m, r);
+        }
     for(int ids = 0; ids < w->size_spheres; ids++){
         sphere* s = &w->spheres[ids];
         r->current_mesh = NULL;

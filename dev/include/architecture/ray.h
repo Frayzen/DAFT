@@ -17,6 +17,7 @@ typedef struct ray_result
     float normal[3];
     float color[3];
     float reflectivity;
+    float point[3];
 
 } ray_result;
 typedef struct ray

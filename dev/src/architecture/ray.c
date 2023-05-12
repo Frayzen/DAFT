@@ -30,6 +30,9 @@ void ray_update_result(ray* r, triangle* tri, float new_mint, float color[3], fl
     new_hit->tri = tri;
     new_hit->m = r->current_mesh;
     new_hit->reflectivity = reflectivity;
+    copy(r->dir, new_hit->point);
+    scale(new_hit->point, new_mint, new_hit->point);
+    add(new_hit->point, r->pos, new_hit->point);
     normalize(normal, new_hit->normal);
     copy(color, new_hit->color);
     if(r->last_hit != NULL)

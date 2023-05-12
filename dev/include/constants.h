@@ -6,4 +6,11 @@
 #define QUALITY_WIDTH 1000
 #define QUALITY_HEIGHT 1000
 #define LBBOX 4
+
+//shadow
+#define MIN_DIFUSE_LIGHT 0.1
+
+//parameters
+#define USE_RASTERIZE 1
+
 #endif
