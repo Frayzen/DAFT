@@ -12,12 +12,9 @@ void get_background(raycast_param* rcp){
         Uint32 pixel = ((Uint32*)sb->pixels)[y*sb->w+x];
         Uint8 r, g, b;
         SDL_GetRGB(pixel, sb->format, &r,&g,&b);
-        ray_update_result(rcp->r, NULL, INFINITY, (float[]){0,0,0}, NULL);
-        rcp->r->last_hit->color[0] = r/255.0;
-        rcp->r->last_hit->color[1] = g/255.0;
-        rcp->r->last_hit->color[2] = b/255.0;
+        ray_update_result(rcp->r, NULL, INFINITY, (float[]){0,0,0}, NULL, (float[]){r/255.0, g/255.0, b/255.0});
     }else
-        ray_update_result(rcp->r, NULL, INFINITY, (float[]){0,0,0}, create_mat_from_color(0,0,0));
+        ray_update_result(rcp->r, NULL, INFINITY, (float[]){0,0,0}, NULL, (float[]){0,0,0});
 }
 
 //free the raycast_param
@@ -40,9 +37,6 @@ void ray_cast(raycast_param* rcp){
         sphere_render(s, r);
     }
     if(r->last_hit != NULL){
-        if(r->last_hit->mat != NULL){
-            copy(r->last_hit->mat->color, r->last_hit->color);
-        }
         reflection(rcp);
         shadow_render(rcp);
     }else if(rcp->skybox)

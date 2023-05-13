@@ -7,8 +7,6 @@
 #include "./camera.h"
 #include "../utils/daft_math.h"
 #include "sphere.h"
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL.h>
 #include "./material.h"
 
  typedef struct mesh{
@@ -27,11 +25,9 @@
     int depth;
     int no_extra;
     bbox* box;
-    SDL_Surface* texture;
     material* mat;
 }mesh;
 
 void free_mesh(mesh* msh);
 void get_vertex_from_triangle(mesh* m, triangle* tri, float* v1, float* v2, float* v3);
-void load_texture(mesh* m, char* path);
 #endif

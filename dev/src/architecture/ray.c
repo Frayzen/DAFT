@@ -24,12 +24,17 @@ void update_cam_sides(rendering_params* rdp){
 
 }
 
-void ray_update_result(ray* r, triangle* tri, float new_mint, float normal[3], material* mat){
+void ray_update_result(ray* r, triangle* tri, float new_mint, float normal[3], material* mat, float color[3]){
     ray_result* new_hit = calloc(sizeof(ray_result), 1);
     new_hit->mint = new_mint;
     new_hit->tri = tri;
     new_hit->m = r->current_mesh;
     new_hit->mat = mat;
+    if(color != NULL){
+        copy(color, new_hit->color);
+    }else{
+        copy(mat->color, new_hit->color);
+    }
     copy(r->dir, new_hit->pos);
     scale(new_hit->pos, new_mint, new_hit->pos);
     add(new_hit->pos, r->pos, new_hit->pos);

@@ -34,5 +34,5 @@ typedef struct ray
 
 void update_cam_sides(rendering_params* rdp);
 ray create_ray_interpolate(rendering_params* rdp, int x_pix, int y_pix);
-void ray_update_result(ray* r, triangle* tri, float new_mint, float normal[3], material* mat);
+void ray_update_result(ray* r, triangle* tri, float new_mint, float normal[3], material* mat, float color[3]);
 #endif

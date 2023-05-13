@@ -24,6 +24,6 @@ int sphere_render(sphere * s, ray * r){
     add(r->pos, onSphere, onSphere);
     minus(onSphere, s->pos, normal);
     normalize(normal, normal);
-    ray_update_result(r, NULL, t, normal, s->mat);
+    ray_update_result(r, NULL, t, normal, s->mat, s->mat->color);
     return 1;
 }

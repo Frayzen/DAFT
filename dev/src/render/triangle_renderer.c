@@ -14,10 +14,9 @@ void get_pixel_color(SDL_Surface* surface, int x, int y, Uint8* r, Uint8* g, Uin
 
 void get_color_at(ray* ry, float pos[3], triangle* tri, float* color, float u, float v, float w){
     mesh* m = ry->current_mesh;
-    if(m->texture == NULL){
-        color[0] = 1;
-        color[1] = 1;
-        color[2] = 1;
+    SDL_Surface* text = m->mat->texture;
+    if(text == NULL){
+        copy(m->mat->color, color);
         return;
     }
     float* pt0 = m->texture_vertices[tri->vt[0]];
@@ -25,10 +24,10 @@ void get_color_at(ray* ry, float pos[3], triangle* tri, float* color, float u, f
     float* pt2 = m->texture_vertices[tri->vt[2]];
     float x = (pt0[0]*w + pt1[0]*u + pt2[0]*v);
     float y = (pt0[1]*w + pt1[1]*u + pt2[1]*v);
-    int px = (int)(x * m->texture->w);
-    int py = (int)((1-y) * m->texture->h);
+    int px = (int)(x * text->w);
+    int py = (int)((1-y) * text->h);
     Uint8 r, g, b;
-    get_pixel_color(m->texture, px, py, &r, &g, &b);
+    get_pixel_color(text, px, py, &r, &g, &b);
     color[0] = r/255.0;
     color[1] = g/255.0;
     color[2] = b/255.0;
@@ -77,7 +76,7 @@ int triangle_render(triangle* tri, ray* r){
         scale(r->dir, t, pos);
         get_color_at(r, pos, tri, color, u, v, 1-u-v);
         //scale(color, val, color);
-        ray_update_result(r, tri, t, normal, r->current_mesh->mat);
+        ray_update_result(r, tri, t, normal, r->current_mesh->mat, color);
         return 1; // Hit, win
     }
     // This means that there is a line intersection but not a ray intersection. 

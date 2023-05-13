@@ -138,9 +138,9 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
     }
 
     if(texture_path != NULL){
-        load_texture(new_mesh, texture_path);
+        load_texture(mat, texture_path);
     }else{
-        new_mesh->texture = NULL;
+        mat->texture = NULL;
     }
     printf("Bbox of the object created: from %f %f %f to %f %f %f\n", new_mesh->box->min[0], new_mesh->box->min[1], new_mesh->box->min[2], new_mesh->box->max[0], new_mesh->box->max[1], new_mesh->box->max[2]);
     printf("Mesh loaded : %s (%d vertices, %d triangles)\n", path, new_mesh->nb_vertices, new_mesh->nb_triangles);
