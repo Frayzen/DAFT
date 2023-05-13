@@ -24,6 +24,7 @@ void render_screen(rendering_params* rdp)
     for(int i = 0; i < width*height; i++){
         ray r = create_ray_interpolate(rdp, i%width, i/width);
         raycast_param* rcp = init_raycast_param(&r, rdp->w, rdp->reflection, rdp->shadow, 0);
+        rcp->show_lights = 1;
         rcp->compute_meshes = pixels_rasterize[i];
         ray_cast(rcp);
         if(r.last_hit != NULL){

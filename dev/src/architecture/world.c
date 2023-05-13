@@ -10,7 +10,7 @@ void free_world(world* wd){
         free_mesh(wd->meshes[i]);
     }
     for(int i = 0; i < wd->size_lights; i++){
-        free(wd->lights[i]);
+        free_light(wd->lights[i]);
     }
     for(int i = 0; i < wd->size_cameras; i++){
         free(wd->cameras[i]);

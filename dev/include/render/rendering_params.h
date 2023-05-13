@@ -32,6 +32,8 @@ typedef struct raycast_param{
     int skybox;
     //the pixels that need to be computed for meshes
     int compute_meshes;
+    //if the ray should consider the lights points as spheres
+    int show_lights;
 } raycast_param;
 
 #endif

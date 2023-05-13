@@ -27,5 +27,6 @@ raycast_param* init_raycast_param(ray* r, world* w, int reflection, int shadow, 
     rcp->shadow = shadow;
     rcp->skybox = skybox;
     rcp->compute_meshes = 1;
+    rcp->show_lights = 0;
     return rcp;
 }
