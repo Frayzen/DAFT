@@ -25,7 +25,7 @@ int main(){
 
     printf("World initialized, loading objects\n");
 
-    sphere* s = sphere_init(0, 0, 0, 1, def_mat(1,0,0,0,0));
+    sphere* s = sphere_init(0, 0, 0, 1, def_mat(1,1,1,2, 1));
     add_sphere(wd, s);
     // CHALLENGE : load_object("assets/objs/bunny.obj", wd, 10, (float[]){0,0,0}, .1);
     //1166 875 -> 388, 218
@@ -33,7 +33,7 @@ int main(){
     //load_object("./assets/objs/katana.obj", wd, 4, (float[]){0,0,0}, "./assets/textures/katana.png", 0);
     //light* lt = init_light((float[]){0,3,0}, illum(1,1,1,1.2));
     //add_light(wd, lt);
-    light* lt2 = init_light((float[]){-4,0,0}, illum(1,1,1, 1000));
+    light* lt2 = init_light((float[]){-4,0,0}, illum(1,1,1, 10));
     add_light(wd, lt2);
 
     printf("World object count: %d \n", wd->size_meshes);

@@ -39,7 +39,7 @@ void shadow_render(raycast_param* rcp)
     
     //setup
     ray* shadow_ray = calloc(sizeof(struct ray),1);
-    float c[3] = {1,1,1};
+    float c[3] = {0,0,0};
     copy(ry->last_hit->normal, shadow_ray->pos);
     scale(shadow_ray->pos, .001, shadow_ray->pos);
     add(shadow_ray->pos, ry->last_hit->pos, shadow_ray->pos);
@@ -60,21 +60,20 @@ void shadow_render(raycast_param* rcp)
             times_illum(&mat->diffuse, lgt_amt);
             times_illum(&lgt->illum, lgt_amt);
             add(lgt_amt, c, c);
-
+            
             //specular
-            float ideal[3];
-            reflect(shadow_ray->dir, ry->last_hit->normal, ideal);
-            normalize(ideal, ideal);
-            dp = max(0,dotProduct(ideal, ry->dir));
+            float half_vect[3];
+            scale(ry->dir, -1, half_vect);
+            add(shadow_ray->dir, half_vect, half_vect);
+            normalize(half_vect, half_vect);
+            
+            dp = max(0,dotProduct(half_vect, ry->last_hit->normal));
             dp = pow(dp, mat->shininess);
             float lgt_spec[3] = {dp, dp, dp};
             times_illum(&mat->specular, lgt_spec);
             times_illum(&lgt->illum, lgt_spec);
             add(lgt_spec, c, c);
-        }else{
-            //shadow
-            scale(c, 0, c);
-            break;
+            
         }
     }
     float ambient[3];
@@ -83,6 +82,9 @@ void shadow_render(raycast_param* rcp)
     float factor[3] = {1,1,1};
     minus(factor, ambient, factor);
     scale_vector(c, factor, c);
+    for(int i = 0; i < 3; i++){
+        c[i] = min(1, c[i]);
+    }
     scale_vector(c, ry->last_hit->color, ry->last_hit->color);
 
     free(shadow_ray);
