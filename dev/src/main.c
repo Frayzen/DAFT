@@ -25,7 +25,7 @@ int main(){
 
     printf("World initialized, loading objects\n");
 
-    sphere* s = sphere_init(0, 0, 0, 1, def_mat(1,1,1,2, 1));
+    sphere* s = sphere_init(0, 0, 0, 1, def_mat(1,1,1,65,.8));
     add_sphere(wd, s);
     // CHALLENGE : load_object("assets/objs/bunny.obj", wd, 10, (float[]){0,0,0}, .1);
     //1166 875 -> 388, 218

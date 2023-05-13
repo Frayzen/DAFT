@@ -39,27 +39,34 @@ void shadow_render(raycast_param* rcp)
     
     //setup
     ray* shadow_ray = calloc(sizeof(struct ray),1);
-    float c[3] = {0,0,0};
+    float difuse[3] = {0,0,0};
+    float specular[3] = {0,0,0};
+
+    //position of the shadow ray
     copy(ry->last_hit->normal, shadow_ray->pos);
     scale(shadow_ray->pos, .001, shadow_ray->pos);
     add(shadow_ray->pos, ry->last_hit->pos, shadow_ray->pos);
 
     for(int i = 0; i < w->size_lights; i++){
+        //shadow ray direction
         light* lgt = w->lights[i];
         float dist[3];
         minus(lgt->pos, shadow_ray->pos, dist);
         normalize(dist, shadow_ray->dir);
         shadow_ray->last_hit = calloc(sizeof(ray_result), 1);
+
+        //setup mint
         float mint = norm(dist);
         shadow_ray->last_hit->mint = mint;
+        //raycast
         ray_cast(init_raycast_param(shadow_ray, w, 0, 0, 0));
         if(shadow_ray->last_hit->mint == mint){
             //diffuse
             float dp = max(0, dotProduct(shadow_ray->dir, ry->last_hit->normal));
-            float lgt_amt[3] = {dp, dp, dp};
-            times_illum(&mat->diffuse, lgt_amt);
-            times_illum(&lgt->illum, lgt_amt);
-            add(lgt_amt, c, c);
+            float lgt_difs[3] = {dp, dp, dp};
+            times_illum(&mat->diffuse, lgt_difs);
+            times_illum(&lgt->illum, lgt_difs);
+            add(lgt_difs, difuse, difuse);
             
             //specular
             float half_vect[3];
@@ -72,20 +79,26 @@ void shadow_render(raycast_param* rcp)
             float lgt_spec[3] = {dp, dp, dp};
             times_illum(&mat->specular, lgt_spec);
             times_illum(&lgt->illum, lgt_spec);
-            add(lgt_spec, c, c);
+            add(lgt_spec, specular, specular);
             
         }
     }
     float ambient[3];
     times_illum(&mat->ambient, ambient);
     
+    //difuse  = difuse * (1 - ambient)
     float factor[3] = {1,1,1};
     minus(factor, ambient, factor);
-    scale_vector(c, factor, c);
+    scale_vector(difuse, factor, difuse);
+    add(ambient, difuse, difuse);
+    scale_vector(difuse, ry->last_hit->color, ry->last_hit->color);
+    
+    //add specular
+    add(ry->last_hit->color, specular, ry->last_hit->color);
+
     for(int i = 0; i < 3; i++){
-        c[i] = min(1, c[i]);
+        ry->last_hit->color[i] = min(1, ry->last_hit->color[i]);
     }
-    scale_vector(c, ry->last_hit->color, ry->last_hit->color);
 
     free(shadow_ray);
 }

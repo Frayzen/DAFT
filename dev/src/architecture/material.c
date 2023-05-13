@@ -19,22 +19,24 @@ material* create_mat_from_color(float r, float g, float b){
 illumination def_illum(){
     return illum(1,1,1,100);
 }
+//shininess more than 1
+//reflection less than 1
 material* def_mat(float r, float g, float b, float shininess, float reflection){
-    return mat_init(r, g, b, illum(1,1,1,1.5), illum(1,1,1,2), def_illum(1,1,1,2), shininess, reflection);
+    return mat_init(r, g, b, illum(1,1,1,2), illum(1,1,1,1), def_illum(1,1,1,1), shininess, reflection);
 }
 material* default_mat(){
-    return def_mat(1,1,1,0,0);
+    return def_mat(1,1,1,50,0);
 }
 
 void free_material(material* mat){
     free(mat);
 }
-//intensity is more than 1
+//intensity is more than 1 (1 means no intensity)
 illumination illum(float r, float g, float b, float intensity){
     illumination i;
-    i.color[0] = r;
-    i.color[1] = g;
-    i.color[2] = b;
+    i.color[0] = max(0,min(1,r));
+    i.color[1] = max(0,min(1,g));
+    i.color[2] = max(0,min(1,b));
     //normalize(i.color, i.color);
     i.intensity = 1-(1/intensity);
     return i;
