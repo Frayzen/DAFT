@@ -20,7 +20,7 @@ illumination def_illum(){
     return illum(1,1,1,100);
 }
 material* def_mat(float r, float g, float b, float shininess, float reflection){
-    return mat_init(r, g, b, illum(1,1,1,1.5), def_illum(), def_illum(), shininess, reflection);
+    return mat_init(r, g, b, illum(1,1,1,1.5), illum(1,1,1,10), def_illum(), shininess, reflection);
 }
 material* default_mat(){
     return def_mat(1,1,1,0,0);

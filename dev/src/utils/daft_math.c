@@ -26,3 +26,9 @@ float project(float* w, float* v){
     float nsqr = normSquared(v);
     return wv / nsqr;
 }
+
+void reflect(float* v, float* n, float* r){
+    float proj[3];
+    scale(n, 2 * dotProduct(v, n), proj);
+    minus(proj, v, r);
+}
