@@ -5,10 +5,10 @@
 #include "./material.h"
 typedef struct light
 {
-	illumination illum;
+	float color[3];
 	float pos[3];
 }light;
 
 //init
-light* init_light(float pos[3], illumination illum);
+light* init_light(float pos[3], float color[3]);
 #endif

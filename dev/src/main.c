@@ -33,7 +33,7 @@ int main(){
     //load_object("./assets/objs/katana.obj", wd, 4, (float[]){0,0,0}, "./assets/textures/katana.png", 0);
     //light* lt = init_light((float[]){0,3,0}, illum(1,1,1,1.2));
     //add_light(wd, lt);
-    light* lt2 = init_light((float[]){-4,0,0}, illum(1,1,1, 10));
+    light* lt2 = init_light((float[]){-4,0,0}, (float[]){1,1,1});
     add_light(wd, lt2);
 
     printf("World object count: %d \n", wd->size_meshes);

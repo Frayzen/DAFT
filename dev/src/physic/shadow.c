@@ -24,10 +24,6 @@
 // kd is the material difuse coef
 // n is the normal
 // L is the c direction
-void times_illum(illumination* i, float* c){
-    scale_vector(c, i->color, c);
-    scale(c, i->intensity, c);
-}
 
 void shadow_render(raycast_param* rcp)
 {
@@ -64,27 +60,31 @@ void shadow_render(raycast_param* rcp)
             //diffuse
             float dp = max(0, dotProduct(shadow_ray->dir, ry->last_hit->normal));
             float lgt_difs[3] = {dp, dp, dp};
-            times_illum(&mat->diffuse, lgt_difs);
-            times_illum(&lgt->illum, lgt_difs);
+            scale_vector(mat->diffuse, lgt_difs, lgt_difs);
+            scale_vector(lgt->color, lgt_difs, lgt_difs);
             add(lgt_difs, difuse, difuse);
             
             //specular
-            float half_vect[3];
-            scale(ry->dir, -1, half_vect);
-            add(shadow_ray->dir, half_vect, half_vect);
-            normalize(half_vect, half_vect);
+            float r_m[3];
+            copy(ry->last_hit->normal, r_m);
+            scale(r_m, (2*dp), r_m);
+            minus(r_m, shadow_ray->dir, r_m);
+
+            float to_view[3];
+            scale(ry->dir, -1, to_view);
+            normalize(to_view, to_view);
             
-            dp = max(0,dotProduct(half_vect, ry->last_hit->normal));
+            dp = max(0,dotProduct(to_view, r_m));
             dp = pow(dp, mat->shininess);
             float lgt_spec[3] = {dp, dp, dp};
-            times_illum(&mat->specular, lgt_spec);
-            times_illum(&lgt->illum, lgt_spec);
+            scale_vector(mat->specular, lgt_spec, lgt_spec);
+            scale_vector(lgt->color, lgt_spec, lgt_spec);
             add(lgt_spec, specular, specular);
             
         }
     }
-    float ambient[3];
-    times_illum(&mat->ambient, ambient);
+    float ambient[3] = {1,1,1};
+    scale_vector(mat->ambient, ambient, ambient);
     
     //difuse  = difuse * (1 - ambient)
     float factor[3] = {1,1,1};
