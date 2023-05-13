@@ -77,7 +77,7 @@ int triangle_render(triangle* tri, ray* r){
         scale(r->dir, t, pos);
         get_color_at(r, pos, tri, color, u, v, 1-u-v);
         //scale(color, val, color);
-        ray_update_result(r, tri, t, color, normal, r->current_mesh->reflectivity);
+        ray_update_result(r, tri, t, normal, r->current_mesh->mat);
         return 1; // Hit, win
     }
     // This means that there is a line intersection but not a ray intersection. 

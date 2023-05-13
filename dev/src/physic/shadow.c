@@ -1,50 +1,70 @@
 #include "../../include/physic/shadow.h"
 
+//formula is 
+// c = ka * Ia + kd * Id * (N dot L) + ks * Is * (R dot V)^n
+// c = color
+// ka = ambient coef
+// Ia = ambient c
+// kd = diffuse coef
+// Id = diffuse c
+// ks = specular coef
+// Is = specular c
+// N = normal
+// L = c direction
+// R = reflection vector
+// V = view vector
+// n = shininess
+
+//if n dot L < 0 then n dot L = 0
+
+//c = ka + sum cl * [kd * n dot L + ks * (h dot dhi)^s]
+// c is the color of the pixel
+// ka is the color of the object
+// cl is color of the light
+// kd is the material difuse coef
+// n is the normal
+// L is the c direction
+void times_illum(illumination* i, float* c){
+    scale_vector(c, i->color, c);
+    scale(c, i->intensity, c);
+}
+
 void shadow_render(raycast_param* rcp)
 {
+    if(rcp->shadow == 0)
+        return;
     ray* ry = rcp->r;
+    material* mat = ry->last_hit->mat;
     world* w = rcp->w;
+    
+    //setup
     ray* shadow_ray = calloc(sizeof(struct ray),1);
+    float c[3] = {1,1,1};
+    times_illum(&mat->ambient, c);
+    
+    copy(ry->last_hit->normal, shadow_ray->pos);
+    scale(shadow_ray->pos, .001, shadow_ray->pos);
+    add(shadow_ray->pos, ry->last_hit->pos, shadow_ray->pos);
 
-    //Define the position of the shadow ray
-    scale(ry->dir, ry->last_hit->mint, shadow_ray->pos);
-    float litl_norm[3];
-    scale(ry->last_hit->normal, 0.0001, litl_norm);
-    add(shadow_ray->pos, litl_norm, shadow_ray->pos);
-    add(ry->pos, shadow_ray->pos, shadow_ray->pos);
-    for (int i = 0; i < w->size_lights; i++){
-        float dir_light[3];
-        minus(ry->last_hit->point, w->lights[i]->pos, dir_light);
-        normalize(dir_light, dir_light);
-        float dpd = dotProduct(ry->last_hit->normal, dir_light);
-        dpd = max(MIN_DIFUSE_LIGHT, dpd);
-        scale(ry->last_hit->color, dpd, ry->last_hit->color); 
-        // //Define the direction of the shadow ray
-        // minus(w->lights[i]->pos, shadow_ray->pos, shadow_ray->dir);
-        // float mint = norm(shadow_ray->dir);
-        
-        // //Normalize the direction vector
-        // normalize(shadow_ray->dir,shadow_ray->dir);
-        // float c = 1/mint * w->lights[i]->intensity;
-
-        
-        // shadow_ray->last_hit = calloc(sizeof(struct ray_result),1);
-        // shadow_ray->last_hit->mint = mint;
-        
-        // raycast_param* shadow_rcp = init_raycast_param(shadow_ray, rcp->w, 0, 0, 0);
-        // ray_cast(shadow_rcp);
-        // //if we hit somthing, set the color in black
-        // float ns = dotProduct(ry->last_hit->normal, shadow_ray->dir);
-        // if (shadow_ray->last_hit->mint == mint && ns > 0){
-        //         //light
-        //         scale(ry->last_hit->color, (1-c), ry->last_hit->color);
-        // }       
-        // else //shadow
-        // {
-        //     scale(ry->last_hit->color, cos(ns), ry->last_hit->color);
-        // }
-        // if(shadow_ray->last_hit)
-        //     free(shadow_ray->last_hit);
+    for(int i = 0; i < w->size_lights; i++){
+        light* lgt = w->lights[i];
+        float dist[3];
+        minus(lgt->pos, shadow_ray->pos, dist);
+        normalize(dist, shadow_ray->dir);
+        shadow_ray->last_hit = calloc(sizeof(ray_result), 1);
+        float mint = norm(dist);
+        shadow_ray->last_hit->mint = mint;
+        ray_cast(init_raycast_param(shadow_ray, w, 0, 0, 0));
+        if(shadow_ray->last_hit->mint == mint){
+            float dp = max(0, dotProduct(shadow_ray->dir, ry->last_hit->normal));
+            float lgt_amt[3] = {dp, dp, dp};
+            times_illum(&mat->diffuse, lgt_amt);
+            times_illum(&lgt->illum, lgt_amt);
+            add(lgt_amt, c, c);
+        }
     }
+
+    scale_vector(c, ry->last_hit->color, ry->last_hit->color);
+
     free(shadow_ray);
 }

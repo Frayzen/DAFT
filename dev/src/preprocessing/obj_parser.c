@@ -1,6 +1,6 @@
 #include "../../include/preprocessing/obj_parser.h"
 
-void load_object(char* path, world* w, float scale, float pos[3], char* texture_path, float reflectivity)
+void load_object(char* path, world* w, float scale, float pos[3], char* texture_path, material* mat)
 {
     FILE* file;
     file = fopen(path, "r");
@@ -144,7 +144,7 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
     }
     printf("Bbox of the object created: from %f %f %f to %f %f %f\n", new_mesh->box->min[0], new_mesh->box->min[1], new_mesh->box->min[2], new_mesh->box->max[0], new_mesh->box->max[1], new_mesh->box->max[2]);
     printf("Mesh loaded : %s (%d vertices, %d triangles)\n", path, new_mesh->nb_vertices, new_mesh->nb_triangles);
-    new_mesh->reflectivity = reflectivity;
+    new_mesh->mat = mat;
     add_mesh(w, new_mesh);
     fclose(file);
 }

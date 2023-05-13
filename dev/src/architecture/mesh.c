@@ -12,6 +12,7 @@ void free_mesh(mesh* msh){
     free(msh->normal_vertices);
     free(msh->texture_vertices);
     free(msh->vertices);
+    free(msh->mat);
     if(msh->texture != NULL)
         SDL_FreeSurface(msh->texture);
     free(msh);

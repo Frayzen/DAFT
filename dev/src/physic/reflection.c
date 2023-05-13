@@ -1,6 +1,11 @@
 #include "../../include/physic/reflection.h"
 
 void reflection(raycast_param* rcp){
+    if(!rcp->reflection)
+        return;
+    if(rcp->r->last_hit->mat->reflection == 0)
+        return;
+            
     ray* ry = rcp->r;
 
     float d_n = dotProduct(ry->last_hit->normal, ry->dir);
@@ -18,7 +23,7 @@ void reflection(raycast_param* rcp){
 
     normalize(new_dir, new_ray->dir);
 
-    float reflected = ry->last_hit->reflectivity;
+    float reflected = ry->last_hit->mat->reflection;
     new_ray->last_hit = NULL;
     
     raycast_param* reflect_rcp = init_raycast_param(new_ray, rcp->w, rcp->reflection-1, 0, 1);

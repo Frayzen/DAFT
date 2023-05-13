@@ -9,6 +9,7 @@
 #include "sphere.h"
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL.h>
+#include "./material.h"
 
  typedef struct mesh{
     int nb_vertices;
@@ -26,8 +27,8 @@
     int depth;
     int no_extra;
     bbox* box;
-    float reflectivity;
     SDL_Surface* texture;
+    material* mat;
 }mesh;
 
 void free_mesh(mesh* msh);
