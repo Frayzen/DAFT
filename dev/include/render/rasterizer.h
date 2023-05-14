@@ -5,6 +5,6 @@
 #include "../render/rendering_params.h"
 #include "../utils/daft_math.h"
 
-void render_rasterize_bbox(rendering_params* rdp, int* pixels);
+void render_rasterize(rendering_params* rdp, int* pixels);
 
 #endif

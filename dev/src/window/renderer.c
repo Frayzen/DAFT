@@ -15,7 +15,7 @@ void render_screen(rendering_params* rdp)
     update_cam_sides(rdp);
     int* pixels_rasterize = calloc(sizeof(int)*width*height, 1);
     #if USE_RASTERIZE
-    render_rasterize_bbox(rdp, pixels_rasterize);
+    render_rasterize(rdp, pixels_rasterize);
     #else
     memset(pixels_rasterize, 1, width*height);
     #endif
@@ -25,11 +25,16 @@ void render_screen(rendering_params* rdp)
         ray r = create_ray_interpolate(rdp, i%width, i/width);
         raycast_param* rcp = init_raycast_param(&r, rdp->w, rdp->reflection, rdp->shadow, 0);
         rcp->show_lights = 1;
-        rcp->compute_meshes = pixels_rasterize[i];
-        ray_cast(rcp);
-        if(r.last_hit != NULL){
-            pixels[i] = SDL_MapRGBA(format, r.last_hit->color[0]*255, r.last_hit->color[1]*255, r.last_hit->color[2]*255, 255);
-            free(r.last_hit);
+        if(pixels_rasterize[i] == 2){
+                pixels[i] = SDL_MapRGBA(format, 255, 0, 0, 255);
+        }else{
+            rcp->compute_meshes = pixels_rasterize[i];
+            ray_cast(rcp);
+
+            if(r.last_hit != NULL){
+                pixels[i] = SDL_MapRGBA(format, r.last_hit->color[0]*255, r.last_hit->color[1]*255, r.last_hit->color[2]*255, 255);
+                free(r.last_hit);
+            }
         }
     }
     free(pixels_rasterize);

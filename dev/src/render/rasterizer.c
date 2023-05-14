@@ -1,6 +1,8 @@
-#include "../../include/render/bbox_rasterizer.h"
+#include "../../include/render/rasterizer.h"
 
 void rasterize_bbox(bbox* b, rendering_params* rdp, int* pixels){
+    //TODO: redo
+
 
     //rasterize the bbox
     float p1[3] = {b->min[0], b->min[1], b->min[2]};
@@ -64,25 +66,16 @@ void rasterize_bbox(bbox* b, rendering_params* rdp, int* pixels){
 
 }
 
-// void rasterize_sphere(sphere* s, rendering_params* rdp, int* pixels){
-//     float dir[3];
-//     minus(s->pos, rdp->cam->pos, dir);
-//     normalize(dir, dir);
-//     float proj = project(dir, rdp->topDir);
-//     if(proj < 0)
-//         return;
-//     scale(dir, 1/proj, dir);   
-//     float rproj = project(dir, rdp->rightDir)+0.5;
-//     float tproj = project(dir, rdp->topDir)+0.5;;
-//     rproj+tproj;
-// }
+void rasterize_sphere(sphere* s, rendering_params* rdp, int* pixels){
+    //TODO: implement
+}
 
-void render_rasterize_bbox(rendering_params* rdp, int* pixels){
+void render_rasterize(rendering_params* rdp, int* pixels){
     world* w = rdp->w;
     for(int i = 0; i < w->size_meshes; i++){
         rasterize_bbox(w->meshes[i]->box, rdp, pixels);
     }
-    // for(int i = 0; i < w->size_lights; i++){
-    //     rasterize_sphere(w->lights[i]->s, rdp, pixels);
-    // }
+    for(int i = 0; i < w->size_lights; i++){
+        rasterize_sphere(w->lights[i]->s, rdp, pixels);
+    }
 }
