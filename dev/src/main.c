@@ -13,9 +13,9 @@ int main(){
     camera* cam = init_camera((float[]){-4,0,0}, 0, 0, 90, 90);
     add_camera(wd, cam);
     app_params params;
-    params.width = 150;
-    params.height = 150;
-    params.screen_scale = 5;
+    params.width = 100;
+    params.height = 100;
+    params.screen_scale = 10;
     params.wd = wd;
     params.cam = cam;
     params.FPS_UPPER_LIMIT=30;
@@ -29,11 +29,11 @@ int main(){
     // add_sphere(wd, s);
     // CHALLENGE : load_object("assets/objs/bunny.obj", wd, 10, (float[]){0,0,0}, .1);
     //1166 875 -> 388, 218
-    load_object("./assets/objs/grass.obj", wd, 1, (float[]){0,-1,0}, "./assets/textures/grass.png", def_mat(1,1,1,100,.1));
-    //load_object("./assets/objs/katana.obj", wd, 4, (float[]){0,0,0}, "./assets/textures/katana.png", 0);
+    //load_object("./assets/objs/grass.obj", wd, 1, (float[]){0,-1,0}, "./assets/textures/grass.png", def_mat(1,1,1,100,.1));
+    load_object("./assets/objs/teddy.obj", wd, .1, (float[]){0,0,0}, NULL, def_mat(1,1,1,3,0));
     //light* lt = init_light((float[]){0,3,0}, illum(1,1,1,1.2));
     //add_light(wd, lt);
-    light* lt2 = init_light((float[]){-3,0,0}, (float[]){1,1,1});
+    light* lt2 = init_light((float[]){-10,0,0}, (float[]){1,1,1});
     add_light(wd, lt2);
 
     printf("World object count: %d \n", wd->size_meshes);

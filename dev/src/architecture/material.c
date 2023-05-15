@@ -12,6 +12,7 @@ material* mat_init(float r, float g, float b, float ambient[3], float diffuse[3]
     copy(specular, mat->specular);
     mat->shininess = shininess;
     mat->reflection = reflection;
+    mat->texture = NULL;
     return mat;
 }
 

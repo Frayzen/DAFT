@@ -74,34 +74,36 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
 
         if (line[0] == 'f' && line[1] == ' ')
         {
-            int nb_v = 0;
+            int nb_v = 1;
             // v vt vn
-            int* vs[3] = {NULL,NULL,NULL} ;
+            int* vs[3] = {malloc(sizeof(int)),malloc(sizeof(int)),malloc(sizeof(int))} ;
             int cur_v = 0;
             int cur_nb = 0;
-            int i = 1;
-            int last_space = 1;
+            int i = 2;
+            int last_space = 0;
             while (line[i] != '\0' && line[i] != '\r')
             {
                 switch (line[i])
                 {
+                case '\n':
+                    break;
                 case '/':
-                    vs[cur_v][nb_v-1] = cur_nb;
+                    last_space = 0;
                     cur_v++;
-                    cur_nb = 0;
                     break;
                 case ' ':
-                    last_space = 1;
-                    break;
-                default:
-                    if(last_space){
+                    if(!last_space){
                         nb_v++;
                         for(int i = 0; i < 3; i++)
                             vs[i] = realloc(vs[i], sizeof(int)*nb_v);
                         cur_nb = 0;
                         cur_v = 0;
-                        last_space = 0;
+
                     }
+                    last_space = 1;
+                    break;
+                default:
+                    last_space = 0;
                     int val = atoi(&line[i]);
                     cur_nb = val;
                     val/=10;
@@ -109,6 +111,7 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
                         val/=10;
                         i++;
                     }
+                    vs[cur_v][nb_v-1] = cur_nb;
                     break;
                 }
                 i++;
@@ -140,6 +143,10 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
     if(texture_path != NULL){
         load_texture(mat, texture_path);
     }else{
+        if(mat == NULL){
+            printf("No material given, creating a default one\n");
+            mat = def_mat(1,1,1,4,0);
+        }
         mat->texture = NULL;
     }
     printf("Bbox of the object created: from %f %f %f to %f %f %f\n", new_mesh->box->min[0], new_mesh->box->min[1], new_mesh->box->min[2], new_mesh->box->max[0], new_mesh->box->max[1], new_mesh->box->max[2]);
