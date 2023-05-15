@@ -159,13 +159,12 @@ void* render_quality_video_process(void* rdpptr){
     sprintf(ffmpeg_str, "ffmpeg -f rawvideo -pixel_format rgb24 -video_size %dx%d -framerate %d -i - -c:v libx264 -pix_fmt yuv420p %s", width, height, VIDEO_FPS, VIDEO_FILENAME);
     FILE* ffmpeg = popen(ffmpeg_str, "w");
 
-    float time = 1.0;
-    float from[3] = {-4,0,0};
-    //float from_rot[2] = {0,0};
-    float to[3] = {-2,0,0};
-    //float to_rot[2] = {0,0};
+    float time = 5.0;
+    float from[3] = {-6,0,0};
+    float from_rot[2] = {0,0};
+    float to[3] = {-2,1,5};
+    float to_rot[2] = {0,-M_PI/2};
     float pos[3];
-    //float rot[2];
 
     // Generate and pipe RGB matrices
     int nb_frame = time*VIDEO_FPS;
@@ -179,11 +178,9 @@ void* render_quality_video_process(void* rdpptr){
         pos[0] = linear_interpolate(from[0], to[0], t);
         pos[1] = linear_interpolate(from[1], to[1], t);
         pos[2] = linear_interpolate(from[2], to[2], t);
-        //rot[0] = linear_interpolate(from_rot[0], to_rot[0], t);
-        //rot[1] = linear_interpolate(from_rot[1], to_rot[1], t);
         copy(pos, rdp->cam->pos);
-        rdp->cam->pitch = 0;
-        rdp->cam->yaw = 0;
+        rdp->cam->pitch = linear_interpolate(from_rot[0], to_rot[0], t);
+        rdp->cam->yaw = linear_interpolate(from_rot[1], to_rot[1], t);
         
         update_cam_sides(rdp);
         #pragma omp parallel for
