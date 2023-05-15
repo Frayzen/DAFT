@@ -1,6 +1,6 @@
 #include "../../include/window/event_handler.h"
 
-void launch_quality_render(app_params* params){
+void launch_quality_picture_render(app_params* params){
     camera* quality_cam = malloc(sizeof(camera));
     copy(params->cam->pos, quality_cam->pos);
     quality_cam->FOV_x = 90;
@@ -8,10 +8,24 @@ void launch_quality_render(app_params* params){
     quality_cam->quality = 1;
     quality_cam->yaw = params->cam->yaw;
     quality_cam->pitch = params->cam->pitch;
-    rendering_params* quality_rdp = init_rendering_params(params->wd, QUALITY_WIDTH, QUALITY_HEIGHT, quality_cam, params->screen_scale, NULL);
+    rendering_params* quality_rdp = init_rendering_params(params->wd, QUALITY_WIDTH, QUALITY_HEIGHT, quality_cam, 1, NULL);
     quality_rdp->shadow = params->rdp->shadow;
     quality_rdp->reflection = params->rdp->reflection;
-    render_quality(quality_rdp);
+    render_quality_image(quality_rdp);
+}
+
+void launch_quality_video_render(app_params* params){
+    camera* quality_cam = malloc(sizeof(camera));
+    copy(params->cam->pos, quality_cam->pos);
+    quality_cam->FOV_x = 90;
+    quality_cam->FOV_y = 90;
+    quality_cam->quality = 1;
+    quality_cam->yaw = params->cam->yaw;
+    quality_cam->pitch = params->cam->pitch;
+    rendering_params* quality_rdp = init_rendering_params(params->wd, VIDEO_WIDTH, VIDEO_HEIGHT, quality_cam, 1, NULL);
+    quality_rdp->shadow = params->rdp->shadow;
+    quality_rdp->reflection = params->rdp->reflection;
+    render_quality_video(quality_rdp);
 }
 
 //pressed = 1 if key is pressed, 0 if released
@@ -23,7 +37,11 @@ void handle_key(SDL_Keycode key, app_params* params, int pressed){
     {
         case SDLK_p:
             if(pressed)
-                launch_quality_render(params);
+                launch_quality_picture_render(params);
+            break;
+        case SDLK_b:
+            if(pressed)
+                launch_quality_video_render(params);
             break;
         case SDLK_u:
             if(pressed)
