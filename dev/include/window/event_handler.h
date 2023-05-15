@@ -2,6 +2,7 @@
 #include "./window.h"
 #include "../architecture/camera.h"
 #include <stdio.h>
+#include "../architecture/world.h"
 
 #ifndef EVENT_HANDLER_H
 #define EVENT_HANDLER_H

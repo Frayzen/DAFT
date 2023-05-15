@@ -45,3 +45,9 @@ void add_sphere(world* wd, sphere* s){
     wd->spheres = realloc(wd->spheres, sizeof(sphere) * wd->size_spheres);
     wd->spheres[wd->size_spheres - 1] = *s;
 }
+
+void add_campoint(world* wd, campoint* cp){
+    wd->size_campoints++;
+    wd->campoints = realloc(wd->campoints, sizeof(campoint) * wd->size_campoints);
+    wd->campoints[wd->size_campoints - 1] = *cp;
+}

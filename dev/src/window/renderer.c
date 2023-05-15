@@ -25,6 +25,7 @@ void render_screen(rendering_params* rdp)
         ray r = create_ray_interpolate(rdp, i%width, i/width);
         raycast_param* rcp = init_raycast_param(&r, rdp->w, rdp->reflection, rdp->shadow, 0);
         rcp->show_lights = 1;
+        rcp->show_campoints = 1;
         if(pixels_rasterize[i] == 2){
                 pixels[i] = SDL_MapRGBA(format, 255, 0, 0, 255);
         }else{

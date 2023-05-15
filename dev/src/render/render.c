@@ -43,6 +43,15 @@ void ray_cast(raycast_param* rcp){
             sphere_render(l->s, r);
         }
     }
+    if (rcp->show_campoints)
+    {
+        for (int i = 0; i < w->size_campoints; i++)
+        {
+            campoint* cp = &w->campoints[i];
+            r->current_mesh = NULL;
+            sphere_render(cp->s, r);
+        }
+    }
     if(r->last_hit != NULL){
         reflection(rcp);
         shadow_render(rcp);

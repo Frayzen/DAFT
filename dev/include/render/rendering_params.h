@@ -34,6 +34,8 @@ typedef struct raycast_param{
     int compute_meshes;
     //if the ray should consider the lights points as spheres
     int show_lights;
+    //if the ray should consider the campoints as spheres
+    int show_campoints;
 } raycast_param;
 
 #endif

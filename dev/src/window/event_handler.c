@@ -14,6 +14,8 @@ void launch_quality_render(app_params* params){
     render_quality(quality_rdp);
 }
 
+
+
 //pressed = 1 if key is pressed, 0 if released
 void handle_key(SDL_Keycode key, app_params* params, int pressed){
     float delta = MOVING_SPEED;
@@ -21,6 +23,15 @@ void handle_key(SDL_Keycode key, app_params* params, int pressed){
         delta*=-1;
     switch (key)
     {
+        case SDLK_v:
+            if(pressed){
+                add_campoint(params->wd, init_campoint(params->cam->pos, params->cam->yaw, params->cam->pitch));
+                for (int i =0; i < params->wd->size_campoints; i++)
+                {
+                    printf("campoint %d: %f %f %f\n", i, params->wd->campoints[i].s->pos[0], params->wd->campoints[i].s->pos[1], params->wd->campoints[i].s->pos[2]);
+                }
+            break;
+            }
         case SDLK_p:
             if(pressed)
                 launch_quality_render(params);
