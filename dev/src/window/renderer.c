@@ -1,6 +1,8 @@
 #include "../../include/window/renderer.h"
 
 int percentage = 0;
+unsigned char last_image[VIDEO_WIDTH * VIDEO_HEIGHT * 3];
+
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void render_screen(rendering_params* rdp)
@@ -38,6 +40,16 @@ void render_screen(rendering_params* rdp)
             }
         }
         free(pixels_rasterize);
+    }else{
+        #pragma omp parallel for
+        for(int i = 0; i < width*height; i++){
+            int x = i%width;
+            int y = i/width;
+            int ratio_x = x*((float)VIDEO_WIDTH/width);
+            int ratio_y = y*((float) VIDEO_HEIGHT/height);
+            int index = (ratio_y*VIDEO_WIDTH+ratio_x)*3;
+            pixels[i] = SDL_MapRGBA(format, last_image[index], last_image[index+1], last_image[index+2], 255);
+        }
     }
 
 
@@ -194,6 +206,7 @@ void* render_quality_video_process(void* rdpptr){
             free(r.last_hit);
         }
         pthread_mutex_lock(&mutex);
+        memcpy(last_image, rgb, width * height * 3);
         percentage = 100*frame/(nb_frame-1);
         pthread_mutex_unlock(&mutex);
 
