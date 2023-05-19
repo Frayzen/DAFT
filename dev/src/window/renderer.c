@@ -1,6 +1,8 @@
 #include "../../include/window/renderer.h"
 
 int percentage = 0;
+unsigned char last_image[VIDEO_WIDTH * VIDEO_HEIGHT * 3];
+
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void render_screen(rendering_params* rdp)
@@ -11,34 +13,44 @@ void render_screen(rendering_params* rdp)
     int width = rdp->width;
     int height = rdp->height;
     SDL_PixelFormat* format = rdp->format;
-        
-    update_cam_sides(rdp);
-    int* pixels_rasterize = calloc(sizeof(int)*width*height, 1);
-    #if USE_RASTERIZE
-    render_rasterize(rdp, pixels_rasterize);
-    #else
-    memset(pixels_rasterize, 1, width*height);
-    #endif
+    if(percentage == 0){
+            
+        update_cam_sides(rdp);
+        int* pixels_rasterize = calloc(sizeof(int)*width*height, 1);
+        #if USE_RASTERIZE
+        render_rasterize(rdp, pixels_rasterize);
+        #else
+        memset(pixels_rasterize, 1, width*height);
+        #endif
+        #pragma omp parallel for
+        for(int i = 0; i < width*height; i++){
+            ray r = create_ray_interpolate(rdp, i%width, i/width);
+            raycast_param* rcp = init_raycast_param(&r, rdp->w, rdp->reflection, rdp->shadow, 0);
+            rcp->show_lights = 1;
+            if(pixels_rasterize[i] == 2){
+                    pixels[i] = SDL_MapRGBA(format, 255, 0, 0, 255);
+            }else{
+                rcp->compute_meshes = pixels_rasterize[i];
+                ray_cast(rcp);
 
-    #pragma omp parallel for
-    for(int i = 0; i < width*height; i++){
-        ray r = create_ray_interpolate(rdp, i%width, i/width);
-        raycast_param* rcp = init_raycast_param(&r, rdp->w, rdp->reflection, rdp->shadow, 0);
-        rcp->show_lights = 1;
-        rcp->show_campoints = 1;
-        if(pixels_rasterize[i] == 2){
-                pixels[i] = SDL_MapRGBA(format, 255, 0, 0, 255);
-        }else{
-            rcp->compute_meshes = pixels_rasterize[i];
-            ray_cast(rcp);
-
-            if(r.last_hit != NULL){
-                pixels[i] = SDL_MapRGBA(format, r.last_hit->color[0]*255, r.last_hit->color[1]*255, r.last_hit->color[2]*255, 255);
-                free(r.last_hit);
+                if(r.last_hit != NULL){
+                    pixels[i] = SDL_MapRGBA(format, r.last_hit->color[0]*255, r.last_hit->color[1]*255, r.last_hit->color[2]*255, 255);
+                    free(r.last_hit);
+                }
             }
         }
+        free(pixels_rasterize);
+    }else{
+        #pragma omp parallel for
+        for(int i = 0; i < width*height; i++){
+            int x = i%width;
+            int y = i/width;
+            int ratio_x = x*((float)VIDEO_WIDTH/width);
+            int ratio_y = y*((float) VIDEO_HEIGHT/height);
+            int index = (ratio_y*VIDEO_WIDTH+ratio_x)*3;
+            pixels[i] = SDL_MapRGBA(format, last_image[index], last_image[index+1], last_image[index+2], 255);
+        }
     }
-    free(pixels_rasterize);
 
 
     int ppixels = (percentage*width*height)/100;
@@ -91,7 +103,7 @@ void set_pixel(SDL_Surface *surface, int x, int y, Uint32 color)
 }
 
 // responsible for freeing the raycast_params struct and the image
-void* render_quality_process(void* rdpptr){
+void* render_quality_image_process(void* rdpptr){
     rendering_params* rdp = (rendering_params*)rdpptr;
     SDL_Surface* image = SDL_CreateRGBSurface(0, rdp->width, rdp->height, 32, 0, 0, 0, 0);
     
@@ -129,10 +141,91 @@ void* render_quality_process(void* rdpptr){
     return NULL;
 }
 
-void render_quality(rendering_params* rdp){
+void render_quality_image(rendering_params* rdp){
     if(percentage != 0)
         return;
-    printf("RENDERING...\n");
+    printf("RENDERING IMAGE...\n");
     pthread_t thread;
-    pthread_create(&thread, NULL, render_quality_process, (void*)rdp);
+    pthread_create(&thread, NULL, render_quality_image_process, (void*)rdp);
+}
+
+float linear_interpolate(float a, float b, float t){
+    return a + (b-a)*t;
+}
+
+void* render_quality_video_process(void* rdpptr){
+    rendering_params* rdp = (rendering_params*)rdpptr;
+    
+    int width = rdp->width;
+    int height = rdp->height;
+
+    // Open FFmpeg process
+    int ret = remove(VIDEO_FILENAME);
+
+    if(ret == 0) {
+        printf("File deleted successfully\n");
+    } else {
+        printf("Error: unable to delete the file\n");
+    }
+    char ffmpeg_str[256];
+    sprintf(ffmpeg_str, "ffmpeg -f rawvideo -pixel_format rgb24 -video_size %dx%d -framerate %d -i - -c:v libx264 -pix_fmt yuv420p %s", width, height, VIDEO_FPS, VIDEO_FILENAME);
+    FILE* ffmpeg = popen(ffmpeg_str, "w");
+
+    float time = 5.0;
+    float from[3] = {-6,0,0};
+    float from_rot[2] = {0,0};
+    float to[3] = {-2,1,5};
+    float to_rot[2] = {0,-M_PI/2};
+    float pos[3];
+
+    // Generate and pipe RGB matrices
+    int nb_frame = time*VIDEO_FPS;
+    world* w = rdp->w;
+    unsigned char rgb[width * height * 3];
+
+    for (int frame = 0; frame < nb_frame; ++frame) {
+        // Generate RGB matrix for the current frame
+
+        float t = (float)frame / (nb_frame - 1);
+        pos[0] = linear_interpolate(from[0], to[0], t);
+        pos[1] = linear_interpolate(from[1], to[1], t);
+        pos[2] = linear_interpolate(from[2], to[2], t);
+        copy(pos, rdp->cam->pos);
+        rdp->cam->pitch = linear_interpolate(from_rot[0], to_rot[0], t);
+        rdp->cam->yaw = linear_interpolate(from_rot[1], to_rot[1], t);
+        
+        update_cam_sides(rdp);
+        #pragma omp parallel for
+        for(int i = 0; i < width*height; i++){
+            ray r = create_ray_interpolate(rdp, i%width, i/width);
+            raycast_param* rcp = init_raycast_param(&r, w, 1, 1, 1);
+            ray_cast(rcp);
+            rgb[i*3] = r.last_hit->color[0]*255;
+            rgb[i*3+1] = r.last_hit->color[1]*255;
+            rgb[i*3+2] = r.last_hit->color[2]*255;
+            free(r.last_hit);
+        }
+        pthread_mutex_lock(&mutex);
+        memcpy(last_image, rgb, width * height * 3);
+        percentage = 100*frame/(nb_frame-1);
+        pthread_mutex_unlock(&mutex);
+
+        // Write RGB matrix to FFmpeg process
+        fwrite(rgb, sizeof(unsigned char), width * height * 3, ffmpeg);
+    }
+    pthread_mutex_lock(&mutex);
+    percentage = 0;
+    pthread_mutex_unlock(&mutex);
+
+    // Close FFmpeg process
+    pclose(ffmpeg);
+    printf("END OF COPY !\n");
+    return NULL;
+}
+void render_quality_video(rendering_params* rdp){
+    if(percentage != 0)
+        return;
+    printf("RENDERING VIDEO...\n");
+    pthread_t thread;
+    pthread_create(&thread, NULL, render_quality_video_process, (void*)rdp);
 }

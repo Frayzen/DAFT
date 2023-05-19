@@ -13,4 +13,10 @@
 //parameters
 #define USE_RASTERIZE 1
 
+//video
+#define VIDEO_FILENAME "out.mp4"
+#define VIDEO_FPS 10
+#define VIDEO_WIDTH 240
+#define VIDEO_HEIGHT 240
+
 #endif
