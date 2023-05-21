@@ -37,9 +37,10 @@ int main(int argc, char** argv){
     // CHALLENGE : load_object("assets/objs/bunny.obj", wd, 10, (float[]){0,0,0}, .1);
     //1166 875 -> 388, 218
     //load_object("./assets/objs/grass.obj", wd, 1, (float[]){0,-1,0}, "./assets/textures/grass.png", def_mat(1,1,1,100,.1));
-    material* materials;
-    int numMaterials = 0;
-    mtl_parser("./assets/materials/San_Fran_Tower.mtl", &materials, &numMaterials);
+    //material* materials;
+    //int p = 0;
+    //mtl_parser("./assets/materials/capsule.mtl", &materials, &p);
+    load_object(argv[1], wd, 1, (float[]){0,0,0}, "./assets/textures/capsule0.jpg");//, materials);
     /*printf("ambient %f %f %f\n", materials[0].ambient[0], materials[0].ambient[1], materials[0].ambient[2]);
     printf("diffuse %f %f %f\n", materials[0].diffuse[0], materials[0].diffuse[1], materials[0].diffuse[2]);
     printf("specular %f %f %f\n",materials[0].specular[0], materials[0].specular[1], materials[0].specular[2]);

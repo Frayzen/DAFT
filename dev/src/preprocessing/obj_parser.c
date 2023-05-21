@@ -1,6 +1,6 @@
 #include "../../include/preprocessing/obj_parser.h"
 
-void load_object(char* path, world* w, float scale, float pos[3], char* texture_path, material* mat)
+void load_object(char* path, world* w, float scale, float pos[3], char* texture_path)
 {
     FILE* file;
     file = fopen(path, "r");
@@ -18,7 +18,9 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
     //size_t texture = 0;
 
     char line[200];
-    //char pathname = "./assets/materials/";
+    char pathname[100] = "./assets/materials/";
+    material* mats;
+    int p = 0;
 
     while (fgets(line, sizeof(line), file) != NULL)
     {
@@ -41,13 +43,14 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
             }
             tri = tri + (space-3) +1;
         }
-        /*else if (strncmp(line, "mtllib", 6) == 0)
+        else if (strncmp(line, "mtllib", 6) == 0)
         {
             char tmp[50];
             sscanf(line, "mtllib %s", tmp);
-        }*/
+            strcat(pathname, tmp);
+            mtl_parser(pathname, &mats, &p);
+        }
     }
-    //printf("pathname %s\n", pathname);
     if(vert == 0 || tri == 0){
         printf("The %s file is not a valid obj file\n", path);
         return;
@@ -148,17 +151,17 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
     }
 
     if(texture_path != NULL){
-        load_texture(mat, texture_path);
+        load_texture(mats, texture_path);
     }else{
-        if(mat == NULL){
+        if(mats == NULL){
             printf("No material given, creating a default one\n");
-            mat = def_mat(1,1,1,4,0);
+            mats = def_mat(1,1,1,4,0);
+            mats->texture = NULL;
         }
-        mat->texture = NULL;
     }
     printf("Bbox of the object created: from %f %f %f to %f %f %f\n", new_mesh->box->min[0], new_mesh->box->min[1], new_mesh->box->min[2], new_mesh->box->max[0], new_mesh->box->max[1], new_mesh->box->max[2]);
     printf("Mesh loaded : %s (%d vertices, %d triangles)\n", path, new_mesh->nb_vertices, new_mesh->nb_triangles);
-    new_mesh->mat = mat;
+    new_mesh->mat = mats;
     add_mesh(w, new_mesh);
     fclose(file);
 }
