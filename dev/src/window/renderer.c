@@ -64,6 +64,7 @@ void render_screen(rendering_params *rdp)
             for (int h = 0; h < height / 20; h++)
             {
                 if (w * h >= ppixels)
+                    break;
                 else
                 {
                     if (w < percentage * width / 100)

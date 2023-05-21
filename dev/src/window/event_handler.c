@@ -40,8 +40,13 @@ void handle_key(SDL_Keycode key, app_params* params, int pressed){
         case SDLK_v:
             if(pressed){
                 add_campoint(params->wd, init_campoint(params->cam->pos, params->cam->yaw, params->cam->pitch));
-            break;
+                if(params->wd->size_campoints > 1){
+                    float pos[3];
+                    minus(params->wd->campoints[params->wd->size_campoints-1].s->pos, params->wd->campoints[params->wd->size_campoints-2].s->pos, pos);
+                    params->wd->campoints[params->wd->size_campoints-2].time = norm(pos) / CAM_MOV_SPEED;
+                }
             }
+            break;
         case SDLK_p:
             if(pressed)
                 launch_quality_picture_render(params);

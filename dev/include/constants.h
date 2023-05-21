@@ -15,8 +15,9 @@
 
 //video
 #define VIDEO_FILENAME "out.mp4"
+#define CAM_MOV_SPEED 1
 #define VIDEO_FPS 30
-#define VIDEO_WIDTH 500
-#define VIDEO_HEIGHT 500
+#define VIDEO_WIDTH 300
+#define VIDEO_HEIGHT 300
 
 #endif
