@@ -64,13 +64,12 @@ void render_screen(rendering_params *rdp)
             for (int h = 0; h < height / 20; h++)
             {
                 if (w * h >= ppixels)
-                    break;
                 else
                 {
                     if (w < percentage * width / 100)
                         pixels[h * width + w] = SDL_MapRGBA(format, 0, 255, 0, 255);
                     else
-                        pixels[h * width + w] = SDL_MapRGBA(format, 0, 0, 0, 0);
+                        pixels[h * width + w] = SDL_MapRGBA(format, 0, 0, 0, 255);
                 }
             }
         }
