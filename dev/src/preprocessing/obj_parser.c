@@ -18,6 +18,7 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
     //size_t texture = 0;
 
     char line[200];
+    //char pathname = "./assets/materials/";
 
     while (fgets(line, sizeof(line), file) != NULL)
     {
@@ -40,7 +41,13 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
             }
             tri = tri + (space-3) +1;
         }
+        /*else if (strncmp(line, "mtllib", 6) == 0)
+        {
+            char tmp[50];
+            sscanf(line, "mtllib %s", tmp);
+        }*/
     }
+    //printf("pathname %s\n", pathname);
     if(vert == 0 || tri == 0){
         printf("The %s file is not a valid obj file\n", path);
         return;

@@ -13,6 +13,7 @@ typedef struct {
     float specular[3];
     float shininess;
     float reflection;
+    char name[256];
     SDL_Surface* texture;
 } material;
 

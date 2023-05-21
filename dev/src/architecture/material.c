@@ -27,7 +27,6 @@ material* default_mat(){
     return def_mat(1,1,1,50,0);
 }
 
-
 void load_texture(material* m, char* path){
     SDL_Surface* surface = IMG_Load(path);
     if(surface == NULL){

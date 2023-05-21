@@ -1,7 +1,4 @@
 #include <stdio.h>
-#include <err.h>
 #include "../../include/architecture/material.h"
 
-#pragma once
-
-material** load_mtl(char* path);
+void mtl_parser(const char* filename, material** materials, int* numMaterials);

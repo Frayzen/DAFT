@@ -38,8 +38,19 @@ int main(int argc, char** argv){
     //1166 875 -> 388, 218
     //load_object("./assets/objs/grass.obj", wd, 1, (float[]){0,-1,0}, "./assets/textures/grass.png", def_mat(1,1,1,100,.1));
     load_object(argv[1], wd, 1, (float[]){0,0,0}, NULL, def_mat(1,1,1,3,0));
-    /*material** mat = load_mtl("./assets/materials/capsule.mtl");
-    free(mat[0]);
+    material* materials;
+    int p = 0;
+    mtl_parser("./assets/materials/capsule.mtl", &materials, &p);
+    /*printf("ambient %f %f %f\n", materials[0].ambient[0], materials[0].ambient[1], materials[0].ambient[2]);
+    printf("diffuse %f %f %f\n", materials[0].diffuse[0], materials[0].diffuse[1], materials[0].diffuse[2]);
+    printf("specular %f %f %f\n",materials[0].specular[0], materials[0].specular[1], materials[0].specular[2]);
+
+    printf("ambient %f %f %f\n", materials[1].ambient[0], materials[1].ambient[1], materials[1].ambient[2]);
+    printf("diffuse %f %f %f\n", materials[1].diffuse[0], materials[1].diffuse[1], materials[1].diffuse[2]);
+    printf("specular %f %f %f\n",materials[1].specular[0], materials[1].specular[1], materials[1].specular[2]);*/
+
+
+    /*free(mat[0]);
     free(mat[1]);
     free(mat);*/
 
