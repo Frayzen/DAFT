@@ -36,6 +36,10 @@ void mtl_parser(const char* filename, material** materials, int* numMaterials)
         else if (strncmp(line, "Ns", 2) == 0) {          //Shininess
             sscanf(line, "Ns %f", &(*materials)[*numMaterials - 1].shininess);
         }
+        else if (strncmp(line, "d", 1) == 0){            //Reflection
+            printf("line: %s\n", line);
+            sscanf(line, "d %f", &(*materials)[*numMaterials - 1].reflection);
+        }
         else{
             continue;
         }

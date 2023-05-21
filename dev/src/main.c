@@ -37,17 +37,29 @@ int main(int argc, char** argv){
     // CHALLENGE : load_object("assets/objs/bunny.obj", wd, 10, (float[]){0,0,0}, .1);
     //1166 875 -> 388, 218
     //load_object("./assets/objs/grass.obj", wd, 1, (float[]){0,-1,0}, "./assets/textures/grass.png", def_mat(1,1,1,100,.1));
-    load_object(argv[1], wd, 1, (float[]){0,0,0}, NULL, def_mat(1,1,1,3,0));
     material* materials;
-    int p = 0;
-    mtl_parser("./assets/materials/capsule.mtl", &materials, &p);
+    int numMaterials = 0;
+    mtl_parser("./assets/materials/San_Fran_Tower.mtl", &materials, &numMaterials);
     /*printf("ambient %f %f %f\n", materials[0].ambient[0], materials[0].ambient[1], materials[0].ambient[2]);
     printf("diffuse %f %f %f\n", materials[0].diffuse[0], materials[0].diffuse[1], materials[0].diffuse[2]);
     printf("specular %f %f %f\n",materials[0].specular[0], materials[0].specular[1], materials[0].specular[2]);
 
     printf("ambient %f %f %f\n", materials[1].ambient[0], materials[1].ambient[1], materials[1].ambient[2]);
-    printf("diffuse %f %f %f\n", materials[1].diffuse[0], materials[1].diffuse[1], materials[1].diffuse[2]);
+    printf("diffuse %f %f %f\n", materials[1].diffuse[0], materials[1].diffuse[1], materials[1].diffuse[2]);q
     printf("specular %f %f %f\n",materials[1].specular[0], materials[1].specular[1], materials[1].specular[2]);*/
+    load_object(argv[1], wd, 1, (float[]){0,0,0}, NULL, materials);
+
+    free(materials);
+    /*for (int i = 0; i < numMaterials; i++) {
+        printf("Material #%d\n", i + 1);
+        printf("Name: %s\n", materials[i].name);
+        printf("Ambient: %f %f %f\n", materials[i].ambient[0], materials[i].ambient[1], materials[i].ambient[2]);
+        printf("Diffuse: %f %f %f\n", materials[i].diffuse[0], materials[i].diffuse[1], materials[i].diffuse[2]);
+        printf("Specular: %f %f %f\n", materials[i].specular[0], materials[i].specular[1], materials[i].specular[2]);
+        printf("Shininess: %f\n", materials[i].shininess);
+        printf("Reflection: %f\n", materials[i].reflection);
+        printf("\n");
+    }*/
 
 
     /*free(mat[0]);
