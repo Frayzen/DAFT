@@ -40,10 +40,6 @@ void handle_key(SDL_Keycode key, app_params* params, int pressed){
         case SDLK_v:
             if(pressed){
                 add_campoint(params->wd, init_campoint(params->cam->pos, params->cam->yaw, params->cam->pitch));
-                for (int i =0; i < params->wd->size_campoints; i++)
-                {
-                    printf("campoint %d: %f %f %f\n", i, params->wd->campoints[i].s->pos[0], params->wd->campoints[i].s->pos[1], params->wd->campoints[i].s->pos[2]);
-                }
             break;
             }
         case SDLK_p:
