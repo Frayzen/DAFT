@@ -40,7 +40,7 @@ int main(int argc, char** argv){
     //material* materials;
     //int p = 0;
     //mtl_parser("./assets/materials/capsule.mtl", &materials, &p);
-    load_object(argv[1], wd, 1, (float[]){0,0,0}, "./assets/indoor_plant_2_COL.jpg");
+    load_object(argv[1], wd, 1, (float[]){0,0,0}, NULL);
     /*printf("ambient %f %f %f\n", materials[0].ambient[0], materials[0].ambient[1], materials[0].ambient[2]);
     printf("diffuse %f %f %f\n", materials[0].diffuse[0], materials[0].diffuse[1], materials[0].diffuse[2]);
     printf("specular %f %f %f\n",materials[0].specular[0], materials[0].specular[1], materials[0].specular[2]);
@@ -68,7 +68,7 @@ int main(int argc, char** argv){
 
     //light* lt = init_light((float[]){0,3,0}, illum(1,1,1,1.2));
     //add_light(wd, lt);
-    light* lt2 = init_light((float[]){-10,0,0}, (float[]){1,1,1});
+    light* lt2 = init_light((float[]){-2,0,0}, (float[]){1,1,1});
     add_light(wd, lt2);
 
     printf("World object count: %d \n", wd->size_meshes);
