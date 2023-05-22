@@ -47,6 +47,7 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
         {
             char tmp[50];
             sscanf(line, "mtllib %s", tmp);
+            printf("Loading material file : %s\n", tmp);
             strcat(pathname, tmp);
             mtl_parser(pathname, &mats, &p);
         }
