@@ -49,6 +49,7 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
             sscanf(line, "mtllib %s", tmp);
             printf("Loading material file : %s\n", tmp);
             strcat(pathname, tmp);
+            printf("Pathhhh : %s \n", pathname);
             mtl_parser(pathname, &mats, &p);
         }
     }
@@ -63,6 +64,7 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
     float v[3];
     float vn[3];
     float vt[2];
+    material* curr;
     while(fgets(line, sizeof(line), file) != NULL)
     {
         if (line[0] == 'v')
@@ -127,6 +129,7 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
                 }
                 i++;
             }
+
             int v[3];
             int vt[3];
             int vn[3];
@@ -143,11 +146,26 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
                 vn[0] = vs[2][0] - 1;
                 vn[1] = vs[2][j+1] - 1;
                 vn[2] = vs[2][j+2] - 1;
-                add_tri(new_mesh, v, vt, vn);
+                add_tri(new_mesh, v, vt, vn, curr);
             }
             for (int i = 0; i < 3; i++)
                 free(vs[i]);
             
+        }
+
+        if (strncmp(line, "usemtl", 6) == 0)
+        {
+            char name[256];
+            sscanf(line, "usemtl %s", name);
+            material *tmp = mats;
+            for (int i = 0; i < p; i++)
+            {
+                if (strcmp(name, tmp[i].name) == 0)
+                {
+                    curr = &tmp[i];
+                    break;
+                }
+            }
         }
     }
 

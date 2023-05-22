@@ -106,13 +106,15 @@ bbox* build_bbox(int depth, int no_tri, int no_extra)
         return b;
     }
 }
-void add_tri_to_bbox(mesh* m, bbox *b, int depth, int v[3], int vt[3], int vn[3]){
+void add_tri_to_bbox(mesh* m, bbox *b, int depth, int v[3], int vt[3], int vn[3], material* material){
     if(depth == 1){
         for(int i = 0; i < 3; i++){
             b->tris[b->total].v[i] = v[i];
             b->tris[b->total].vt[i] = vt[i];
             b->tris[b->total].vn[i] = vn[i];
         }
+
+        b->tris[b->total].material = material;
         b->total++;
         if(b->total == b->maxtotal)
             compute_bounds_tri(m, b);
@@ -122,13 +124,13 @@ void add_tri_to_bbox(mesh* m, bbox *b, int depth, int v[3], int vt[3], int vn[3]
     b->total++;
     while(b->children[j]->total == b->children[j]->maxtotal)
         j++;
-    add_tri_to_bbox(m, b->children[j], depth-1, v, vt, vn);
+    add_tri_to_bbox(m, b->children[j], depth-1, v, vt, vn, material);
     if(b->total == b->maxtotal)
         compute_bounds_bbox(b);
     return;
 }
-void add_tri(mesh* m, int v[3], int vt[3], int vn[3]){
-    add_tri_to_bbox(m, m->box, m->depth, v, vt, vn);
+void add_tri(mesh* m, int v[3], int vt[3], int vn[3], material* material){
+    add_tri_to_bbox(m, m->box, m->depth, v, vt, vn, material);
     m->nb_triangles++;
 }
 mesh * build_mesh(int no_vert, int no_tri, int text_vert, int norm_vert)

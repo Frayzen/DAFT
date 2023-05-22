@@ -40,7 +40,7 @@ int main(int argc, char** argv){
     //material* materials;
     //int p = 0;
     //mtl_parser("./assets/materials/capsule.mtl", &materials, &p);
-    load_object(argv[1], wd, 1, (float[]){0,0,0}, "./assets/textures/capsule0.jpg");
+    load_object(argv[1], wd, 1, (float[]){0,0,0}, "./assets/textures/gravel_stones_diff_4k.jpg");
     /*printf("ambient %f %f %f\n", materials[0].ambient[0], materials[0].ambient[1], materials[0].ambient[2]);
     printf("diffuse %f %f %f\n", materials[0].diffuse[0], materials[0].diffuse[1], materials[0].diffuse[2]);
     printf("specular %f %f %f\n",materials[0].specular[0], materials[0].specular[1], materials[0].specular[2]);
@@ -48,9 +48,8 @@ int main(int argc, char** argv){
     printf("ambient %f %f %f\n", materials[1].ambient[0], materials[1].ambient[1], materials[1].ambient[2]);
     printf("diffuse %f %f %f\n", materials[1].diffuse[0], materials[1].diffuse[1], materials[1].diffuse[2]);q
     printf("specular %f %f %f\n",materials[1].specular[0], materials[1].specular[1], materials[1].specular[2]);*/
-    load_object(argv[1], wd, 1, (float[]){0,0,0}, NULL, materials);
+    //load_object(argv[1], wd, 1, (float[]){0,0,0}, NULL);
 
-    free(materials);
     /*for (int i = 0; i < numMaterials; i++) {
         printf("Material #%d\n", i + 1);
         printf("Name: %s\n", materials[i].name);
