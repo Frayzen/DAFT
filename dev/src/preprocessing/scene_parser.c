@@ -104,7 +104,10 @@ world *load_scene(char *path)
 
     if (strlen(skybox_path) != 0)
     {
-        load_skybox(wd, skybox_path);
+        char dir_name_cpy[200];
+        strcpy(dir_name_cpy, dir_name);
+        strcat(dir_name_cpy, skybox_path);
+        load_skybox(wd, dir_name_cpy);
     }
     if (cam_fov == 0)
         cam_fov = 90;
