@@ -22,6 +22,7 @@ void free_world(world* wd){
     free(wd->lights);
     free(wd->meshes);
     free(wd->spheres);
+    free(wd->campoints);
     free(wd);
 }
 

@@ -40,12 +40,13 @@ void handle_key(SDL_Keycode key, app_params* params, int pressed){
         case SDLK_v:
             if(pressed){
                 add_campoint(params->wd, init_campoint(params->cam->pos, params->cam->yaw, params->cam->pitch));
-                for (int i =0; i < params->wd->size_campoints; i++)
-                {
-                    printf("campoint %d: %f %f %f\n", i, params->wd->campoints[i].s->pos[0], params->wd->campoints[i].s->pos[1], params->wd->campoints[i].s->pos[2]);
+                if(params->wd->size_campoints > 1){
+                    float pos[3];
+                    minus(params->wd->campoints[params->wd->size_campoints-1].s->pos, params->wd->campoints[params->wd->size_campoints-2].s->pos, pos);
+                    params->wd->campoints[params->wd->size_campoints-2].time = norm(pos) / CAM_MOV_SPEED;
                 }
-            break;
             }
+            break;
         case SDLK_p:
             if(pressed)
                 launch_quality_picture_render(params);

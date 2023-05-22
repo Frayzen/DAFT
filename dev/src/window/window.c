@@ -51,8 +51,10 @@ int launch_screen(app_params* params){
         
         render_screen(params->rdp);
         SDL_UnlockTexture(params->texture);
-        define_sky_points(params->renderer, texture, params->rdp);
-        SDL_SetTextureBlendMode(params->texture, SDL_BLENDMODE_BLEND);
+        if(params->wd->skybox != NULL){
+            define_sky_points(params->renderer, texture, params->rdp);
+            SDL_SetTextureBlendMode(params->texture, SDL_BLENDMODE_BLEND);
+        }
         SDL_RenderCopy(params->renderer, params->texture, NULL, NULL); 
         SDL_RenderPresent(params->renderer);
         fps++;
