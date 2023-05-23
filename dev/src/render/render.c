@@ -25,7 +25,7 @@ void ray_cast(raycast_param* rcp){
         get_background(rcp);
         return;
     }
-    if(rcp->compute_meshes)
+    if(rcp->compute_masks)
         for(int idm = 0; idm < w->size_meshes; idm++){
             mesh* m = w->meshes[idm];
             r->current_mesh = m;

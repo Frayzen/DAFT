@@ -1,26 +1,5 @@
 #include "../../include/render/rasterizer.h"
 
-
-int project_on_screen(float* p, rendering_params* rdp, int* x, int* y){
-    float pos[3];
-    minus(p, rdp->cam->pos, pos);
-    normalize(pos, pos);
-    float pitch = asin(pos[1]);
-    float yaw = atan2(pos[2], pos[0]);
-    float begin_pitch = rdp->cam->pitch - rdp->FOV_y/2;
-    float begin_yaw = rdp->cam->yaw - rdp->FOV_x/2;
-    float end_pitch = rdp->cam->pitch + rdp->FOV_y/2;
-    float end_yaw = rdp->cam->yaw + rdp->FOV_x/2;
-    float ratio_x = (yaw - begin_yaw)/(end_yaw - begin_yaw);
-    float ratio_y = (pitch - begin_pitch)/(end_pitch - begin_pitch);
-    if(ratio_x < 0 || ratio_x > 1 || ratio_y < 0 || ratio_y > 1){
-        return 0;
-    }
-    *x = ratio_x*rdp->width;
-    *y = ratio_y*rdp->height;
-    return 1;
-}
-
 void rasterize_bbox(bbox* b, rendering_params* rdp, int* pixels){
     //TODO: redo
 
@@ -77,44 +56,73 @@ void rasterize_bbox(bbox* b, rendering_params* rdp, int* pixels){
     int tox = min(maxrp * rdp->width, rdp->width);
     int fromy = max(mintp * rdp->height, 0);
     int toy = min(maxtp * rdp->height, rdp->height);
-
-    //printf("fromx : %d, tox : %d, fromy : %d, toy : %d", fromx, tox, fromy, toy);
-
-    //set all values between minu and maxu in x and mint and maxt in y to 1 using memset
     for(int i = fromy; i < toy; i++){
         memset(pixels + i * rdp->width + fromx, 1, (tox - fromx) * sizeof(int));
     }
 
 }
-int inside_ellipse(int x, int y, int cx, int cy, int rx, int ry){
-    float a = (x-cx);
-    float b = (y-cy);
-    return a*a / (float)(rx*rx) + b*b/(float)(ry*ry) <= 1;
+
+
+float plane_line_intersect(float * plane_normal, float * plane_point, float * line_point, float * line_dir)
+{
+    float neg[3];
+    minus(plane_point, line_point, neg);
+    float t = dotProduct(neg, plane_normal)/dotProduct(line_dir, plane_normal);
+    return t;
 }
 
-void fill_elipse(int from_x, int from_y, int rx, int ry, rendering_params* rdp, int* pixels){
-    printf("fill ellipse from %d %d with %d %d\n", from_x, from_y, rx, ry);
-    for(int x = max(0, from_x); x < min(rdp->width, from_x + rx); x++){
-        for(int y = max(0, from_y); y < min(rdp->height, from_y + ry); y++){
-            if(inside_ellipse(x, y, from_x, from_y, rx, ry)){
-                pixels[y*rdp->width + x] |= SPHERE_MASK;
-            }
-        }
-    }
+ 
+float screen_project(sphere *s, rendering_params * rdp, int * index, float * screen_pos)
+{
+    float plane_normal[3];
+    crossProduct(rdp->topDir, rdp->rightDir, plane_normal);
+    normalize(plane_normal, plane_normal);
+    float ray_dir[3];
+    minus(s->pos, rdp->cam->pos, ray_dir);
+    normalize(ray_dir, ray_dir);
+    float plane_point[3];
+    copy(rdp->botLeftCorner, plane_point);
+    add(plane_point, rdp->cam->pos, plane_point);
+    float t = -plane_line_intersect(plane_normal, plane_point, rdp->cam->pos, ray_dir);
+    
+    scale(ray_dir, t, ray_dir);
+    add(ray_dir, rdp->cam->pos, ray_dir); //now ray dir hows the point on te screen
+    copy(ray_dir, screen_pos);
+   
+    return s->radius*distance(screen_pos, rdp->cam->pos)/ distance(s->pos, rdp->cam->pos) ;
+ 
 }
+
 
 void rasterize_sphere(sphere* s, rendering_params* rdp, int* pixels){
-    int x, y;
-    float spos[3];
-    copy(s->pos, spos);
-    if(!project_on_screen(spos, rdp, &x, &y))
+    int index;
+    float screen_pos[3];
+    float radius = screen_project(s, rdp, &index, screen_pos);
+    if(radius < 0){
         return;
-    float radius = (float) s->radius;
-    float dist = distance(spos, rdp->cam->pos);
-    float r_ratio = radius/dist;
-    int rw = r_ratio*rdp->width;
-    int rh = r_ratio*rdp->height;
-    fill_elipse(x, y, rw, rh, rdp, pixels);
+    }
+    float pixel_pos[3];
+    int tot_pixels = rdp->width * rdp->height;
+    int x;
+    int y;
+    float ratioX;
+    float ratioY;
+    for (int i = 0; i < tot_pixels; i++)
+    {
+        if (pixels[i])
+            continue;
+        y = i / rdp->width;
+        x = i % rdp->width;
+        ratioX = ((float) x/(float)  rdp->width);
+        ratioY = ((float) y/(float) rdp->height);
+
+        pixel_pos[1] = rdp->botLeftCorner[1] + ratioX*rdp->rightDir[1] + ratioY*rdp->topDir[1];
+        pixel_pos[2] = rdp->botLeftCorner[2] + ratioX*rdp->rightDir[2] + ratioY*rdp->topDir[2];
+        pixel_pos[0] = rdp->botLeftCorner[0] + ratioX*rdp->rightDir[0] + ratioY*rdp->topDir[0];
+        add(pixel_pos, rdp->cam->pos, pixel_pos);
+        if (distance(pixel_pos, screen_pos) < radius)
+            pixels[i] = 1;       
+    } 
 }
 
 void render_rasterize(rendering_params* rdp, int* pixels){
@@ -125,4 +133,9 @@ void render_rasterize(rendering_params* rdp, int* pixels){
     for(int i = 0; i < w->size_lights; i++){
         rasterize_sphere(w->lights[i]->s, rdp, pixels);
     }
+     for(int i = 0; i < w->size_spheres; i++){
+        rasterize_sphere(&w->spheres[i], rdp, pixels);
+    }
+    
+
 }

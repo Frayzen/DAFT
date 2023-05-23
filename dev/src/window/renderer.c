@@ -30,8 +30,12 @@ void render_screen(rendering_params *rdp)
             raycast_param *rcp = init_raycast_param(&r, rdp->w, rdp->reflection, rdp->shadow, 0);
             rcp->show_lights = 1;
             rcp->show_campoints = 1;
-            rcp->compute_meshes = pixels_rasterize[i];
+            rcp->compute_masks = pixels_rasterize[i];
             ray_cast(rcp);
+            if(pixels_rasterize[i] & SPHERE_MASK){
+                pixels[i] = SDL_MapRGBA(format, 0, 255, 0, 255);
+                continue;
+            }
 
             if (r.last_hit != NULL)
             {
