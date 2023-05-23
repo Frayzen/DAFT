@@ -1,6 +1,25 @@
 #include "../../include/preprocessing/obj_parser.h"
 
-int load_object(char *path, world *w, float scale, float pos[3], char *rel_path)
+void rotate(float* p, float rotX, float rotY, float rotZ){
+    float tmp[3];
+    tmp[0] = p[0];
+    tmp[1] = p[1];
+    tmp[2] = p[2];
+    if(rotX != 0){
+        p[1] = tmp[1] * cos(rotX) - tmp[2] * sin(rotX);
+        p[2] = tmp[1] * sin(rotX) + tmp[2] * cos(rotX);
+    }
+    if(rotY != 0){
+        p[0] = tmp[0] * cos(rotY) + tmp[2] * sin(rotY);
+        p[2] = -tmp[0] * sin(rotY) + tmp[2] * cos(rotY);
+    }
+    if(rotZ != 0){
+        p[0] = tmp[0] * cos(rotZ) - tmp[1] * sin(rotZ);
+        p[1] = tmp[0] * sin(rotZ) + tmp[1] * cos(rotZ);
+    }
+}
+
+int load_object(char *path, world *w, float scale, float pos[3], float rot[3], char *rel_path)
 {
     FILE *file;
     file = fopen(path, "r");
@@ -67,6 +86,11 @@ int load_object(char *path, world *w, float scale, float pos[3], char *rel_path)
     float vn[3];
     float vt[2];
     material *curr = NULL;
+
+    float rotX = rot[0] * M_PI / 180;
+    float rotY = rot[1] * M_PI / 180;
+    float rotZ = rot[2] * M_PI / 180;
+
     while (fgets(line, sizeof(line), file) != NULL)
     {
         if (line[0] == 'v')
@@ -74,6 +98,7 @@ int load_object(char *path, world *w, float scale, float pos[3], char *rel_path)
             if (line[1] == ' ')
             {
                 sscanf(line, "v %f %f %f", &v[0], &v[1], &v[2]);
+                rotate(v, rotX, rotY, rotZ);
                 scale(v, scale, v);
                 add(v, pos, v);
                 add_v(new_mesh, v);

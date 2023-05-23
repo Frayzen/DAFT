@@ -64,15 +64,14 @@ world *load_scene(char *path)
             printf("Skybox loaded\n");
             continue;
         }
-        // mesh mesh_path x y z scale material_path
+        //rotations in degree
+        // mesh mesh_path x y z scale rot_x rot_y rot_z
         if (startsWith("mesh ", line))
         {
-            sscanf(line, "mesh %s %f %f %f %f %s", mesh_path, &p[1], &p[2], &p[3], &p[0], material_path);
-            char dir_name_cpy1[200];
-            strcpy(dir_name_cpy1, dir_name);
-            char dir_name_cpy2[200];
-            strcpy(dir_name_cpy2, dir_name);
-            if(load_object(strcat(dir_name_cpy1, mesh_path), wd, p[0], (float[]){p[1], p[2], p[3]}, dir_name))
+            sscanf(line, "mesh %s %f %f %f %f %f %f %f", mesh_path, &p[0], &p[1], &p[2], &p[3], &p[4], &p[5], &p[6]);
+            char dir_name_cpy[200];
+            strcpy(dir_name_cpy, dir_name);
+            if(load_object(strcat(dir_name_cpy, mesh_path), wd, p[3], (float[]){p[0], p[1], p[2]}, (float[]){p[4], p[5], p[6]}, dir_name))
                 printf("Mesh %s loaded\n", mesh_path);
             continue;
         }

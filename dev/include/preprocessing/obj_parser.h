@@ -7,4 +7,4 @@
 
 #pragma once
 
-int load_object(char* path, world* w, float scale, float pos[3], char* rel_path);
+int load_object(char* path, world* w, float scale, float pos[3], float rot[3], char* rel_path);

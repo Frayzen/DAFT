@@ -50,6 +50,17 @@ void get_color_at(ray *ry, SDL_Surface *text, float *color)
     color[2] = b / 255.0;
 }
 
+void clamp(float *color)
+{
+    for (int i = 0; i < 3; i++)
+    {
+        if (color[i] > 1)
+            color[i] = 1;
+        if (color[i] < 0)
+            color[i] = 0;
+    }
+}
+
 void shadow_render(raycast_param *rcp)
 {
     if (rcp->shadow == 0)
@@ -136,14 +147,9 @@ void shadow_render(raycast_param *rcp)
     scale_vector(difuse, factor, difuse);
     add(ambient, difuse, difuse);
     scale_vector(difuse, ry->last_hit->color, ry->last_hit->color);
-
     // add specular
     add(ry->last_hit->color, specular, ry->last_hit->color);
-
-    for (int i = 0; i < 3; i++)
-    {
-        ry->last_hit->color[i] = min(1, ry->last_hit->color[i]);
-    }
+    clamp(ry->last_hit->color);
 
     free(shadow_ray);
 }
