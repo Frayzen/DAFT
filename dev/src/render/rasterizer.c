@@ -95,34 +95,34 @@ float screen_project(sphere *s, rendering_params * rdp, int * index, float * scr
 
 
 void rasterize_sphere(sphere* s, rendering_params* rdp, int* pixels){
-    int index;
-    float screen_pos[3];
-    float radius = screen_project(s, rdp, &index, screen_pos);
-    if(radius < 0){
-        return;
-    }
-    float pixel_pos[3];
-    int tot_pixels = rdp->width * rdp->height;
-    int x;
-    int y;
-    float ratioX;
-    float ratioY;
-    for (int i = 0; i < tot_pixels; i++)
-    {
-        if (pixels[i])
-            continue;
-        y = i / rdp->width;
-        x = i % rdp->width;
-        ratioX = ((float) x/(float)  rdp->width);
-        ratioY = ((float) y/(float) rdp->height);
+    // int index;
+    // float screen_pos[3];
+    // float radius = screen_project(s, rdp, &index, screen_pos);
+    // if(radius < 0){
+    //     return;
+    // }
+    // float pixel_pos[3];
+    // int tot_pixels = rdp->width * rdp->height;
+    // int x;
+    // int y;
+    // float ratioX;
+    // float ratioY;
+    // for (int i = 0; i < tot_pixels; i++)
+    // {
+    //     if (pixels[i])
+    //         continue;
+    //     y = i / rdp->width;
+    //     x = i % rdp->width;
+    //     ratioX = ((float) x/(float)  rdp->width);
+    //     ratioY = ((float) y/(float) rdp->height);
 
-        pixel_pos[1] = rdp->botLeftCorner[1] + ratioX*rdp->rightDir[1] + ratioY*rdp->topDir[1];
-        pixel_pos[2] = rdp->botLeftCorner[2] + ratioX*rdp->rightDir[2] + ratioY*rdp->topDir[2];
-        pixel_pos[0] = rdp->botLeftCorner[0] + ratioX*rdp->rightDir[0] + ratioY*rdp->topDir[0];
-        add(pixel_pos, rdp->cam->pos, pixel_pos);
-        if (distance(pixel_pos, screen_pos) < radius)
-            pixels[i] = 1;       
-    } 
+    //     pixel_pos[1] = rdp->botLeftCorner[1] + ratioX*rdp->rightDir[1] + ratioY*rdp->topDir[1];
+    //     pixel_pos[2] = rdp->botLeftCorner[2] + ratioX*rdp->rightDir[2] + ratioY*rdp->topDir[2];
+    //     pixel_pos[0] = rdp->botLeftCorner[0] + ratioX*rdp->rightDir[0] + ratioY*rdp->topDir[0];
+    //     add(pixel_pos, rdp->cam->pos, pixel_pos);
+    //     if (distance(pixel_pos, screen_pos) < radius)
+    //         pixels[i] |= SPHERE_MASK;       
+    // } 
 }
 
 void render_rasterize(rendering_params* rdp, int* pixels){
