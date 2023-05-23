@@ -1,8 +1,8 @@
 #include "../../include/preprocessing/obj_parser.h"
 
-int load_object(char* path, world* w, float scale, float pos[3], char* rel_path)
+int load_object(char *path, world *w, float scale, float pos[3], char *rel_path)
 {
-    FILE* file;
+    FILE *file;
     file = fopen(path, "r");
     if (file == NULL)
     {
@@ -14,11 +14,11 @@ int load_object(char* path, world* w, float scale, float pos[3], char* rel_path)
     int tri = 0;
     int text_vert = 0;
     int norm_vert = 0;
-    //size_t norm = 0;
-    //size_t texture = 0;
+    // size_t norm = 0;
+    // size_t texture = 0;
 
     char line[200];
-    material* mats;
+    material *mats;
     int nb_mat = 0;
 
     while (fgets(line, sizeof(line), file) != NULL)
@@ -27,9 +27,9 @@ int load_object(char* path, world* w, float scale, float pos[3], char* rel_path)
         {
             if (line[1] == ' ')
                 vert++;
-            if(line[1] == 't')
+            if (line[1] == 't')
                 text_vert++;
-            if(line[1] == 'n')
+            if (line[1] == 'n')
                 norm_vert++;
         }
         else if (line[0] == 'f')
@@ -37,10 +37,10 @@ int load_object(char* path, world* w, float scale, float pos[3], char* rel_path)
             int space = 0;
             for (int i = 1; line[i] != 0 && line[i] != '\r'; i++)
             {
-                if (line[i] != ' ' && line[i-1] == ' ')
+                if (line[i] != ' ' && line[i - 1] == ' ')
                     space++;
             }
-            tri = tri + (space-3) +1;
+            tri = tri + (space - 3) + 1;
         }
         else if (strncmp(line, "mtllib", 6) == 0)
         {
@@ -54,33 +54,37 @@ int load_object(char* path, world* w, float scale, float pos[3], char* rel_path)
             mtl_parser(cpy_path, rel_path, &mats, &nb_mat);
         }
     }
-    if(vert == 0 || tri == 0){
+    if (vert == 0 || tri == 0)
+    {
         printf("The %s file is not a valid obj file\n", path);
         return 0;
     }
-    
-    mesh* new_mesh = build_mesh(vert, tri, text_vert, norm_vert);
+
+    mesh *new_mesh = build_mesh(vert, tri, text_vert, norm_vert);
     fseek(file, 0, SEEK_SET);
 
     float v[3];
     float vn[3];
     float vt[2];
-    material* curr = NULL;
-    while(fgets(line, sizeof(line), file) != NULL)
+    material *curr = NULL;
+    while (fgets(line, sizeof(line), file) != NULL)
     {
         if (line[0] == 'v')
         {
-            if (line[1] == ' '){
+            if (line[1] == ' ')
+            {
                 sscanf(line, "v %f %f %f", &v[0], &v[1], &v[2]);
                 scale(v, scale, v);
                 add(v, pos, v);
                 add_v(new_mesh, v);
             }
-            if(line[1] == 't'){
+            if (line[1] == 't')
+            {
                 sscanf(line, "vt %f %f", &vt[0], &vt[1]);
                 add_vt(new_mesh, vt);
             }
-            if(line[1] == 'n'){
+            if (line[1] == 'n')
+            {
                 sscanf(line, "vn %f %f %f", &vn[0], &vn[1], &vn[2]);
                 add_vn(new_mesh, vn);
             }
@@ -90,7 +94,7 @@ int load_object(char* path, world* w, float scale, float pos[3], char* rel_path)
         {
             int nb_v = 1;
             // v vt vn
-            int* vs[3] = {malloc(sizeof(int)),malloc(sizeof(int)),malloc(sizeof(int))} ;
+            int *vs[3] = {malloc(sizeof(int)), malloc(sizeof(int)), malloc(sizeof(int))};
             int cur_v = 0;
             int cur_nb = 0;
             int i = 2;
@@ -106,13 +110,18 @@ int load_object(char* path, world* w, float scale, float pos[3], char* rel_path)
                     cur_v++;
                     break;
                 case ' ':
-                    if(!last_space){
+                    if (!last_space)
+                    {
+                        if(line[i+1]){
+                            char tmp_chr = line[i+1];
+                            if(tmp_chr == ' ' || tmp_chr == '\n' || tmp_chr == '\r')
+                                break;
+                        }
                         nb_v++;
-                        for(int i = 0; i < 3; i++)
-                            vs[i] = realloc(vs[i], sizeof(int)*nb_v);
+                        for (int i = 0; i < 3; i++)
+                            vs[i] = realloc(vs[i], sizeof(int) * nb_v);
                         cur_nb = 0;
                         cur_v = 0;
-
                     }
                     last_space = 1;
                     break;
@@ -120,12 +129,13 @@ int load_object(char* path, world* w, float scale, float pos[3], char* rel_path)
                     last_space = 0;
                     int val = atoi(&line[i]);
                     cur_nb = val;
-                    val/=10;
-                    while(val != 0){
-                        val/=10;
+                    val /= 10;
+                    while (val != 0)
+                    {
+                        val /= 10;
                         i++;
                     }
-                    vs[cur_v][nb_v-1] = cur_nb;
+                    vs[cur_v][nb_v - 1] = cur_nb;
                     break;
                 }
                 i++;
@@ -134,24 +144,41 @@ int load_object(char* path, world* w, float scale, float pos[3], char* rel_path)
             int v[3];
             int vt[3];
             int vn[3];
-            for (int j = 0; j < nb_v-2; j++)
+            for (int j = 0; j < nb_v - 2; j++)
             {
                 v[0] = vs[0][0] - 1;
-                v[1] = vs[0][j+1] -1;
-                v[2] = vs[0][j+2] -1;
+                if (v[0] < 0)
+                    v[0] += vert;
+                v[1] = vs[0][j + 1] - 1;
+                if (v[1] < 0)
+                    v[1] += vert;
+                v[2] = vs[0][j + 2] - 1;
+                if (v[2] < 0)
+                    v[2] += vert;
 
                 vt[0] = vs[1][0] - 1;
-                vt[1] = vs[1][j+1] - 1;
-                vt[2] = vs[1][j+2] - 1;
+                if (vt[0] < 0)
+                    vt[0] += text_vert;
+                vt[1] = vs[1][j + 1] - 1;
+                if (vt[1] < 0)
+                    vt[1] += text_vert;
+                vt[2] = vs[1][j + 2] - 1;
+                if (vt[2] < 0)
+                    vt[2] += text_vert;
 
                 vn[0] = vs[2][0] - 1;
-                vn[1] = vs[2][j+1] - 1;
-                vn[2] = vs[2][j+2] - 1;
+                if (vn[0] < 0)
+                    vn[0] += norm_vert;
+                vn[1] = vs[2][j + 1] - 1;
+                if (vn[1] < 0)
+                    vn[1] += norm_vert;
+                vn[2] = vs[2][j + 2] - 1;
+                if (vn[2] < 0)
+                    vn[2] += norm_vert;
                 add_tri(new_mesh, v, vt, vn, curr);
             }
             for (int i = 0; i < 3; i++)
                 free(vs[i]);
-            
         }
     }
     /*
@@ -179,8 +206,9 @@ int load_object(char* path, world* w, float scale, float pos[3], char* rel_path)
     printf("Mesh loaded : %s (%d vertices, %d triangles)\n", path, new_mesh->nb_vertices, new_mesh->nb_triangles);
     new_mesh->mats = mats;
     new_mesh->nb_mat = nb_mat;
-    //print all the mats
-    for(int i = 0; i < new_mesh->nb_mat; i++){
+    // print all the mats
+    for (int i = 0; i < new_mesh->nb_mat; i++)
+    {
         printf("Material %d\n", i);
         printf("ka is %f %f %f\n", new_mesh->mats[i].ambient[0], new_mesh->mats[i].ambient[1], new_mesh->mats[i].ambient[2]);
         printf("kd is %f %f %f\n", new_mesh->mats[i].diffuse[0], new_mesh->mats[i].diffuse[1], new_mesh->mats[i].diffuse[2]);
@@ -190,4 +218,3 @@ int load_object(char* path, world* w, float scale, float pos[3], char* rel_path)
     fclose(file);
     return 1;
 }
-

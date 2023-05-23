@@ -59,11 +59,11 @@ void mtl_parser(const char *filename, const char* path, material **materials, in
         { // Shininess
             sscanf(line, "Ns %f", &(*materials)[*numMaterials - 1].shininess);
         }
-        else if (strncmp(line, "d", 1) == 0)
-        { // Reflection
-            printf("line: %s\n", line);
-            sscanf(line, "d %f", &(*materials)[*numMaterials - 1].reflection);
-        }
+        // else if (strncmp(line, "d", 1) == 0)
+        // { // Reflection
+        //     printf("line: %s\n", line);
+        //     sscanf(line, "d %f", &(*materials)[*numMaterials - 1].reflection);
+        // }
         else if (strncmp(line, "map_Kd", 6) == 0)
         { // Texture
             char texture_name[256];
@@ -72,6 +72,7 @@ void mtl_parser(const char *filename, const char* path, material **materials, in
             strcpy(path_texture, path);
             strcat(path_texture, texture_name);
             load_texture(&(*materials)[*numMaterials - 1].diffuseText, path_texture);
+            printf("Diffuse texture : %s\n", path_texture);
         }
         else if(strncmp(line, "map_Ks", 6) == 0)
         { // Specular texture
