@@ -1,35 +1,27 @@
-#include "../include/image_renderer.h"
-#include "../include/obj_parser.h"
-#include "../include/raycast.h"
 #include <stdio.h>
-int main(){
-    world* wd = init_world();
-    printf("LOADING OBJ...");
-    load_object(wd, "assets/objs/teddy.obj", .05, npoint(0,0,0));
-   
-    for(size_t i = 0; i < wd->size_m; i++){
-        mesh* m = wd->meshes[i];
-        printf("OBJ loaded with a depth of %lu\n", m->depth);
-        printf("OBJ loaded with a c_size of %lu\n", m->bounding_box->c_size);
-        printf("OBJ loaded with a max and total of %lu %lu\n", m->bounding_box->maxtotal, m->bounding_box->total);
-        printf("OBJ bounding_box points: (max then min) for c_size %lu\n", m->bounding_box->c_size);
-        ppoint(m->bounding_box->min, "MIN");
-        ppoint(m->bounding_box->max, "MAX");
-    }
+#include <stdlib.h>
+#include "../include/preprocessing/scene_parser.h"
+#include "../include/window/window.h"
+#include <stdio.h>
 
-    printf("WORDL OBJ COUNT: %lu \n", wd->size_m);
-    camera* cam = init_camera(0, npoint(0,0,0), 0, 0, 120);
+int main(int argc, char **argv){
+    if(argc<2){
+        printf("Usage: %s <scene_file>\n", argv[0]);
+        return 1;
+    }
+    world *wd = load_scene(argv[1]);
     app_params params;
-    params.width = 500;
-    params.height = 500;
+    params.width = 100;
+    params.height = 100;
+    params.screen_scale = 10;
     params.wd = wd;
-    params.cam = cam;
+    if(wd->size_cameras != 0)
+        params.cam = wd->cameras[0];
     params.FPS_UPPER_LIMIT=30;
     if(setup_window(&params))
         return 1;
-    cam->skybox = IMG_Load("assets/textures/Sky.jpg");
-    render_camera(&params);
-    free(cam);
+    launch_screen(&params);
+    free_window(&params);
     free_world(wd);
     return 0;
-}
+}   
