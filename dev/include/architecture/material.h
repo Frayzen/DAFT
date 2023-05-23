@@ -18,7 +18,7 @@ typedef struct {
     SDL_Surface* specularText;
 } material;
 
-material* create_mat_from_color();
+material* create_mat_from_color(float r, float g, float b);
 material* mat_init(float ambient[3], float diffuse[3], float specular[3], float shininess, float reflection);
 
 material* default_mat();

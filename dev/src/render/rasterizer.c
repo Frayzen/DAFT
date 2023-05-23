@@ -67,7 +67,7 @@ float plane_line_intersect(float * plane_normal, float * plane_point, float * li
 {
     float neg[3];
     minus(plane_point, line_point, neg);
-    float t = dotProduct(neg, plane_normal)/dotProduct(line_dir, plane_normal);
+    float t = (dotProduct(neg, plane_normal))/(dotProduct(line_dir, plane_normal));
     return t;
 }
 
@@ -76,14 +76,12 @@ float screen_project(sphere *s, rendering_params * rdp, int * index, float * scr
 {
     float plane_normal[3];
     crossProduct(rdp->topDir, rdp->rightDir, plane_normal);
-    normalize(plane_normal, plane_normal);
     float ray_dir[3];
     minus(s->pos, rdp->cam->pos, ray_dir);
-    normalize(ray_dir, ray_dir);
     float plane_point[3];
     copy(rdp->botLeftCorner, plane_point);
     add(plane_point, rdp->cam->pos, plane_point);
-    float t = -plane_line_intersect(plane_normal, plane_point, rdp->cam->pos, ray_dir);
+    float t = plane_line_intersect(plane_normal, plane_point, rdp->cam->pos, ray_dir);
     
     scale(ray_dir, t, ray_dir);
     add(ray_dir, rdp->cam->pos, ray_dir); //now ray dir hows the point on te screen
@@ -101,6 +99,7 @@ void rasterize_sphere(sphere* s, rendering_params* rdp, int* pixels){
     // if(radius < 0){
     //     return;
     // }
+    // radius*=1.5;
     // float pixel_pos[3];
     // int tot_pixels = rdp->width * rdp->height;
     // int x;
@@ -121,7 +120,7 @@ void rasterize_sphere(sphere* s, rendering_params* rdp, int* pixels){
     //     pixel_pos[0] = rdp->botLeftCorner[0] + ratioX*rdp->rightDir[0] + ratioY*rdp->topDir[0];
     //     add(pixel_pos, rdp->cam->pos, pixel_pos);
     //     if (distance(pixel_pos, screen_pos) < radius)
-    //         pixels[i] |= SPHERE_MASK;       
+    //         pixels[i] |= SPHERE_MASK; 
     // } 
 }
 

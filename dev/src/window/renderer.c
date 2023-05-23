@@ -32,16 +32,15 @@ void render_screen(rendering_params *rdp)
             rcp->show_campoints = 1;
             rcp->compute_masks = pixels_rasterize[i];
             ray_cast(rcp);
-            // if(pixels_rasterize[i] & SPHERE_MASK){
-            //     pixels[i] = SDL_MapRGBA(format, 0, 255, 0, 255);
-            //     continue;
-            // }
 
             if (r.last_hit != NULL)
             {
                 pixels[i] = SDL_MapRGBA(format, r.last_hit->color[0] * 255, r.last_hit->color[1] * 255, r.last_hit->color[2] * 255, 255);
                 free(r.last_hit);
-            }
+            } 
+            //else if(pixels_rasterize[i]){
+            //     pixels[i] = SDL_MapRGBA(format, 0, 255, 0, 255);
+            // }
         }
         free(pixels_rasterize);
     }

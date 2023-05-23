@@ -15,8 +15,8 @@ material* mat_init(float ambient[3], float diffuse[3], float specular[3], float 
     return mat;
 }
 
-material* create_mat_from_color(){
-    return mat_init((float[]){0.1,0.1,0.1}, (float[]){.8,.8,.8}, (float[]){1,1,1}, .2, 0);
+material* create_mat_from_color(float r, float g, float b){
+    return mat_init((float[]){r, g, b}, (float[]){0, 0, 0}, (float[]){0, 0, 0}, 1, 0);
 }
 
 material* def_mat(float shininess, float reflection){
