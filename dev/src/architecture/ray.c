@@ -30,11 +30,7 @@ void ray_update_result(ray* r, triangle* tri, float new_mint, float normal[3], m
     new_hit->tri = tri;
     new_hit->m = r->current_mesh;
     new_hit->mat = mat;
-    if(color != NULL){
-        copy(color, new_hit->color);
-    }else{
-        copy(mat->color, new_hit->color);
-    }
+    copy(color, new_hit->color);
     copy(r->dir, new_hit->pos);
     scale(new_hit->pos, new_mint, new_hit->pos);
     add(new_hit->pos, r->pos, new_hit->pos);

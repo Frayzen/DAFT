@@ -25,7 +25,8 @@
     int depth;
     int no_extra;
     bbox* box;
-    material* mat;
+    material* mats;
+    int nb_mat;
 }mesh;
 
 void free_mesh(mesh* msh);

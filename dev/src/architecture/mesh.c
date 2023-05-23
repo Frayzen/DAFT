@@ -12,7 +12,7 @@ void free_mesh(mesh* msh){
     free(msh->normal_vertices);
     free(msh->texture_vertices);
     free(msh->vertices);
-    free_mat(msh->mat);
+    free_mat(msh->mats);
     free(msh);
 }
 void get_vertex_from_triangle(mesh* m, triangle* tri, float* v1, float* v2, float* v3){

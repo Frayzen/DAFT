@@ -25,6 +25,12 @@
 // n is the normal
 // L is the c direction
 
+void get_pixel_color(SDL_Surface* surface, int x, int y, Uint8* r, Uint8* g, Uint8* b)
+{
+  Uint32 pixel = *( (Uint32*)surface->pixels + y * surface->w + x ) ;
+  SDL_GetRGB(pixel, surface->format, r, g, b);
+}
+
 void shadow_render(raycast_param* rcp)
 {
     if(rcp->shadow == 0)

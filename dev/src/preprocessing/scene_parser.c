@@ -72,7 +72,7 @@ world *load_scene(char *path)
             strcpy(dir_name_cpy1, dir_name);
             char dir_name_cpy2[200];
             strcpy(dir_name_cpy2, dir_name);
-            if(load_object(strcat(dir_name_cpy1, mesh_path), wd, p[0], (float[]){p[1], p[2], p[3]}, load_mat(strcat(dir_name_cpy2, material_path))))
+            if(load_object(strcat(dir_name_cpy1, mesh_path), wd, p[0], (float[]){p[1], p[2], p[3]}, dir_name))
                 printf("Mesh %s loaded\n", mesh_path);
             continue;
         }

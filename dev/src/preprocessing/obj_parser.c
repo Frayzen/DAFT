@@ -1,6 +1,6 @@
 #include "../../include/preprocessing/obj_parser.h"
 
-int load_object(char* path, world* w, float scale, float pos[3], material* mat)
+int load_object(char* path, world* w, float scale, float pos[3], char* rel_path)
 {
     FILE* file;
     file = fopen(path, "r");
@@ -18,9 +18,8 @@ int load_object(char* path, world* w, float scale, float pos[3], material* mat)
     //size_t texture = 0;
 
     char line[200];
-    char pathname[100] = "./assets/materials/";
     material* mats;
-    int p = 0;
+    int nb_mat = 0;
 
     while (fgets(line, sizeof(line), file) != NULL)
     {
@@ -48,9 +47,11 @@ int load_object(char* path, world* w, float scale, float pos[3], material* mat)
             char tmp[50];
             sscanf(line, "mtllib %s", tmp);
             printf("Loading material file : %s\n", tmp);
-            strcat(pathname, tmp);
-            printf("Pathhhh : %s \n", pathname);
-            mtl_parser(pathname, &mats, &p);
+            char cpy_path[50];
+            strcpy(cpy_path, rel_path);
+            strcat(cpy_path, tmp);
+            printf("Path : %s \n", cpy_path);
+            mtl_parser(cpy_path, rel_path, &mats, &nb_mat);
         }
     }
     if(vert == 0 || tri == 0){
@@ -64,7 +65,7 @@ int load_object(char* path, world* w, float scale, float pos[3], material* mat)
     float v[3];
     float vn[3];
     float vt[2];
-    material* curr;
+    material* curr = NULL;
     while(fgets(line, sizeof(line), file) != NULL)
     {
         if (line[0] == 'v')
@@ -176,7 +177,15 @@ int load_object(char* path, world* w, float scale, float pos[3], material* mat)
     */
     printf("Bbox of the object created: from %f %f %f to %f %f %f\n", new_mesh->box->min[0], new_mesh->box->min[1], new_mesh->box->min[2], new_mesh->box->max[0], new_mesh->box->max[1], new_mesh->box->max[2]);
     printf("Mesh loaded : %s (%d vertices, %d triangles)\n", path, new_mesh->nb_vertices, new_mesh->nb_triangles);
-    new_mesh->mat = mats;
+    new_mesh->mats = mats;
+    new_mesh->nb_mat = nb_mat;
+    //print all the mats
+    for(int i = 0; i < new_mesh->nb_mat; i++){
+        printf("Material %d\n", i);
+        printf("ka is %f %f %f\n", new_mesh->mats[i].ambient[0], new_mesh->mats[i].ambient[1], new_mesh->mats[i].ambient[2]);
+        printf("kd is %f %f %f\n", new_mesh->mats[i].diffuse[0], new_mesh->mats[i].diffuse[1], new_mesh->mats[i].diffuse[2]);
+        printf("ks is %f %f %f\n", new_mesh->mats[i].specular[0], new_mesh->mats[i].specular[1], new_mesh->mats[i].specular[2]);
+    }
     add_mesh(w, new_mesh);
     fclose(file);
     return 1;

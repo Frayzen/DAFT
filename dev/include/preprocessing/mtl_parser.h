@@ -1,4 +1,5 @@
 #include <stdio.h>
-#include "../../include/architecture/material.h"
+#include "../architecture/material.h"
+#include "../utils/daft_math.h"
 
-void mtl_parser(const char* filename, material** materials, int* numMaterials);
+void mtl_parser(const char* filename, const char* path, material** materials, int* numMaterials);

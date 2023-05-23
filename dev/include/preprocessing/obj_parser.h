@@ -3,7 +3,8 @@
 #include "../utils/daft_math.h"
 #include "../../include/preprocessing/mtl_parser.h"
 #include "./mesh_builder.h"
+#include <string.h>
 
 #pragma once
 
-int load_object(char* path, world* w, float scale, float pos[3], material* mat);
+int load_object(char* path, world* w, float scale, float pos[3], char* rel_path);
