@@ -15,8 +15,12 @@
 
 //video
 #define VIDEO_FILENAME "out.mp4"
-#define VIDEO_FPS 10
-#define VIDEO_WIDTH 240
-#define VIDEO_HEIGHT 240
+#define CAM_MOV_SPEED 1
+#define VIDEO_FPS 30
+#define VIDEO_WIDTH 300
+#define VIDEO_HEIGHT 300
+
+#define SPHERE_MASK 1
+#define MESH_MASK 2
 
 #endif

@@ -1,13 +1,13 @@
 #include "../../include/preprocessing/obj_parser.h"
 
-void load_object(char* path, world* w, float scale, float pos[3], char* texture_path)
+int load_object(char* path, world* w, float scale, float pos[3], material* mat)
 {
     FILE* file;
     file = fopen(path, "r");
     if (file == NULL)
     {
-        printf("cant open the file named '%s'\n", path);
-        return;
+        printf("Cant open the file named '%s'\n", path);
+        return 0;
     }
 
     int vert = 0;
@@ -55,7 +55,7 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
     }
     if(vert == 0 || tri == 0){
         printf("The %s file is not a valid obj file\n", path);
-        return;
+        return 0;
     }
     
     mesh* new_mesh = build_mesh(vert, tri, text_vert, norm_vert);
@@ -152,20 +152,14 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
                 free(vs[i]);
             
         }
-
-        if (strncmp(line, "usemtl", 6) == 0)
-        {
-            char name[256];
-            sscanf(line, "usemtl %s", name);
-            material *tmp = mats;
-            for (int i = 0; i < p; i++)
-            {
-                if (strcmp(name, tmp[i].name) == 0)
-                {
-                    curr = &tmp[i];
-                    break;
-                }
-            }
+    }
+    /*
+    if(texture_path != NULL){
+        load_texture(mat, texture_path);
+    }else{
+        if(mat == NULL){
+            printf("No material given, creating a default one\n");
+            mat = def_mat(1,1,1,4,0);
         }
     }
     if(texture_path != NULL){
@@ -179,10 +173,12 @@ void load_object(char* path, world* w, float scale, float pos[3], char* texture_
         mats->texture = NULL;
         //load_texture(mats, "./assets/textures/leather_white_diff_4k.jpg");
     }
+    */
     printf("Bbox of the object created: from %f %f %f to %f %f %f\n", new_mesh->box->min[0], new_mesh->box->min[1], new_mesh->box->min[2], new_mesh->box->max[0], new_mesh->box->max[1], new_mesh->box->max[2]);
     printf("Mesh loaded : %s (%d vertices, %d triangles)\n", path, new_mesh->nb_vertices, new_mesh->nb_triangles);
     new_mesh->mat = mats;
     add_mesh(w, new_mesh);
     fclose(file);
+    return 1;
 }
 

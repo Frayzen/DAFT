@@ -16,6 +16,9 @@ typedef struct rendering_params{
     float rightDir[3];
     float botLeftCorner[3];
     
+    float FOV_x;
+    float FOV_y;
+
     int shadow;
     int reflection;
 } rendering_params;
@@ -31,7 +34,7 @@ typedef struct raycast_param{
     //if the ray should return NULL or the background color if it doesn't hit anything
     int skybox;
     //the pixels that need to be computed for meshes
-    int compute_meshes;
+    int compute_masks;
     //if the ray should consider the lights points as spheres
     int show_lights;
     //if the ray should consider the campoints as spheres
