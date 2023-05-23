@@ -20,4 +20,7 @@
 #define VIDEO_WIDTH 300
 #define VIDEO_HEIGHT 300
 
+#define SPHERE_MASK 1
+#define MESH_MASK 2
+
 #endif

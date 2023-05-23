@@ -16,6 +16,9 @@ typedef struct rendering_params{
     float rightDir[3];
     float botLeftCorner[3];
     
+    float FOV_x;
+    float FOV_y;
+
     int shadow;
     int reflection;
 } rendering_params;
