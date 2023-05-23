@@ -3,8 +3,8 @@
 
 # Object files
 *.o
+*/bin/*
 *.ko
-*.obj
 *.elf
 
 # Linker output
