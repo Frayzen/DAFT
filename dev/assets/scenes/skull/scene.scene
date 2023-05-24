@@ -1,4 +1,0 @@
-skybox ../../skybox/Nebula.png
-camera -1 2 0
-light 0 1 1 1 .2 .2
-mesh skull.obj 0 0 0 1
