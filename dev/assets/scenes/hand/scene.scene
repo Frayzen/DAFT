@@ -1,4 +1,4 @@
-skybox ../../skybox/Nebula.png
+skybox Skybox.png
 camera -3 0 0
 light 4 0 0 0 0 1
 light -3 1 0 1 1 1
