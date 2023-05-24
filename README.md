@@ -26,11 +26,17 @@ First, **clone** the repository using the following command:
 ```bash
 git clone --depth 1 https://github.com/Frayzen/DAFT.git
 ```
+
+Please make sure you have the [required dependecies](https://frayzen.github.io/DAFT/#dependecies) installed on your system.
+```
+sudo apt-get install make gcc libsdl2-dev libsdl2-image-dev libgtk-3-dev
+```
+
 You can now **compile** the source code using the following commands:
 ```bash
 cd ./DAFT/main && make
 ```
-If any problem occurs, please make sure you have the [required dependecies](https://frayzen.github.io/DAFT/#dependecies) installed on your system. You can also try to **clean** the project and recompile it:
+If any problem occurs, you can try to **clean** the project and recompile it:
 ```bash
 make clean && make
 ```
