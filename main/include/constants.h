@@ -23,4 +23,11 @@
 #define MESH_MASK 1
 #define SPHERE_MASK 2
 
+
+#define MASK_AMBIENT 1
+#define MASK_DIFFUSE 2
+#define MASK_SPECULAR 4
+
+#define MASK_ALL 7
+
 #endif

@@ -10,6 +10,7 @@ void launch_quality_picture_render(app_params* params){
     quality_cam->pitch = params->cam->pitch;
     rendering_params* quality_rdp = init_rendering_params(params->wd, QUALITY_WIDTH, QUALITY_HEIGHT, quality_cam, 1, NULL);
     quality_rdp->shadow = params->rdp->shadow;
+    quality_rdp->shadow_mask = params->rdp->shadow_mask;
     quality_rdp->reflection = params->rdp->reflection;
     render_quality_image(quality_rdp);
 }
@@ -62,6 +63,18 @@ void handle_key(SDL_Keycode key, app_params* params, int pressed){
         case SDLK_i:
             if(pressed)
                 params->rdp->shadow = !params->rdp->shadow;
+            break;
+        case SDLK_r:
+            if(pressed)
+                params->rdp->shadow_mask ^= MASK_AMBIENT;
+            break;
+        case SDLK_t:
+            if(pressed)
+                params->rdp->shadow_mask ^= MASK_DIFFUSE;
+            break;
+        case SDLK_y:
+            if(pressed)
+                params->rdp->shadow_mask ^= MASK_SPECULAR;
             break;
         case SDLK_w:
             params->cam->movement_speed[0] += delta;

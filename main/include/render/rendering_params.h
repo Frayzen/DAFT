@@ -20,6 +20,7 @@ typedef struct rendering_params{
     float FOV_y;
 
     int shadow;
+    int shadow_mask;
     int reflection;
 } rendering_params;
 
@@ -31,6 +32,7 @@ typedef struct raycast_param{
     int reflection;
     //if the ray should compute shadow
     int shadow;
+    int shadow_mask;
 
     //if the ray should return NULL or the background color if it doesn't hit anything
     int skybox;

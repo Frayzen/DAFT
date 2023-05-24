@@ -27,7 +27,7 @@ void render_screen(rendering_params *rdp)
         for (int i = 0; i < width * height; i++)
         {
             ray r = create_ray_interpolate(rdp, i % width, i / width);
-            raycast_param *rcp = init_raycast_param(&r, rdp->w, rdp->reflection, rdp->shadow, 0);
+            raycast_param *rcp = init_raycast_param(&r, rdp->w, rdp->reflection, rdp->shadow, rdp->shadow_mask, 0);
             rcp->show_lights = 1;
             rcp->show_campoints = 1;
             rcp->compute_masks = pixels_rasterize[i];
@@ -122,7 +122,7 @@ void *render_quality_image_process(void *rdpptr)
     for (int i = 0; i < width * height; i++)
     {
         ray r = create_ray_interpolate(rdp, i % width, i / width);
-        raycast_param *rcp = init_raycast_param(&r, w, 1, 1, 1);
+        raycast_param *rcp = init_raycast_param(&r, w, 1, 1, MASK_ALL ,1);
         ray_cast(rcp);
         if (r.last_hit != NULL)
         {
@@ -221,7 +221,7 @@ void *render_quality_video_process(void *rdpptr)
             for (int i = 0; i < width * height; i++)
             {
                 ray r = create_ray_interpolate(rdp, i % width, i / width);
-                raycast_param *rcp = init_raycast_param(&r, w, 1, 1, 1);
+                raycast_param *rcp = init_raycast_param(&r, w, 1, 1, MASK_ALL, 1);
                 ray_cast(rcp);
                 rgb[i * 3] = r.last_hit->color[0] * 255;
                 rgb[i * 3 + 1] = r.last_hit->color[1] * 255;
