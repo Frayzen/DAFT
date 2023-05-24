@@ -1,7 +1,7 @@
 # DAFT: Raytracer Engine
 ![Render](https://frayzen.github.io/DAFT/assets/img/test.png)
 
-DAFT is a powerful and flexible raytracer engine developed as part of a project at EPITA engineer school. It allows you to generate stunning 3D images by simulating the behavior of light in a virtual scene. Whether you're a computer graphics enthusiast, a student, or a professional, DAFT provides a solid foundation for creating realistic renderings.
+**DAFT** is a powerful and flexible *raytracer engine* developed as part of a project at EPITA engineer school. It allows you to generate stunning 3D images by simulating the behavior of light in a virtual scene. Whether you're a computer graphics enthusiast, a student, or a professional, DAFT provides a solid foundation for creating realistic renderings.
 
 ## Website
 You can find more information about the engine on the [official website](https://frayzen.github.io/DAFT/).
