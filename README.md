@@ -1,0 +1,1 @@
+This branch is for `the website of the project`. It is a static website, so it is hosted on GitHub Pages. The website is available [here](https://frayzen.github.io/DAFT/).
