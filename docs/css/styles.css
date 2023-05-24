@@ -11535,7 +11535,7 @@ section.resume-section .resume-section-content {
   pointer-events: none;
   transform-origin: center;
 }
-.menu--item figure img {
+.menu--item figure img, .menu--item figure video {
   position: absolute;
   z-index: 1;
   top: 0;
