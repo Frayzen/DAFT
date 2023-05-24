@@ -36,6 +36,18 @@ make clean && make
 ```
 Once the compilation is done, you can **run** the engine using the following command:
 ```bash
-./bin/DAFT <scene_file>
+./bin/DAFT <scene_file path>
 ```
 If needed, you can find [sample scene here](https://frayzen.github.io/DAFT/#download).
+
+### Keys
+Please find below the list of keys used to interact with the engine:
+* **WASD**: Move the camera
+* **Mouse**: Rotate the camera
+* *P*: Render and save the image to a PNG file named `out.png`
+* *V*: Place a camera point in the scene
+* *B*: Render a video based on the camera points placed in the scene (the order of the placement is important)
+* *I*: Activate or deactivate the shading
+* *R*: `When shading is on` Activate or deactivate the ambient shading
+* *T*: `When shading is on` Activate or deactivate the diffuse shading
+* *Y*: `When shading is on` Activate or deactivate the specular shading 
