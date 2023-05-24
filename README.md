@@ -33,6 +33,6 @@ $ make clean && make
 ```
 Once the compilation is done, you can **run** the engine using the following command:
 ```bash
-$ ./daft \<scene_file\>
+$ ./daft <scene_file>
 ```
 If needed, you can find [sample scene here](https://frayzen.github.io/DAFT/#download).
