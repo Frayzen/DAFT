@@ -17,11 +17,11 @@ Features
 Usage
 -----
 To use DAFT, you need to compile the source code into an executable. The engine is written in C and uses the Makefile build system. 
-First, clone the repository using the following command:
+First, **clone** the repository using the following command:
 ```bash
 $ git clone git@github.com:Frayzen/DAFT.git
 ```
-You can now compile the source code using the following commands:
+You can now **compile** the source code using the following commands:
 ```bash
 $ cd /make
 ```
