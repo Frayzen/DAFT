@@ -1,4 +1,0 @@
-skybox ../../skybox/Nebula.png
-camera -1 2 0
-light 0 2 1 1 1 1
-mesh r2-d2.obj 0 0 0 .02

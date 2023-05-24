@@ -1,15 +1,27 @@
-Restructure branch of DAFT
-This branch is for test and new implementations purposes only.
-Restructuration loading...
-Please do not remove the branch.
+<h1>DAFT: Raytracer Engine</h1>
+![alt text](https://frayzen.github.io/DAFT/assets/img/daft_logo_wbg.png)
 
-Requirements:
-- make
-- gcc
-- sdl2
-- sdl2_image
-- gtk3
+<p>DAFT is a powerful and flexible raytracer engine developed as part of a project at EPITA engineer school. It allows
+    you to generate stunning 3D images by simulating the behavior of light in a virtual scene. Whether you're a computer
+    graphics enthusiast, a student, or a professional, DAFT provides a solid foundation for creating realistic
+    renderings.</p>
 
-Consider simply executing the following command:
-
-sudo apt-get install make gcc libsdl2-dev libsdl2-image-dev libgtk-3-dev
+<h2>Features</h2>
+Raytracing: DAFT uses the raytracing technique to trace the path of light rays, simulating their interactions with
+virtual objects and calculating the final color of each pixel in the image.
+<ul>
+    <li>
+        Shading Models: The engine supports various shading models, including Lambertian, Phong, and Blinn-Phong, to
+        give objects different material appearances and lighting effects.
+    </li>
+    <li>Reflection and Refraction: DAFT accurately handles reflection and refraction of light rays, enabling the rendering
+    of reflective surfaces, transparent materials, and complex optical effects.
+    Shadows: The engine calculates shadows by casting rays from each point towards the light sources, providing
+    realistic and accurate shadowing in the rendered images.</li>
+    <li>Object Primitives: DAFT supports basic geometric primitives such as spheres, planes, and triangles, allowing you to
+    create and arrange objects in your scenes easily.
+    Texture Mapping: You can apply textures to objects using UV mapping, providing detailed and realistic surface
+    appearances.</li>
+    <li>Scene Description: Scenes are described using a simple text-based scene file format, allowing you to define camera
+    positions, light sources, objects, and their materials easily.</li>
+</ul>
