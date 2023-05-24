@@ -44,9 +44,9 @@ If needed, you can find [sample scene here](https://frayzen.github.io/DAFT/#down
 Please find below the list of keys used to interact with the engine:
 * **WASD**: Move the camera
 * **Mouse**: Rotate the camera
-* **P**: Render and save the image to a PNG file named `out.png`
+* **P**: Render and save the image to a PNG file named `out.png`. If you want to change the quality of the render, feel free to edit the `include/constant.h`.
 * **V**: Place a camera point in the scene
-* **B**: Render a video based on the camera points placed in the scene (the order of the placement is important)
+* **B**: Render a video based on the camera points placed in the scene (the order of the placement is important) and save it to a MP4 file named `out.mp4`. The video is rendered at 30 FPS. If you want to change the quality of the render, feel free to edit the `include/constant.h`.
 * **I**: Activate or deactivate the shading
 * **R**: `When shading is on` Activate or deactivate the ambient shading
 * **T**: `When shading is on` Activate or deactivate the diffuse shading
