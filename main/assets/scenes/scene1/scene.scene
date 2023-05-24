@@ -1,5 +1,0 @@
-skybox ../../skybox/Nebula.png
-camera -3 0 0
-light -3 1 0 1 0 0
-sphere 0 0 0 2
-//mesh ../../objs/teddy.obj 0 0 0 .01

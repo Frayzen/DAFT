@@ -1,4 +1,0 @@
-skybox ../../skybox/Sky.jpg
-camera 0 0 3
-light 0 4 0 1 1 1
-mesh Airplane.obj 0 0 0 .001 -90 0 0
