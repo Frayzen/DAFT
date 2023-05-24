@@ -3,7 +3,6 @@
 
 # Object files
 *.o
-*/bin/*
 *.ko
 *.elf
 
@@ -50,3 +49,5 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+.idea
+.vscode
