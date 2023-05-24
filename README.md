@@ -12,6 +12,9 @@ DAFT is a powerful and flexible raytracer engine developed as part of a project 
 * Texture Mapping: You can apply textures to objects using UV mapping, providing detailed and realistic surface appearances.
 * Scene Description: Scenes are described using a simple text-based scene file format, allowing you to define camera positions, light sources, objects, and their materials easily.
 
+## Website
+You can find more information about the engine on the [official website](https://frayzen.github.io/DAFT/).
+
 ## Usage
 ### Download
 You can download the engine [here](https://frayzen.github.io/DAFT/#download). The archive contains the source code, the documentation, and sample scenes.
