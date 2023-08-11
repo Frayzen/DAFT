@@ -16,8 +16,15 @@ world *load_scene(char *path)
 {
     char *path_copy = malloc(strlen(path) + 1);
     strcpy(path_copy, path);
+    
+    
+    #ifdef _WIN32
+    char _dir_name[200];
+    _splitpath(path_copy, NULL, _dir_name, NULL, NULL);
+    #else
     char *_dir_name = dirname(path_copy);
-    char dir_name[200];
+    #endif
+    char* dir_name = malloc(strlen(_dir_name) + 1);
     strcpy(dir_name, _dir_name);
     strcat(dir_name, "/");
     printf("Dir: %s\n", dir_name);

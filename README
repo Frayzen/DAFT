@@ -13,3 +13,8 @@ Requirements:
 Consider simply executing the following command:
 
 sudo apt-get install make gcc libsdl2-dev libsdl2-image-dev libgtk-3-dev
+
+Windows comiling:
+- Install MinGW and all the packages required (dont forget to include mingw32-pthreads-w32 under "All packages section")
+- Install SDL and copy the content of i686-w64-mingw32 inside of the MinGW installation
+- Install SDL_Image and copy the content of i686-w64-mingw32 inside of the MinGW installation

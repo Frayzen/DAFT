@@ -13,8 +13,12 @@
 #define normSquared(a) a[0] * a[0] + a[1] * a[1] + a[2] * a[2]
 #define norm(a) sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2])
 #define projectOn(a, b) (dotProduct(a, b)) / (norm(b))
+#ifndef min
 #define min(a, b) (a < b ? a : b)
+#endif
+#ifndef max
 #define max(a, b) (a > b ? a : b)
+#endif
 
 void normalize(float* p, float* r);
 float distance(float* a, float* b);

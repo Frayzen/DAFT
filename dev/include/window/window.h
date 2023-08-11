@@ -3,6 +3,9 @@
 
 #include <stdio.h>
 #include <omp.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include <stdlib.h>
 #include <time.h>
 #include <SDL2/SDL.h>
