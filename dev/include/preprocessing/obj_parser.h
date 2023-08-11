@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <err.h>
 #include "../utils/daft_math.h"
 #include "../../include/preprocessing/mtl_parser.h"
 #include "./mesh_builder.h"

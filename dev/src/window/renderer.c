@@ -3,7 +3,6 @@
 int percentage = 0;
 unsigned char last_image[VIDEO_WIDTH * VIDEO_HEIGHT * 3];
 
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void render_screen(rendering_params *rdp)
 {
@@ -133,14 +132,10 @@ void *render_quality_image_process(void *rdpptr)
             set_pixel(image, i % width, i / width, SDL_MapRGBA(format, 0, 0, 0, 255));
         if (i % 100 == 0)
         {
-            pthread_mutex_lock(&mutex);
             percentage = 100 * i / (width * height);
-            pthread_mutex_unlock(&mutex);
         }
     }
-    pthread_mutex_lock(&mutex);
     percentage = 0;
-    pthread_mutex_unlock(&mutex);
 
     SDL_SaveBMP(image, "out.png");
     printf("END OF COPY !\n");
@@ -155,8 +150,6 @@ void render_quality_image(rendering_params *rdp)
     if (percentage != 0)
         return;
     printf("RENDERING IMAGE...\n");
-    pthread_t thread;
-    pthread_create(&thread, NULL, render_quality_image_process, (void *)rdp);
 }
 
 float linear_interpolate(float a, float b, float t)
@@ -185,7 +178,11 @@ void *render_quality_video_process(void *rdpptr)
     }
     char ffmpeg_str[256];
     sprintf(ffmpeg_str, "ffmpeg -f rawvideo -pixel_format rgb24 -video_size %dx%d -framerate %d -i - -c:v libx264 -pix_fmt yuv420p %s", width, height, VIDEO_FPS, VIDEO_FILENAME);
+    #ifdef _WIN32
+    FILE *ffmpeg = _popen(ffmpeg_str, "wb");
+    #else
     FILE *ffmpeg = popen(ffmpeg_str, "w");
+    #endif
     float total_time = 0;
     for (int cur = 0; cur < w->size_campoints - 1; cur++)
     {
@@ -229,20 +226,20 @@ void *render_quality_video_process(void *rdpptr)
                 free(r.last_hit);
             }
             actual_frame++;
-            pthread_mutex_lock(&mutex);
             memcpy(last_image, rgb, width * height * 3);
             percentage = 100 * actual_frame / (total_frame - 1);
-            pthread_mutex_unlock(&mutex);
 
             // Write RGB matrix to FFmpeg process
             fwrite(rgb, sizeof(unsigned char), width * height * 3, ffmpeg);
         }
-        pthread_mutex_lock(&mutex);
         percentage = 0;
-        pthread_mutex_unlock(&mutex);
     }
     // Close FFmpeg process
+    #ifdef _WIN32
+    _pclose(ffmpeg);
+    #else
     pclose(ffmpeg);
+    #endif
     printf("END OF COPY !\n");
     return NULL;
 }
@@ -251,6 +248,5 @@ void render_quality_video(rendering_params *rdp)
     if (percentage != 0)
         return;
     printf("RENDERING VIDEO...\n");
-    pthread_t thread;
-    pthread_create(&thread, NULL, render_quality_video_process, (void *)rdp);
+    render_quality_video_process(rdp);
 }
