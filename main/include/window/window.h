@@ -3,10 +3,11 @@
 
 #include <stdio.h>
 #include <omp.h>
-#include <pthread.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include <stdlib.h>
 #include <time.h>
-#include <err.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "../architecture/world.h"

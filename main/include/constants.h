@@ -1,5 +1,12 @@
 #ifndef CONSTANTS_H
-#define CONSTANTS_H
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+#define MINTRIANGLES 30
+#define MAXREFLECTIONS 2
+#define QUALITY_WIDTH 4096
+#define QUALITY_HEIGHT 4096
+#define LBBOX 4
 
 /*
     Feel free to change the values below to change the behavior of the program.

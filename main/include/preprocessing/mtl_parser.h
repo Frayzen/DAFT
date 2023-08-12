@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "../architecture/material.h"
 #include "../utils/daft_math.h"
 

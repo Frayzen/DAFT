@@ -16,6 +16,17 @@ You can find more information about the engine on the [official website](https:/
 * Scene Description: Scenes are described using a simple text-based scene file format, allowing you to define camera positions, light sources, objects, and their materials easily.
 
 ## Usage
+### Requirements
+#### Linux
+
+Consider simply executing the following command:
+```bash
+sudo apt-get install make gcc libsdl2-dev libsdl2-image-dev libgtk-3-dev
+```
+#### Windows:
+* Install MinGW and all the packages required (dont forget to include mingw32-pthreads-w32 under "All packages section")
+* Install SDL and copy the content of i686-w64-mingw32 inside of the MinGW installation
+* Install SDL_Image and copy the content of i686-w64-mingw32 inside of the MinGW installation
 ### Download
 You can download the engine [here](https://frayzen.github.io/DAFT/#download). The archive contains the source code, the documentation, and sample scenes.
 
