@@ -1,6 +1,6 @@
 #include "../../include/utils/daft_math.h"
 
-void normalize(float* p, float* r)
+void normalize(float3 p, float3 r)
 {
     float sum = sqrt(p[0] * p[0] + p[1] * p[1] + p[2] * p[2]);
     if(sum == 0)
@@ -15,20 +15,20 @@ void normalize(float* p, float* r)
     r[2] = p[2] / sum;
 }
 
-float distance(float* a, float* b){
+float distance(float3 a, float3 b){
     float3 diff;
     minus(a, b, diff);
     return norm(diff);
 }
 
-float project(float* w, float* v){
+float project(float3 w, float3 v){
     float wv = dotProduct(w, v);
     float nsqr = normSquared(v);
     return wv / nsqr;
 }
 
-void reflect(float* v, float* n, float* r){
+void reflect(float3 v, float3 n, float3* r){
     float3 proj;
     scale(n, 2 * dotProduct(v, n), proj);
-    minus(proj, v, r);
+    minus(proj, v, (*r));
 }
