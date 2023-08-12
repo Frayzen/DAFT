@@ -7,6 +7,10 @@ CFLAGS   = -Wall -Werror -fopenmp
 
 # linking flags here
 PKG_CONFIG = $(shell pkg-config --libs sdl2 SDL2_image)
+ifdef OS
+#remove -mwindows flag on windows
+PKG_CONFIG := $(subst -mwindows,,$(PKG_CONFIG))
+endif
 LIBS = $(PKG_CONFIG) -lm -fopenmp -g
 LINKER   = gcc
 # linking flags here
@@ -26,6 +30,7 @@ ifdef OS
 	rmdir 	 = rmdir /Q /S
 	rm 	 = rm
 	mkdir = if not exist "$(strip $(1))" mkdir "$(strip $(1))"
+	CFLAGS := -std=c99
 else
 # Linux stuff
 	rm       = rm -f
@@ -46,7 +51,7 @@ $(BINDIR)/$(TARGET): $(OBJECTS)
 
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
 	@$(call mkdir, $(dir $@))
-	$(CC) $(CFLAGS) $(LIBS) -c $< -o $@
+	$(CC) -c $< $(CFLAGS) $(LIBS) -o $@
 	@echo "Compiled "$<" successfully!"
 
 .PHONY: clean

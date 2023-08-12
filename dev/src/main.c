@@ -1,12 +1,7 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
-#include <stdlib.h>
-#include "../include/preprocessing/scene_parser.h"
-#include "../include/window/window.h"
 
 int main(int argc, char *argv[]){
-    printf("ok\n");
-    return 1;
     if(argc<2){
         printf("Usage: %s <scene_file>\n", argv[0]);
         return 1;
@@ -24,6 +19,6 @@ int main(int argc, char *argv[]){
         return 1;
     launch_screen(&params);
     free_window(&params);
-    free_world(wd);
+    free_world(wd);*/
     return 0;
 }   
