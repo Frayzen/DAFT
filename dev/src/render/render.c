@@ -2,7 +2,7 @@
 
 void get_background(raycast_param* rcp){
     if(rcp->w->skybox != NULL){
-        float dir[3];
+        float3 dir;
         scale(rcp->r->dir, -1, dir);
         float u = 0.5+ (atan2f(dir[0], dir[2])/(M_PI*2));
         float v = 0.5+ (asinf(dir[1])/M_PI);

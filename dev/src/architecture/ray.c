@@ -1,6 +1,6 @@
 #include "../../include/architecture/ray.h"
 
-void get_ray_direction(float *r, int width, int height, int x_pix, int y_pix, camera *cam)
+void get_ray_direction(float3 *r, int width, int height, int x_pix, int y_pix, camera *cam)
 {
     float yaw = cam->yaw;
     float pitch = cam->pitch;
@@ -10,13 +10,13 @@ void get_ray_direction(float *r, int width, int height, int x_pix, int y_pix, ca
     float ratioY = ((float)y_pix / (float)height) - 0.5;
     yaw += ratioX * FOV_x;
     pitch += ratioY * FOV_y;
-    float dir[3] = {cos(pitch) * cos(yaw), sin(pitch), cos(pitch) * sin(yaw)};
-    copy(dir, r);
+    float3 dir = {cos(pitch) * cos(yaw), sin(pitch), cos(pitch) * sin(yaw)};
+    copy(dir, (*r));
 }
 void update_cam_sides(rendering_params *rdp)
 {
     get_ray_direction(rdp->botLeftCorner, rdp->width, rdp->height, 0, rdp->width - 1, rdp->cam);
-    float top[3], right[3], left[3], bot[3];
+    float3 top, right, left, bot;
     get_ray_direction(top, rdp->width, rdp->height, 0, rdp->height - 1, rdp->cam);
     get_ray_direction(right, rdp->width, rdp->height, rdp->width - 1, 0, rdp->cam);
     get_ray_direction(left, rdp->width, rdp->height, 0, 0, rdp->cam);
@@ -25,7 +25,7 @@ void update_cam_sides(rendering_params *rdp)
     minus(right, left, rdp->rightDir);
 }
 
-void ray_update_result(ray *r, triangle *tri, float new_mint, float normal[3], material *mat, float color[3], float uvw[3])
+void ray_update_result(ray *r, int tri, float new_mint, float3 normal, material *mat, float3 color, float3 uvw)
 {
     ray_result *new_hit = calloc(sizeof(ray_result), 1);
     new_hit->mint = new_mint;
@@ -38,9 +38,7 @@ void ray_update_result(ray *r, triangle *tri, float new_mint, float normal[3], m
     }
     else
     {
-        new_hit->uvw[0] = 0;
-        new_hit->uvw[1] = 0;
-        new_hit->uvw[2] = 0;
+        define(new_hit->uvw, 0, 0, 0);
     }
     copy(color, new_hit->color);
     copy(r->dir, new_hit->pos);

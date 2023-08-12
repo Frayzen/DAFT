@@ -3,9 +3,9 @@
 int triangle_render(triangle* tri, ray* r){
     mesh* m = r->current_mesh;
     float EPSILON = 0.0000001;
-    float v0[3], v1[3], v2[3];
+    float3 v0, v1, v2;
     get_vertex_from_triangle(m, tri, v0, v1, v2);
-    float edge1[3], edge2[3], h[3], s[3], q[3];
+    float3 edge1, edge2, h, s, q;
     minus(v1, v0, edge1);
     minus(v2, v0, edge2);
     crossProduct(r->dir, edge2, h);
@@ -31,7 +31,7 @@ int triangle_render(triangle* tri, ray* r){
     if(t > EPSILON){
         if(r->last_hit && r->last_hit->mint < t) //previous was closer
             return 0;
-        float normal[3];
+        float3 normal;
         crossProduct(edge1, edge2, normal);
         normalize(normal, normal);
         float val = dotProduct(normal, r->dir);
@@ -40,7 +40,7 @@ int triangle_render(triangle* tri, ray* r){
         if(val > 1)
             val = 1;
         //scale(color, val, color);
-        ray_update_result(r, tri, t, normal, r->current_mesh->mats, (float[3]){1,1,1}, (float[3]){u, v, 1-u-v});
+        ray_update_result(r, tri, t, normal, r->current_mesh->mats, (float3){1,1,1}, (float3){u, v, 1-u-v});
         return 1; // Hit, win
     }
     // This means that there is a line intersection but not a ray intersection. 

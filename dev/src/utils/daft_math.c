@@ -16,7 +16,7 @@ void normalize(float* p, float* r)
 }
 
 float distance(float* a, float* b){
-    float diff[3];
+    float3 diff;
     minus(a, b, diff);
     return norm(diff);
 }
@@ -28,7 +28,7 @@ float project(float* w, float* v){
 }
 
 void reflect(float* v, float* n, float* r){
-    float proj[3];
+    float3 proj;
     scale(n, 2 * dotProduct(v, n), proj);
     minus(proj, v, r);
 }

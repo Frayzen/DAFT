@@ -41,7 +41,7 @@ void handle_key(SDL_Keycode key, app_params* params, int pressed){
             if(pressed){
                 add_campoint(params->wd, init_campoint(params->cam->pos, params->cam->yaw, params->cam->pitch));
                 if(params->wd->size_campoints > 1){
-                    float pos[3];
+                    float3 pos;
                     minus(params->wd->campoints[params->wd->size_campoints-1].s->pos, params->wd->campoints[params->wd->size_campoints-2].s->pos, pos);
                     params->wd->campoints[params->wd->size_campoints-2].time = norm(pos) / CAM_MOV_SPEED;
                 }
@@ -116,9 +116,9 @@ void handle_events(int* quit, app_params* params){
         }
     }
     float yaw = params->cam->yaw;
-    float forward[3] = {cos(yaw), 0, sin(yaw)};
-    float right[3] = {cos(yaw+M_PI/2), 0, sin(yaw+M_PI/2)};
-    float up[3] = {0, 1, 0};
+    float3 forward = {cos(yaw), 0, sin(yaw)};
+    float3 right = {cos(yaw+M_PI/2), 0, sin(yaw+M_PI/2)};
+    float3 up = {0, 1, 0};
     scale(forward, params->cam->movement_speed[0], forward);
     scale(right, params->cam->movement_speed[1], right);
     scale(up, params->cam->movement_speed[2], up);

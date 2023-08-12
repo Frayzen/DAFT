@@ -1,9 +1,9 @@
 #include "../../include/preprocessing/mtl_parser.h"
 
 void setup_mat(material* mat){
-    float default_ks[3] = {0.2, 0.2, 0.2};
-    float default_ka[3] = {0.5, 0.5, 0.5};
-    float default_kd[3] = {0.5, 0.5, 0.5};
+    float3 default_ks = {0.2, 0.2, 0.2};
+    float3 default_ka = {0.5, 0.5, 0.5};
+    float3 default_kd = {0.5, 0.5, 0.5};
     copy(default_kd, mat->diffuse);
     copy(default_ka, mat->ambient);
     copy(default_ks, mat->specular);

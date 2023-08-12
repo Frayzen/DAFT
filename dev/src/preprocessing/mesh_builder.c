@@ -1,153 +1,99 @@
 #include "../../include/preprocessing/mesh_builder.h"
 
-void add_v(mesh * m, float v[3])
+void add_v(mesh * m, float3 v)
 {
-    m->vertices[m->nb_vertices] = malloc(sizeof(float)*3);
-    copy(v, m->vertices[m->nb_vertices]);
-	m->nb_vertices++;
+    copy(v, m->vs[m->vs_size]);
+    m->vs_size++;
+
 }
 
-void add_vt(mesh * m, float vt[2]){
-    m->texture_vertices[m->nb_texture_vertices] = malloc(sizeof(float)*2);
-    m->texture_vertices[m->nb_texture_vertices][0] = vt[0];
-	m->texture_vertices[m->nb_texture_vertices][1] = vt[1];
-	m->nb_texture_vertices++;
+void add_vt(mesh * m, float2 vt){
+    copy2(vt, m->vt[m->vt_size]);
+    m->vt_size++;
 }
 
-void add_vn(mesh * m, float vn[3])
+void add_vn(mesh * m, float3 vn)
 {
-    m->normal_vertices[m->nb_normal_vertices] = malloc(sizeof(float)*3);
-    copy(vn, m->normal_vertices[m->nb_normal_vertices]);
-	m->nb_normal_vertices++;
+    copy(vn, m->vn[m->vn_size]);
+    m->vn_size++;
 }
 
-void take_min(float p[3], float o[3]){
-    p[0] = p[0] < o[0] ? p[0] : o[0];
-    p[1] = p[1] < o[1] ? p[1] : o[1];
-    p[2] = p[2] < o[2] ? p[2] : o[2];
+void take_min(float3* a, float3 b){
+    float3 p = *a;
+    p.x = p.x < b.x ? p.x : b.x;
+    p.y = p.y < b.y ? p.y : b.y;
+    p.z = p.z < b.z ? p.z : b.z;
 }
-void take_max(float p[3], float o[3]){
-    p[0] = p[0] > o[0] ? p[0] : o[0];
-    p[1] = p[1] > o[1] ? p[1] : o[1];
-    p[2] = p[2] > o[2] ? p[2] : o[2];
+void take_max(float3* a, float3 b){
+    float3 p = *a;
+    p.x = p.x > b.x ? p.x : b.x;
+    p.y = p.y > b.y ? p.y : b.y;
+    p.z = p.z > b.z ? p.z : b.z;
 }
-void compute_bounds_tri(mesh* m, bbox *bx){
-    float a[3], b[3], c[3];
-    get_vertex_from_triangle(m, &(bx->tris[0]), a, b, c);
-    copy(a, bx->min);
-    copy(a, bx->max);
-    for(int i = 0; i < bx->c_size; i++){
-        get_vertex_from_triangle(m, &(bx->tris[i]), a, b, c);
-        take_min(bx->min, a);
-        take_min(bx->min, b);
-        take_min(bx->min, c);
-        take_max(bx->max, a);
-        take_max(bx->max, b);
-        take_max(bx->max, c);
-    }
-}
-void compute_bounds_bbox(bbox* b){
-    copy(b->children[0]->min,b->min);
-    copy(b->children[1]->max,b->max);
-    for(int i = 0; i < b->c_size; i++){
-        take_min(b->min, b->children[i]->min);
-        take_max(b->max, b->children[i]->max);
-    }
-}
-bbox* init_bbox(){
-    bbox * b = calloc(sizeof(bbox), 1);
-    return b;
-}
-int compute_depth(int nb_tri){
+
+int compute_depth(int no_tri){
     int depth = 0;
-
-    while (nb_tri > 0)
-    {
-        nb_tri /= LBBOX;
+    while(no_tri > LBBOX){
         depth++;
+        no_tri/=LBBOX;
     }
     return depth;
 }
 
-int compute_tri_last_level(int depth, int no_tri)
-{
-    return no_tri/pow(LBBOX, depth-1);
-}
-
-int compute_no_extra(int no_tri, int tri_last_level, int depth)
-{
-    return no_tri-tri_last_level*pow(LBBOX, depth-1);
-}
-///nbcnr is number of children of next recursion
-bbox* build_bbox(int depth, int no_tri, int no_extra)
-{
-    bbox* b = init_bbox();
-    if (depth == 1)
-    {
-        b->tris = malloc(sizeof(triangle) *(no_extra + no_tri));
-        b->c_size  = no_extra + no_tri;
-        b->maxtotal = b->c_size;
-        return b;
-    }
-    else
-    {
-        b->children = malloc(sizeof(bbox*)*LBBOX);
-        b->c_size = LBBOX;
-        int nbcnr = pow(LBBOX, depth-2);
-        for (int i = 0; i < LBBOX; i++)
+int build_bboxes(mesh* m, int cur_depth, int* cur_tri){
+    int id = m->bboxes_size;
+    defin(m->b_min[id], INFINITY, INFINITY, INFINITY);
+    defin(m->b_max[id], -INFINITY, -INFINITY, -INFINITY);
+    m->bboxes_size++;
+    if(cur_depth == 0){
+        for (size_t i = 0; i < LBBOX; i++)
         {
-            b->children[i] = build_bbox(depth-1, no_tri, no_extra < nbcnr ? no_extra : nbcnr);
-            if(no_extra > nbcnr)
-                no_extra -= nbcnr;
-            else
-                no_extra = 0;
-            b->maxtotal+=b->children[i]->maxtotal;
+            m->b_children[id*LBBOX+i] = *cur_tri;
+            *cur_tri = *cur_tri + 1;
+            int3 tri = m->tri_v[m->b_children[id*LBBOX+i]];
+            take_min(&m->b_min[id], m->vs[tri.p1]);
+            take_min(&m->b_min[id], m->vs[tri.p2]);
+            take_min(&m->b_min[id], m->vs[tri.p3]);
+            take_max(&m->b_max[id], m->vs[tri.p1]);
+            take_max(&m->b_max[id], m->vs[tri.p2]);
+            take_max(&m->b_max[id], m->vs[tri.p3]);
         }
-        return b;
+        return id;
     }
+    for(int i = 0; i < LBBOX; i++){
+        m->b_children[id*LBBOX+i] = build_bboxes(m, cur_depth-1, cur_tri);
+        take_min(&m->b_min[id], m->b_min[m->b_children[id*LBBOX+i]]);
+        take_max(&m->b_max[id], m->b_max[m->b_children[id*LBBOX+i]]);
+    }
+    return id;
 }
-void add_tri_to_bbox(mesh* m, bbox *b, int depth, int v[3], int vt[3], int vn[3], material* material){
-    if(depth == 1){
-        for(int i = 0; i < 3; i++){
-            b->tris[b->total].v[i] = v[i];
-            b->tris[b->total].vt[i] = vt[i];
-            b->tris[b->total].vn[i] = vn[i];
-        }
 
-        b->tris[b->total].material = material;
-        b->total++;
-        if(b->total == b->maxtotal)
-            compute_bounds_tri(m, b);
-        return;
-    }
-    int j = 0;
-    b->total++;
-    while(b->children[j]->total == b->children[j]->maxtotal)
-        j++;
-    add_tri_to_bbox(m, b->children[j], depth-1, v, vt, vn, material);
-    if(b->total == b->maxtotal)
-        compute_bounds_bbox(b);
-    return;
-}
-void add_tri(mesh* m, int v[3], int vt[3], int vn[3], material* material){
-    add_tri_to_bbox(m, m->box, m->depth, v, vt, vn, material);
-    m->nb_triangles++;
-}
 mesh * build_mesh(int no_vert, int no_tri, int text_vert, int norm_vert)
 {
     mesh * m = (mesh *)malloc(sizeof(mesh));
+    m->vs_size = 0;
+    m->vs = malloc(sizeof(float3)*no_vert);
+    m->vt_size = 0;
+    m->vt = malloc(sizeof(int2)*text_vert);
+    m->vn_size = 0;
+    m->vn = malloc(sizeof(float3)*norm_vert);
+
+    m->tri_size = 0;
+    m->tri_v = malloc(sizeof(int3)*no_tri);
+    m->tri_t = malloc(sizeof(int3)*no_tri);
+    m->tri_n = malloc(sizeof(int3)*no_tri);
+    
+    int depth = compute_depth(no_tri);
+    int nb_bboxes = pow(LBBOX, depth);
+    m->bboxes_size = 0;
+    m->b_min = malloc(sizeof(float3)*nb_bboxes);
+    m->b_max = malloc(sizeof(float3)*nb_bboxes);
+    m->b_children = malloc(sizeof(int)*nb_bboxes);
+    
+    int cur_tri = 0;
+    build_bboxes(m, depth, &cur_tri);
+
+    m->mat_size = 0;
     m->mats = NULL;
-    m->nb_mat = 0;
-    m->depth = compute_depth(no_tri-1);
-    m->tri_last_level = compute_tri_last_level(m->depth, no_tri);
-    m->no_extra = compute_no_extra(no_tri, m->tri_last_level, m->depth);
-    m->box = build_bbox(m->depth, m->tri_last_level, m->no_extra);
-	m->nb_vertices = 0;
-    m->nb_triangles = 0;
-    m->nb_texture_vertices = 0;
-    m->nb_normal_vertices = 0;
-	m->vertices = malloc(sizeof(float*)*no_vert);
-	m->texture_vertices = malloc(sizeof(float*)*text_vert);
-    m->normal_vertices = malloc(sizeof(float*)*norm_vert);
 	return m;
 }

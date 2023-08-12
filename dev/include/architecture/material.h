@@ -5,12 +5,13 @@
 #include <stdio.h>
 #include "../constants.h"
 #include "../utils/daft_math.h"
+#include "../architecture/vectors.h"
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL.h>
 typedef struct {
-    float ambient[3];
-    float diffuse[3];
-    float specular[3];
+    float3 ambient;
+    float3 diffuse;
+    float3 specular;
     float shininess;
     float reflection;
     char name[256];
@@ -20,7 +21,7 @@ typedef struct {
 } material;
 
 material* create_mat_from_color(float r, float g, float b);
-material* mat_init(float ambient[3], float diffuse[3], float specular[3], float shininess, float reflection);
+material* mat_init(float3 ambient, float3 diffuse, float3 specular, float shininess, float reflection);
 
 material* default_mat();
 material* def_mat(float shininess, float reflection);

@@ -1,11 +1,9 @@
 #include "../../include/architecture/sphere.h"
 
-sphere* sphere_init(float x, float y, float z, float radius, material* mat){
+sphere* sphere_init(float3 pos, float radius, material* mat){
     sphere* s = malloc(sizeof(sphere));
     s->mat = mat;
-    s->pos[0] = x;
-    s->pos[1] = y;
-    s->pos[2] = z;
+    copy(pos, s->pos);
     s->radius = radius;
     return s;
 }

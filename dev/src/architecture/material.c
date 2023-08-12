@@ -2,7 +2,7 @@
 
 //shininess more than 1
 //reflection less than 1
-material* mat_init(float ambient[3], float diffuse[3], float specular[3], float shininess, float reflection){
+material* mat_init(float3 ambient, float3 diffuse, float3 specular, float shininess, float reflection){
     material* mat = malloc(sizeof(material));
     copy(ambient, mat->ambient);
     copy(diffuse, mat->diffuse);

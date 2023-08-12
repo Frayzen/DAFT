@@ -1,4 +1,3 @@
-#include "../architecture/bbox.h"
 #include "../architecture/ray.h"
 #include "./triangle_renderer.h"
 #include <math.h>

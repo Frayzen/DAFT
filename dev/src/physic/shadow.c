@@ -36,9 +36,9 @@ void get_color_at(ray *ry, SDL_Surface *text, float *color)
     mesh *m = ry->last_hit->m;
     float *uvw = ry->last_hit->uvw;
     triangle *tri = ry->last_hit->tri;
-    float *pt0 = m->texture_vertices[tri->vt[0]];
-    float *pt1 = m->texture_vertices[tri->vt[1]];
-    float *pt2 = m->texture_vertices[tri->vt[2]];
+    float *pt0 = m->vt[tri->vt[0]];
+    float *pt1 = m->vt[tri->vt[1]];
+    float *pt2 = m->vt[tri->vt[2]];
     float x = (pt0[0] * uvw[2] + pt1[0] * uvw[0] + pt2[0] * uvw[1]);
     float y = (pt0[1] * uvw[2] + pt1[1] * uvw[0] + pt2[1] * uvw[1]);
     int px = (int)(x * text->w);
@@ -73,8 +73,8 @@ void shadow_render(raycast_param *rcp)
 
     // setup
     ray *shadow_ray = calloc(sizeof(struct ray), 1);
-    float difuse[3] = {0, 0, 0};
-    float specular[3] = {0, 0, 0};
+    float3 difuse = {0, 0, 0};
+    float3 specular = {0, 0, 0};
 
     // position of the shadow ray
     copy(ry->last_hit->normal, shadow_ray->pos);
@@ -85,7 +85,7 @@ void shadow_render(raycast_param *rcp)
     {
         // shadow ray direction
         light *lgt = w->lights[i];
-        float dist[3];
+        float3 dist;
         minus(lgt->pos, shadow_ray->pos, dist);
         normalize(dist, shadow_ray->dir);
         shadow_ray->last_hit = calloc(sizeof(ray_result), 1);
@@ -99,11 +99,11 @@ void shadow_render(raycast_param *rcp)
         {
             // diffuse
             float dp = max(0, dotProduct(shadow_ray->dir, ry->last_hit->normal));
-            float lgt_difs[3] = {dp, dp, dp};
+            float3 lgt_difs = {dp, dp, dp};
             scale_vector(mat->diffuse, lgt_difs, lgt_difs);
             if (mat->diffuseText != NULL)
             {
-                float difTextCol[3] = {0, 0, 0};
+                float3 difTextCol = {0, 0, 0};
                 get_color_at(ry, mat->diffuseText, difTextCol);
                 scale_vector(difTextCol, lgt_difs, lgt_difs);
             }
@@ -111,22 +111,22 @@ void shadow_render(raycast_param *rcp)
             add(lgt_difs, difuse, difuse);
 
             // specular
-            float r_m[3];
+            float3 r_m;
             copy(ry->last_hit->normal, r_m);
             scale(r_m, (2 * dp), r_m);
             minus(r_m, shadow_ray->dir, r_m);
 
-            float to_view[3];
+            float3 to_view;
             scale(ry->dir, -1, to_view);
             normalize(to_view, to_view);
 
             dp = max(0, dotProduct(to_view, r_m));
             dp = pow(dp, mat->shininess);
-            float lgt_spec[3] = {dp, dp, dp};
+            float3 lgt_spec = {dp, dp, dp};
             scale_vector(mat->specular, lgt_spec, lgt_spec);
             if (mat->specularText != NULL)
             {
-                float specTextCol[3] = {0, 0, 0};
+                float3 specTextCol = {0, 0, 0};
                 get_color_at(ry, mat->specularText, lgt_spec);
                 scale_vector(specTextCol, lgt_spec, lgt_spec);
             }
@@ -134,17 +134,17 @@ void shadow_render(raycast_param *rcp)
             add(lgt_spec, specular, specular);
         }
     }
-    float ambient[3] = {1, 1, 1};
+    float3 ambient = {1, 1, 1};
     scale_vector(mat->ambient, ambient, ambient);
     if (mat->ambientText != NULL)
     {
-        float ambTextCol[3] = {0, 0, 0};
+        float3 ambTextCol = {0, 0, 0};
         get_color_at(ry, mat->ambientText, ambTextCol);
         scale_vector(ambTextCol, ambient, ambient);
     }
 
     // difuse  = difuse * (1 - ambient)
-    float factor[3] = {1, 1, 1};
+    float3 factor = {1, 1, 1};
     minus(factor, ambient, factor);
     scale_vector(difuse, factor, difuse);
     add(ambient, difuse, difuse);

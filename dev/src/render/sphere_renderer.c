@@ -1,7 +1,7 @@
 #include "../../include/render/sphere_renderer.h"
 
 int sphere_render(sphere * s, ray * r){
-    float diff[3], onSphere[3], normal[3], dir[3];
+    float3 diff, onSphere, normal, dir;
     normalize(r->dir, dir);
     float a = 1;
     minus(r->pos, s->pos, diff);

@@ -190,7 +190,7 @@ void *render_quality_video_process(void *rdpptr)
     }
     int total_frame = total_time * VIDEO_FPS;
     int actual_frame = 0;
-    float pos[3];
+    float3 pos;
     for (int cur = 0; cur < w->size_campoints - 1; cur++)
     {
         campoint from = w->campoints[cur];

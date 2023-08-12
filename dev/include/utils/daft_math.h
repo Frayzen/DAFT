@@ -3,7 +3,10 @@
 
 #ifndef DAFT_MATH_H
 #define DAFT_MATH_H
-#define copy(a, r) r[0] = a[0]; r[1] = a[1]; r[2] = a[2]
+#define copy(a, r) r.x = a.x; r.y = a.y; r.z = a.z;
+#define define(a, x, y, z) a.x = x; a.y = y; a.z = z;
+#define copy2(a, r) r.x = a.x; r.y = a.y;
+#define define2(a, x, y) a.x = x; a.y = y;
 #define crossProduct(a, b, r) r[0] = a[1] * b[2] - a[2] * b[1]; r[1] = a[2] * b[0] - a[0] * b[2]; r[2] = a[0] * b[1] - a[1] * b[0]
 #define dotProduct(a, b) a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
 #define add(a, b, r) r[0] = a[0] + b[0]; r[1] = a[1] + b[1]; r[2] = a[2] + b[2]

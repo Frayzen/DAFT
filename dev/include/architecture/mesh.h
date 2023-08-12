@@ -1,8 +1,7 @@
 #ifndef MESH_H
 #define MESH_H
 #include <stdlib.h>
-#include "triangle.h"
-#include "bbox.h"
+#include "vectors.h"
 #include "../render/rendering_params.h"
 #include "./camera.h"
 #include "../utils/daft_math.h"
@@ -10,25 +9,27 @@
 #include "./material.h"
 
  typedef struct mesh{
-    int nb_vertices;
-    float** vertices;
+    int vs_size;
+    float3* vs;
+    int vt_size;
+    float2* vt;
+    int vn_size;
+    float3* vn;
     
-    int nb_texture_vertices;
-    float** texture_vertices;
+    int tri_size;
+    int3 *tri_v;
+    int3 *tri_t;
+    int3 *tri_n;
 
+    int bboxes_size;
+    float3* b_min;
+    float3* b_max;
+    //negative for triangles, positive for bboxes, 0 for empty
+    int *b_children;
 
-    int nb_normal_vertices;
-    float** normal_vertices;
-    
-    int nb_triangles;
-    int tri_last_level;
-    int depth;
-    int no_extra;
-    bbox* box;
+    int mat_size;
     material* mats;
-    int nb_mat;
 }mesh;
 
 void free_mesh(mesh* msh);
-void get_vertex_from_triangle(mesh* m, triangle* tri, float* v1, float* v2, float* v3);
 #endif

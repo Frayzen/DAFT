@@ -12,9 +12,9 @@ typedef struct rendering_params{
     int screen_height;
     struct camera* cam;
     //pointers to the corners of the screen
-    float topDir[3];
-    float rightDir[3];
-    float botLeftCorner[3];
+    float3 topDir;
+    float3 rightDir;
+    float3 botLeftCorner;
     
     float FOV_x;
     float FOV_y;

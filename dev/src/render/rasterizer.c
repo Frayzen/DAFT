@@ -1,26 +1,28 @@
 #include "../../include/render/rasterizer.h"
 
-void rasterize_bbox(bbox* b, rendering_params* rdp, int* pixels){
+void rasterize_bbox(mesh*m, int bbox, rendering_params* rdp, int* pixels){
     //TODO: redo
-
+    
+    float3 minp = m->b_min[bbox];
+    float3 maxp = m->b_max[bbox];
 
     //rasterize the bbox
-    float p1[3] = {b->min[0], b->min[1], b->min[2]};
-    float p2[3] = {b->min[0], b->min[1], b->max[2]};
-    float p3[3] = {b->min[0], b->max[1], b->min[2]};
-    float p4[3] = {b->min[0], b->max[1], b->max[2]};
-    float p5[3] = {b->max[0], b->min[1], b->min[2]};
-    float p6[3] = {b->max[0], b->min[1], b->max[2]};
-    float p7[3] = {b->max[0], b->max[1], b->min[2]};
-    float p8[3] = {b->max[0], b->max[1], b->max[2]};
-    float* points[8] = {p1, p2, p3, p4, p5, p6, p7, p8};
+    float3 p1 = {minp.x, minp.y, minp.z};
+    float3 p2 = {minp.x, minp.y, maxp.z};
+    float3 p3 = {minp.x, maxp.y, minp.z};
+    float3 p4 = {minp.x, maxp.y, maxp.z};
+    float3 p5 = {maxp.x, minp.y, minp.z};
+    float3 p6 = {maxp.x, minp.y, maxp.z};
+    float3 p7 = {maxp.x, maxp.y, minp.z};
+    float3 p8 = {maxp.x, maxp.y, maxp.z};
+    float3 points[8] = {p1, p2, p3, p4, p5, p6, p7, p8};
 
     float minrp = 2;
     float maxrp = -1;
     float mintp = 2;
     float maxtp = -1;
 
-    float normal[3];
+    float3 normal;
     add(rdp->topDir, rdp->botLeftCorner, normal);
     add(rdp->rightDir, normal, normal);
     add(rdp->botLeftCorner, normal, normal);
@@ -28,7 +30,7 @@ void rasterize_bbox(bbox* b, rendering_params* rdp, int* pixels){
 
     for(int i = 0; i < 8; i++){
         float* p = points[i];
-        float dir[3];
+        float3 dir;
         minus(p, rdp->cam->pos, dir);
         normalize(dir, dir);
         float proj = project(dir, normal);
@@ -65,7 +67,7 @@ void rasterize_bbox(bbox* b, rendering_params* rdp, int* pixels){
 
 float plane_line_intersect(float * plane_normal, float * plane_point, float * line_point, float * line_dir)
 {
-    float neg[3];
+    float3 neg;
     minus(plane_point, line_point, neg);
     float t = (dotProduct(neg, plane_normal))/(dotProduct(line_dir, plane_normal));
     return t;
@@ -74,11 +76,11 @@ float plane_line_intersect(float * plane_normal, float * plane_point, float * li
  
 float screen_project(sphere *s, rendering_params * rdp, int * index, float * screen_pos)
 {
-    float plane_normal[3];
+    float3 plane_normal;
     crossProduct(rdp->topDir, rdp->rightDir, plane_normal);
-    float ray_dir[3];
+    float3 ray_dir;
     minus(s->pos, rdp->cam->pos, ray_dir);
-    float plane_point[3];
+    float3 plane_point;
     copy(rdp->botLeftCorner, plane_point);
     add(plane_point, rdp->cam->pos, plane_point);
     float t = plane_line_intersect(plane_normal, plane_point, rdp->cam->pos, ray_dir);
@@ -94,13 +96,13 @@ float screen_project(sphere *s, rendering_params * rdp, int * index, float * scr
 
 void rasterize_sphere(sphere* s, rendering_params* rdp, int* pixels){
     // int index;
-    // float screen_pos[3];
+    // float3 screen_pos;
     // float radius = screen_project(s, rdp, &index, screen_pos);
     // if(radius < 0){
     //     return;
     // }
     // radius*=1.5;
-    // float pixel_pos[3];
+    // float3 pixel_pos;
     // int tot_pixels = rdp->width * rdp->height;
     // int x;
     // int y;

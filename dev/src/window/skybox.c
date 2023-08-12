@@ -12,7 +12,7 @@ SDL_Surface* surface = IMG_Load(path);
 }
 
 void get_skybox_point(float* direction, float* x, float* y){
-    float dir[3];
+    float3 dir;
     normalize(direction, dir);
     scale(dir, -1, dir);
     *x = 0.5- (atan2f(dir[0], dir[2])/(M_PI*2));
@@ -20,8 +20,8 @@ void get_skybox_point(float* direction, float* x, float* y){
 }
 
 void define_sky_scales(float from_scale[2], float to_scale[2], rendering_params* rdp){
-    float from[3];
-    float to[3];
+    float3 from;
+    float3 to;
     copy(rdp->botLeftCorner, from);
     copy(rdp->botLeftCorner, to);
     add(to, rdp->rightDir, to);

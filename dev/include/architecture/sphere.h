@@ -2,14 +2,15 @@
 #define SPHERE_H
 #include <stdlib.h>
 #include "./material.h"
+#include "../architecture/vectors.h"
 
 typedef struct sphere
 {
-    float pos[3];
+    float3 pos;
     float radius;
     material* mat;
 } sphere;
 
-sphere* sphere_init(float x, float y, float z, float r, material* mat);
+sphere* sphere_init(float3 pos, float r, material* mat);
 void free_sphere(sphere* s);
 #endif
