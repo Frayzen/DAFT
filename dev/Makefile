@@ -7,14 +7,16 @@ CFLAGS   = -Wall -Werror -fopenmp
 
 # linking flags here
 PKG_CONFIG = $(shell pkg-config --libs sdl2 SDL2_image)
+PKG_CONFIG_LINKER = $(shell pkg-config --libs sdl2 SDL2_image)
 ifdef OS
 #remove -mwindows flag on windows
-PKG_CONFIG := $(subst -mwindows,,$(PKG_CONFIG))
+PKG_CONFIG_LINKER := $(subst -mwindows,,$(PKG_CONFIG_LINKER))
 endif
 LIBS = $(PKG_CONFIG) -lm -fopenmp -g
+LIBS_LINKER = $(PKG_CONFIG_LINKER) -lm -fopenmp -g
 LINKER   = gcc
 # linking flags here
-LFLAGS   = -Wall -Werror 
+LFLAGS   = -Wall -Werror
 
 # change these to proper directories where each file should be
 SRCDIR   = src
@@ -37,7 +39,7 @@ else
 	rmdir       = rm -f
 	mkdir = mkdir -p $(1)
 	CFLAGS := -std=c99
-	LIBS := -fopenmp
+	LIBS := -fsanitize=address
 endif
 
 
@@ -46,7 +48,7 @@ $(BINDIR)/$(TARGET): $(OBJECTS)
 	@$(call mkdir, $(BINDIR))
 	@$(call mkdir, $(OBJDIR))
 	@$(call mkdir, $(dir $@))
-	$(LINKER) $(OBJECTS) $(LFLAGS) $(LIBS) -o $@
+	$(LINKER) $(OBJECTS) $(LFLAGS) $(LIBS_LINKER) -o $@
 	@echo "Linking complete!"
 
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
@@ -58,6 +60,9 @@ $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
 clean:
 	@$(rmdir) $(OBJDIR)
 	@echo "Cleanup complete!"
+
+debug: $(BINDIR)/$(TARGET)
+	gdb -ex=r --args $(BINDIR)/$(TARGET) .\test
 
 .PHONY: remove
 remove: clean

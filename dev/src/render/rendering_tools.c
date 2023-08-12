@@ -8,7 +8,7 @@ rendering_params* init_rendering_params(world* wd, int width, int height, camera
     rdp->height = height;
     rdp->cam = cam;
     rdp->pixels = pixels;
-    rdp->shadow = 0;
+    rdp->shadow = 1;
     rdp->reflection = 0;
     rdp->screen_width = width*screen_scale;
     rdp->screen_height = height*screen_scale;
