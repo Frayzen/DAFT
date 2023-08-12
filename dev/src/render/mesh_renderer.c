@@ -2,5 +2,5 @@
 
 int mesh_render(mesh* m, ray *r)
 {
-    return bbox_render(m->box, r);
+    return bbox_render(0, r);
 }

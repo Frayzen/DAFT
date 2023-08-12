@@ -1,10 +1,9 @@
 #include "../../include/render/rasterizer.h"
 
-void rasterize_bbox(mesh*m, int bbox, rendering_params* rdp, int* pixels){
+void rasterize_bbox(mesh*m, rendering_params* rdp, int* pixels){
     //TODO: redo
-    
-    float3 minp = m->b_min[bbox];
-    float3 maxp = m->b_max[bbox];
+    float3 minp = m->b_min[0];
+    float3 maxp = m->b_max[0];
 
     //rasterize the bbox
     float3 p1 = {minp.x, minp.y, minp.z};
@@ -29,10 +28,10 @@ void rasterize_bbox(mesh*m, int bbox, rendering_params* rdp, int* pixels){
     scale(normal, 0.5, normal);
 
     for(int i = 0; i < 8; i++){
-        float* p = points[i];
+        float3 p = points[i];
         float3 dir;
         minus(p, rdp->cam->pos, dir);
-        normalize(dir, dir);
+        dir = normalize(dir);
         float proj = project(dir, normal);
         if(proj < 0)
             continue;
@@ -65,7 +64,7 @@ void rasterize_bbox(mesh*m, int bbox, rendering_params* rdp, int* pixels){
 }
 
 
-float plane_line_intersect(float * plane_normal, float * plane_point, float * line_point, float * line_dir)
+float plane_line_intersect(float3 plane_normal, float3 plane_point, float3 line_point, float3 line_dir)
 {
     float3 neg;
     minus(plane_point, line_point, neg);
@@ -74,7 +73,7 @@ float plane_line_intersect(float * plane_normal, float * plane_point, float * li
 }
 
  
-float screen_project(sphere *s, rendering_params * rdp, int * index, float * screen_pos)
+float screen_project(sphere *s, rendering_params * rdp, int * index, float3 screen_pos)
 {
     float3 plane_normal;
     crossProduct(rdp->topDir, rdp->rightDir, plane_normal);
@@ -129,13 +128,7 @@ void rasterize_sphere(sphere* s, rendering_params* rdp, int* pixels){
 void render_rasterize(rendering_params* rdp, int* pixels){
     world* w = rdp->w;
     for(int i = 0; i < w->size_meshes; i++){
-        rasterize_bbox(w->meshes[i]->box, rdp, pixels);
-    }
-    for(int i = 0; i < w->size_lights; i++){
-        rasterize_sphere(w->lights[i]->s, rdp, pixels);
-    }
-     for(int i = 0; i < w->size_spheres; i++){
-        rasterize_sphere(&w->spheres[i], rdp, pixels);
+        rasterize_bbox(w->meshes[i], rdp, pixels);
     }
     
 

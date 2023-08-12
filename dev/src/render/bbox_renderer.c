@@ -1,48 +1,56 @@
 #include "../../include/render/bbox_renderer.h"
 
-int intersect_bbox(bbox* b, ray* r){
+int intersect_bbox(int bbox, ray* r){
+    mesh* m = r->current_mesh;
     float tmin = -INFINITY;
     float tmax = INFINITY;
-    float x = r->dir[0];
+    float x = r->dir.x;
+    float3 min = m->b_min[bbox];
+    float3 max = m->b_max[bbox];
     if(x != 0){
-        float ox = r->pos[0];
-        float tx1 = (b->min[0] - ox)/x;
-        float tx2 = (b->max[0] - ox)/x;
+        float ox = r->pos.x;
+        float tx1 = (min.x - ox)/x;
+        float tx2 = (max.x - ox)/x;
         tmin = max(tmin, min(tx1, tx2));
         tmax = min(tmax, max(tx1, tx2));
     }
     if(tmax < tmin)
         return 0;
-    float y = r->dir[1];
+    float y = r->dir.y;
     if(y != 0){
-        float oy = r->pos[1];
-        float ty1 = (b->min[1] - oy)/y;
-        float ty2 = (b->max[1] - oy)/y;
+        float oy = r->pos.y;
+        float ty1 = (min.y - oy)/y;
+        float ty2 = (max.y - oy)/y;
         tmin = max(tmin, min(ty1, ty2));
         tmax = min(tmax, max(ty1, ty2));
     }
     if(tmax < tmin)
         return 0;
-    float z = r->dir[2];
+    float z = r->dir.z;
     if(z != 0){
-        float oz = r->pos[2];
-        float tz1 = (b->min[2] - oz)/z;
-        float tz2 = (b->max[2] - oz)/z;
+        float oz = r->pos.z;
+        float tz1 = (min.z - oz)/z;
+        float tz2 = (max.z - oz)/z;
         tmin = max(tmin, min(tz1, tz2));
         tmax = min(tmax, max(tz1, tz2));
     }
     return tmax >= tmin;
 }
 
-int bbox_render(bbox* b, ray* r){
-    int intersect = intersect_bbox(b, r);
+int bbox_render(int bbox, ray* r){
+    mesh* m = r->current_mesh;
+    int intersect = intersect_bbox(bbox, m, r);
     if(intersect){
-        if(b->tris){
-            for(int i = 0; i < b->c_size; i++)
-                triangle_render(&b->tris[i], r);
-        }else{
-            for(int i = 0; i < b->c_size; i++)
-                bbox_render(b->children[i], r);
+        for (size_t i = 0; i < LBBOX; i++)
+        {
+            int id = m->b_children[bbox*LBBOX+i];
+            if(id < 0){
+                //triangle
+                triangle_render(-id, r);
+            }else{
+                //bbox
+                bbox_render(id, r);
+            }
         }
         return r->last_hit != NULL;
     }

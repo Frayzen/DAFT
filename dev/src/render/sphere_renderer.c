@@ -2,7 +2,7 @@
 
 int sphere_render(sphere * s, ray * r){
     float3 diff, onSphere, normal, dir;
-    normalize(r->dir, dir);
+    dir = normalize(r->dir);
     float a = 1;
     minus(r->pos, s->pos, diff);
     float b = dotProduct(diff, dir);
@@ -23,7 +23,7 @@ int sphere_render(sphere * s, ray * r){
     scale(dir, t, onSphere);
     add(r->pos, onSphere, onSphere);
     minus(onSphere, s->pos, normal);
-    normalize(normal, normal);
-    ray_update_result(r, NULL, t, normal, s->mat, (float[]){1,1,1}, NULL);
+    normal = normalize(normal);
+    ray_update_result(r, NULL, t, normal, s->mat, (float3){1,1,1}, (float3){0,0,0});
     return 1;
 }

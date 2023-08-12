@@ -4,5 +4,5 @@
 #ifndef BBOX_RENDERER_H
 #define BBOX_RENDERER_H
 
-int bbox_render(bbox * b, ray * r);
+int bbox_render(int bbox, ray * r);
 #endif

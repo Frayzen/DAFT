@@ -4,17 +4,17 @@ void get_background(raycast_param* rcp){
     if(rcp->w->skybox != NULL){
         float3 dir;
         scale(rcp->r->dir, -1, dir);
-        float u = 0.5+ (atan2f(dir[0], dir[2])/(M_PI*2));
-        float v = 0.5+ (asinf(dir[1])/M_PI);
+        float u = 0.5+ (atan2f(dir.x, dir.z)/(M_PI*2));
+        float v = 0.5+ (asinf(dir.y)/M_PI);
         SDL_Surface* sb = rcp->w->skybox;
         int x = u*sb->w;
         int y = v*sb->h;
         Uint32 pixel = ((Uint32*)sb->pixels)[y*sb->w+x];
         Uint8 r, g, b;
         SDL_GetRGB(pixel, sb->format, &r,&g,&b);
-        ray_update_result(rcp->r, NULL, INFINITY, (float[]){0,0,0}, NULL, (float[]){r/255.0, g/255.0, b/255.0}, NULL);
+        ray_update_result(rcp->r, NULL, INFINITY, (float3){0,0,0}, NULL, (float3){r/255.0, g/255.0, b/255.0}, (float3){0,0,0});
     }else
-        ray_update_result(rcp->r, NULL, INFINITY, (float[]){0,0,0}, NULL, (float[]){0,0,0}, NULL);
+        ray_update_result(rcp->r, NULL, INFINITY, (float3){0,0,0}, NULL, (float3){0,0,0}, (float3){0,0,0});
 }
 
 //free the raycast_param

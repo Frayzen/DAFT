@@ -11,23 +11,22 @@ SDL_Surface* surface = IMG_Load(path);
     printf("Skybox '%s' loaded !\n", path);
 }
 
-void get_skybox_point(float* direction, float* x, float* y){
-    float3 dir;
-    normalize(direction, dir);
+float2 get_skybox_point(float3 direction){
+    float3 dir = normalize(direction);
     scale(dir, -1, dir);
-    *x = 0.5- (atan2f(dir[0], dir[2])/(M_PI*2));
-    *y = 0.5+ (asinf(dir[1])/M_PI);
+    float2 r = { 0.5- (atan2f(dir.x, dir.z)/(M_PI*2)), 0.5+ (asinf(dir.y)/M_PI)};
+    return r;
 }
 
-void define_sky_scales(float from_scale[2], float to_scale[2], rendering_params* rdp){
+void define_sky_scales(float2* from_scale, float2* to_scale, rendering_params* rdp){
     float3 from;
     float3 to;
     copy(rdp->botLeftCorner, from);
     copy(rdp->botLeftCorner, to);
     add(to, rdp->rightDir, to);
     add(to, rdp->topDir, to);
-    get_skybox_point(from, &from_scale[0], &from_scale[1]);
-    get_skybox_point(to, &to_scale[0], &to_scale[1]);
+    *from_scale =  get_skybox_point(from);
+    *to_scale = get_skybox_point(to);
 }
 
 void render_on_screen(SDL_Renderer* renderer, SDL_Texture* texture, rendering_params* rdp, float fromSbX, float fromSbY, float toSbX, float toSbY, float fromScX, float fromScY, float toScX, float toScY){

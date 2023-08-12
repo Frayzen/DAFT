@@ -29,6 +29,12 @@ void launch_quality_video_render(app_params* params){
 }
 
 
+void clamp(float* value, float min, float max){
+    if(*value < min)
+        *value = min;
+    if(*value > max)
+        *value = max;
+}
 
 //pressed = 1 if key is pressed, 0 if released
 void handle_key(SDL_Keycode key, app_params* params, int pressed){
@@ -64,34 +70,30 @@ void handle_key(SDL_Keycode key, app_params* params, int pressed){
                 params->rdp->shadow = !params->rdp->shadow;
             break;
         case SDLK_w:
-            params->cam->movement_speed[0] += delta;
+            params->cam->movement_speed.x += delta;
             break;
         case SDLK_s:
-            params->cam->movement_speed[0] -= delta;
+            params->cam->movement_speed.x -= delta;
             break;
         case SDLK_a:
-            params->cam->movement_speed[1] -= delta;
+            params->cam->movement_speed.y -= delta;
             break;
         case SDLK_d:
-            params->cam->movement_speed[1] += delta;
+            params->cam->movement_speed.y += delta;
             break;
         case SDLK_SPACE:
-            params->cam->movement_speed[2] += delta;
+            params->cam->movement_speed.z += delta;
             break;
         case SDLK_LSHIFT:
-            params->cam->movement_speed[2] -= delta;
+            params->cam->movement_speed.z -= delta;
             break;
         default:
             break;
     }
-    for(int i = 0; i < 3; i++){
-        if(params->cam->movement_speed[i] > MOVING_SPEED){
-            params->cam->movement_speed[i] = MOVING_SPEED;
-        }
-        if(params->cam->movement_speed[i] < -MOVING_SPEED){
-            params->cam->movement_speed[i] = -MOVING_SPEED;
-        }
-    }
+
+    clamp(&params->cam->movement_speed.x, -MOVING_SPEED, MOVING_SPEED);
+    clamp(&params->cam->movement_speed.y, -MOVING_SPEED, MOVING_SPEED);
+    clamp(&params->cam->movement_speed.z, -MOVING_SPEED, MOVING_SPEED);
 }
 
 void handle_events(int* quit, app_params* params){
@@ -109,7 +111,7 @@ void handle_events(int* quit, app_params* params){
                 handle_key(event.key.keysym.sym, params, 0);
                 break;
             case SDL_MOUSEMOTION:
-                params->cam->rotation_speed[0] = event.motion.xrel;
+                params->cam->rotation_speed.x = event.motion.xrel;
                 break;
             default:
                 break;
@@ -119,12 +121,12 @@ void handle_events(int* quit, app_params* params){
     float3 forward = {cos(yaw), 0, sin(yaw)};
     float3 right = {cos(yaw+M_PI/2), 0, sin(yaw+M_PI/2)};
     float3 up = {0, 1, 0};
-    scale(forward, params->cam->movement_speed[0], forward);
-    scale(right, params->cam->movement_speed[1], right);
-    scale(up, params->cam->movement_speed[2], up);
+    scale(forward, params->cam->movement_speed.x, forward);
+    scale(right, params->cam->movement_speed.y, right);
+    scale(up, params->cam->movement_speed.z, up);
     add(params->cam->pos, forward, params->cam->pos);
     add(params->cam->pos, right, params->cam->pos);
     add(params->cam->pos, up, params->cam->pos);
-    params->cam->yaw += params->cam->rotation_speed[0]/100;
-    params->cam->rotation_speed[0] = 0;
+    params->cam->yaw += params->cam->rotation_speed.x/100;
+    params->cam->rotation_speed.x = 0;
 }

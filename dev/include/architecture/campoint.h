@@ -10,5 +10,5 @@ typedef struct campoint{
 } campoint;
 
 
-campoint* init_campoint(float* pos, float yaw, float pitch);
+campoint* init_campoint(float3 pos, float yaw, float pitch);
 #endif

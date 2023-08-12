@@ -24,7 +24,7 @@
 #define max(a, b) (a > b ? a : b)
 #endif
 
-void normalize(float3 p, float3* r);
+float3 normalize(float3 p);
 float distance(float3 a, float3 b);
 float project(float3 a, float3 b);
 float3 project_onto(float3 a, float3 b);

@@ -34,7 +34,7 @@ void render_screen(rendering_params *rdp)
 
             if (r.last_hit != NULL)
             {
-                pixels[i] = SDL_MapRGBA(format, r.last_hit->color[0] * 255, r.last_hit->color[1] * 255, r.last_hit->color[2] * 255, 255);
+                pixels[i] = SDL_MapRGBA(format, r.last_hit->color.x * 255, r.last_hit->color.y * 255, r.last_hit->color.z * 255, 255);
                 free(r.last_hit);
             } 
             //else if(pixels_rasterize[i]){
@@ -125,7 +125,7 @@ void *render_quality_image_process(void *rdpptr)
         ray_cast(rcp);
         if (r.last_hit != NULL)
         {
-            set_pixel(image, i % width, i / width, SDL_MapRGBA(format, r.last_hit->color[0] * 255, r.last_hit->color[1] * 255, r.last_hit->color[2] * 255, 255));
+            set_pixel(image, i % width, i / width, SDL_MapRGBA(format, r.last_hit->color.x * 255, r.last_hit->color.y * 255, r.last_hit->color.z * 255, 255));
             free(r.last_hit);
         }
         else
@@ -155,6 +155,14 @@ void render_quality_image(rendering_params *rdp)
 float linear_interpolate(float a, float b, float t)
 {
     return a + (b - a) * t;
+}
+float3 vector_linear_interpolate(float3 a, float3 b, float t)
+{
+    float3 r;
+    r.x = linear_interpolate(a.x, b.x, t);
+    r.y = linear_interpolate(a.y, b.y, t);
+    r.z = linear_interpolate(a.z, b.z, t);
+    return r;
 }
 
 void *render_quality_video_process(void *rdpptr)
@@ -206,9 +214,7 @@ void *render_quality_video_process(void *rdpptr)
             // Generate RGB matrix for the current frame
 
             float t = (float)frame / (nb_frame - 1);
-            pos[0] = linear_interpolate(from.s->pos[0], to.s->pos[0], t);
-            pos[1] = linear_interpolate(from.s->pos[1], to.s->pos[1], t);
-            pos[2] = linear_interpolate(from.s->pos[2], to.s->pos[2], t);
+            pos = vector_linear_interpolate(from.s->pos, to.s->pos, t);
             copy(pos, rdp->cam->pos);
             rdp->cam->pitch = linear_interpolate(from.pitch, to.pitch, t);
             rdp->cam->yaw = linear_interpolate(from.yaw, to.yaw, t);
@@ -220,9 +226,9 @@ void *render_quality_video_process(void *rdpptr)
                 ray r = create_ray_interpolate(rdp, i % width, i / width);
                 raycast_param *rcp = init_raycast_param(&r, w, 1, 1, 1);
                 ray_cast(rcp);
-                rgb[i * 3] = r.last_hit->color[0] * 255;
-                rgb[i * 3 + 1] = r.last_hit->color[1] * 255;
-                rgb[i * 3 + 2] = r.last_hit->color[2] * 255;
+                rgb[i * 3] = r.last_hit->color.x * 255;
+                rgb[i * 3 + 1] = r.last_hit->color.y * 255;
+                rgb[i * 3 + 2] = r.last_hit->color.z * 255;
                 free(r.last_hit);
             }
             actual_frame++;

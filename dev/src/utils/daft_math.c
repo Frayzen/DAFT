@@ -1,18 +1,16 @@
 #include "../../include/utils/daft_math.h"
 
-void normalize(float3 p, float3 r)
+float3 normalize(float3 p)
 {
-    float sum = sqrt(p[0] * p[0] + p[1] * p[1] + p[2] * p[2]);
+    float3 r;
+    float sum = norm(p);
     if(sum == 0)
     {
-        r[0] = p[0];
-        r[1] = p[1];
-        r[2] = p[2];
+        copy(p, r);
         return;
     }
-    r[0] = p[0] / sum;
-    r[1] = p[1] / sum;
-    r[2] = p[2] / sum;
+    scale(p, 1 / sum, r);
+    return r;
 }
 
 float distance(float3 a, float3 b){
