@@ -37,7 +37,7 @@ int load_object(char *path, world *w, float scale, float pos[3], float rot[3], c
     // size_t texture = 0;
 
     char line[200];
-    material *mats;
+    material *mats = NULL;
     int nb_mat = 0;
 
     while (fgets(line, sizeof(line), file) != NULL)

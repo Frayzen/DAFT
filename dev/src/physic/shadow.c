@@ -67,6 +67,8 @@ void shadow_render(raycast_param *rcp)
         return;
     ray *ry = rcp->r;
     material *mat = ry->last_hit->mat;
+    if(mat == NULL)
+        return;
     world *w = rcp->w;
 
     // setup

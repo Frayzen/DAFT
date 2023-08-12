@@ -136,6 +136,8 @@ void add_tri(mesh* m, int v[3], int vt[3], int vn[3], material* material){
 mesh * build_mesh(int no_vert, int no_tri, int text_vert, int norm_vert)
 {
     mesh * m = (mesh *)malloc(sizeof(mesh));
+    m->mats = NULL;
+    m->nb_mat = 0;
     m->depth = compute_depth(no_tri-1);
     m->tri_last_level = compute_tri_last_level(m->depth, no_tri);
     m->no_extra = compute_no_extra(no_tri, m->tri_last_level, m->depth);

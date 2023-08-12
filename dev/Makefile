@@ -62,7 +62,7 @@ clean:
 	@echo "Cleanup complete!"
 
 debug: $(BINDIR)/$(TARGET)
-	gdb -ex=r --args $(BINDIR)/$(TARGET) .\test
+	gdb -ex=r --batch --args $(BINDIR)/$(TARGET) .\test
 
 .PHONY: remove
 remove: clean

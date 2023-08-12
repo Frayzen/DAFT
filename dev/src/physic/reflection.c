@@ -1,7 +1,7 @@
 #include "../../include/physic/reflection.h"
 
 void reflection(raycast_param* rcp){
-    if(!rcp->reflection)
+    if(!rcp->reflection || rcp->r->last_hit->mat == NULL)
         return;
     if(rcp->r->last_hit->mat->reflection == 0)
         return;

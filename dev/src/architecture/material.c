@@ -37,6 +37,8 @@ void load_texture(SDL_Surface** texture, char* path){
     printf("Texture '%s' loaded successfully !\n", path);
 }
 void free_mat(material* m){
+    if(m == NULL)
+        return;
     if(m->ambientText != NULL)
         SDL_FreeSurface(m->ambientText);
     if(m->diffuseText != NULL)
