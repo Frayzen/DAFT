@@ -80,7 +80,6 @@ mesh * init_mesh(int no_vert, int no_tri, int text_vert, int norm_vert)
 {
     mesh * m = malloc(sizeof(mesh));
     assert(m != NULL);
-    assert(m != NULL);
     m->vs_size = 0;
     m->vs = malloc(sizeof(float3)*no_vert);
     assert(m->vs != NULL);
@@ -104,10 +103,10 @@ mesh * init_mesh(int no_vert, int no_tri, int text_vert, int norm_vert)
     int depth = compute_depth(no_tri);
     int nb_bboxes = pow(LBBOX, depth);
     m->bboxes_size = 0;
-    m->b_min = calloc(sizeof(float3),nb_bboxes);
+    m->b_min = malloc(sizeof(float3)*nb_bboxes);
     assert(m->b_min != NULL);
 
-    m->b_max = calloc(sizeof(float3),nb_bboxes);
+    m->b_max = malloc(sizeof(float3)*nb_bboxes);
     assert(m->b_max != NULL);
 
     m->b_children = malloc(sizeof(int)*nb_bboxes*LBBOX);

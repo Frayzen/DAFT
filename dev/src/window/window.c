@@ -7,7 +7,7 @@ int setup_window(app_params* params){
     IMG_Init(IMG_INIT_PNG);
     SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" );
     
-    printf("OK\n");
+    printf("Loading world...\n");
     params->window = SDL_CreateWindow("SDL2 Displaying Image",
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
             params->width * params->screen_scale, params->height * params->screen_scale, 0);

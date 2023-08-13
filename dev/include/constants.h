@@ -13,7 +13,7 @@
 #define MIN_DIFUSE_LIGHT 0.1
 
 //parameters
-#define USE_RASTERIZE 1
+#define USE_RASTERIZE 0
 
 //video
 #define VIDEO_FILENAME "out.mp4"

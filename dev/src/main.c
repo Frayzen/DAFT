@@ -18,7 +18,6 @@ int main(int argc, char *argv[]){
     if(wd->size_cameras != 0)
         params.cam = wd->cameras[0];
     params.FPS_UPPER_LIMIT=30;
-    printf("Setting up window\n");
     if(setup_window(&params))
         return 1;
     printf("Starting main loop\n");
