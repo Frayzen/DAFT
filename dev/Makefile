@@ -44,6 +44,7 @@ endif
 
 
 
+.PHONY: all
 $(BINDIR)/$(TARGET): $(OBJECTS)
 	@$(call mkdir, $(BINDIR))
 	@$(call mkdir, $(OBJDIR))

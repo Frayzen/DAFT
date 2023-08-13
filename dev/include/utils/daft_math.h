@@ -5,7 +5,7 @@
 #ifndef DAFT_MATH_H
 #define DAFT_MATH_H
 #define copy(a, r) r.x = a.x; r.y = a.y; r.z = a.z;
-#define define(a, x, y, z) a.x = x; a.y = y; a.z = z;
+#define define(a, xv, yv, zv) a.x = xv; a.y = yv; a.z = zv;
 #define copy2(a, r) r.x = a.x; r.y = a.y;
 #define define2(a, x, y) a.x = x; a.y = y;
 #define crossProduct(a, b, r) r.x = a.y * b.z - a.z * b.y; r.y = a.z * b.x - a.x * b.z; r.z = a.x * b.y - a.y * b.x

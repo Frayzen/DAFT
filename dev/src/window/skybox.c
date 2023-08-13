@@ -49,14 +49,14 @@ void render_on_screen(SDL_Renderer* renderer, SDL_Texture* texture, rendering_pa
 }
 
 void define_sky_points(SDL_Renderer* renderer, SDL_Texture* skybox_texture, rendering_params* rdp){
-    float from_scale[2], to_scale[2];
-    define_sky_scales(from_scale, to_scale, rdp);
-    if(from_scale[0] < to_scale[0]){
-        render_on_screen(renderer, skybox_texture, rdp, from_scale[0], from_scale[1], to_scale[0], to_scale[1], 0, 0, 1, 1);
+    float2 from_scale, to_scale;
+    define_sky_scales(&from_scale, &to_scale, rdp);
+    if(from_scale.x < to_scale.x){
+        render_on_screen(renderer, skybox_texture, rdp, from_scale.x, from_scale.y, to_scale.x, to_scale.y, 0, 0, 1, 1);
     }
     else{
-        float middleScreen = (1 - from_scale[0])/(1 - from_scale[0] + to_scale[0]);
-        render_on_screen(renderer, skybox_texture, rdp, from_scale[0], from_scale[1], 1, to_scale[1], 0, 0, middleScreen, 1);
-        render_on_screen(renderer, skybox_texture, rdp, 0, from_scale[1], to_scale[0], to_scale[1], middleScreen, 0, 1, 1);
+        float middleScreen = (1 - from_scale.x)/(1 - from_scale.x + to_scale.x);
+        render_on_screen(renderer, skybox_texture, rdp, from_scale.x, from_scale.y, 1, to_scale.y, 0, 0, middleScreen, 1);
+        render_on_screen(renderer, skybox_texture, rdp, 0, from_scale.y, to_scale.x, to_scale.y, middleScreen, 0, 1, 1);
     }
 }

@@ -12,9 +12,9 @@ void get_background(raycast_param* rcp){
         Uint32 pixel = ((Uint32*)sb->pixels)[y*sb->w+x];
         Uint8 r, g, b;
         SDL_GetRGB(pixel, sb->format, &r,&g,&b);
-        ray_update_result(rcp->r, NULL, INFINITY, (float3){0,0,0}, NULL, (float3){r/255.0, g/255.0, b/255.0}, (float3){0,0,0});
+        ray_update_result(rcp->r, -1, INFINITY, (float3){0,0,0}, NULL, (float3){r/255.0, g/255.0, b/255.0}, (float3){0,0,0});
     }else
-        ray_update_result(rcp->r, NULL, INFINITY, (float3){0,0,0}, NULL, (float3){0,0,0}, (float3){0,0,0});
+        ray_update_result(rcp->r, -1, INFINITY, (float3){0,0,0}, NULL, (float3){0,0,0}, (float3){0,0,0});
 }
 
 //free the raycast_param

@@ -39,7 +39,7 @@ int intersect_bbox(int bbox, ray* r){
 
 int bbox_render(int bbox, ray* r){
     mesh* m = r->current_mesh;
-    int intersect = intersect_bbox(bbox, m, r);
+    int intersect = intersect_bbox(bbox, r);
     if(intersect){
         for (size_t i = 0; i < LBBOX; i++)
         {

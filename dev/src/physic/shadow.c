@@ -49,15 +49,15 @@ void get_color_at(ray *ry, SDL_Surface *text, float3 color)
     color.z = b / 255.0;
 }
 
-void clamp(float3 color)
+void clamp_vect(float3* color)
 {
     // clamp between 0 and 1
-    color.x = color.x > 1 ? 1 : color.x;
-    color.y = color.y > 1 ? 1 : color.y;
-    color.z = color.z > 1 ? 1 : color.z;
-    color.x = color.x < 0 ? 0 : color.x;
-    color.y = color.y < 0 ? 0 : color.y;
-    color.z = color.z < 0 ? 0 : color.z;
+    color->x = color->x > 1 ? 1 : color->x;
+    color->y = color->y > 1 ? 1 : color->y;
+    color->z = color->z > 1 ? 1 : color->z;
+    color->x = color->x < 0 ? 0 : color->x;
+    color->y = color->y < 0 ? 0 : color->y;
+    color->z = color->z < 0 ? 0 : color->z;
 }
 
 void shadow_render(raycast_param *rcp)
@@ -150,7 +150,7 @@ void shadow_render(raycast_param *rcp)
     scale_vector(difuse, ry->last_hit->color, ry->last_hit->color);
     // add specular
     add(ry->last_hit->color, specular, ry->last_hit->color);
-    clamp(ry->last_hit->color);
+    clamp_vect(&ry->last_hit->color);
 
     free(shadow_ray);
 }

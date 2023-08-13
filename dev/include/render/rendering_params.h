@@ -1,6 +1,7 @@
 #ifndef RENDERING_PARAMS_H
 #define RENDERING_PARAMS_H
 #include <SDL2/SDL.h>
+#include "../architecture/vectors.h"
 
 typedef struct rendering_params{
     SDL_PixelFormat* format;

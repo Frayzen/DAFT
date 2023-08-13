@@ -84,7 +84,7 @@ int load_object(char *path, world *w, float scale, float3 pos, float3 rot, char 
     float3 v;
     float3 vn;
     float2 vt;
-    material *curr = NULL;
+    int mat_id = 0;
 
     float rotX = rot.x * M_PI / 180;
     float rotY = rot.y * M_PI / 180;
@@ -199,10 +199,13 @@ int load_object(char *path, world *w, float scale, float3 pos, float3 rot, char 
                 vn.p3 = vs[2][j + 2] - 1;
                 if (vn.p3 < 0)
                     vn.p3 += norm_vert;
-                add_tri(new_mesh, v, vt, vn, curr);
+                add_tri(new_mesh, v, vt, vn, mat_id);
             }
             for (int i = 0; i < 3; i++)
                 free(vs[i]);
+        }
+        if (strncmp(line, "mtllib", 6) == 0){
+            mat_id++;
         }
     }
     /*

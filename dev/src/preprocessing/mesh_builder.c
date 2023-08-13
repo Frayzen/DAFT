@@ -48,8 +48,8 @@ int compute_depth(int no_tri){
 
 int build_bboxes(mesh* m, int cur_depth, int* cur_tri){
     int id = m->bboxes_size;
-    defin(m->b_min[id], INFINITY, INFINITY, INFINITY);
-    defin(m->b_max[id], -INFINITY, -INFINITY, -INFINITY);
+    define(m->b_min[id], INFINITY, INFINITY, INFINITY);
+    define(m->b_max[id], -INFINITY, -INFINITY, -INFINITY);
     m->bboxes_size++;
     if(cur_depth == 0){
         for (size_t i = 0; i < LBBOX; i++)
@@ -88,6 +88,7 @@ mesh * build_mesh(int no_vert, int no_tri, int text_vert, int norm_vert)
     m->tri_v = malloc(sizeof(int3)*no_tri);
     m->tri_t = malloc(sizeof(int3)*no_tri);
     m->tri_n = malloc(sizeof(int3)*no_tri);
+    m->tri_m = malloc(sizeof(material*)*no_tri);
     
     int depth = compute_depth(no_tri);
     int nb_bboxes = pow(LBBOX, depth);

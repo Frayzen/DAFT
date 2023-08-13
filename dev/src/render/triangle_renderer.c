@@ -1,20 +1,20 @@
 #include "../../include/render/triangle_renderer.h"
 
-int triangle_render(triangle* tri, ray* r){
+int triangle_render(int tri, ray* r){
     mesh* m = r->current_mesh;
     float EPSILON = 0.0000001;
-    float3 v0, v1, v2;
-    get_vertex_from_triangle(m, tri, v0, v1, v2);
+    float3 vs[3];
+    get_v_from_tri(m, tri, vs);
     float3 edge1, edge2, h, s, q;
-    minus(v1, v0, edge1);
-    minus(v2, v0, edge2);
+    minus(vs[1], vs[0], edge1);
+    minus(vs[2], vs[0], edge2);
     crossProduct(r->dir, edge2, h);
     float a = dotProduct(edge1, h);
     if (a > -EPSILON && a < EPSILON){
         return 0;    // This ray is parallel to this triangle.
     }
     float f = 1.0 / a;
-    minus(r->pos, v0, s);
+    minus(r->pos, vs[0], s);
     float u = dotProduct(s, h);
     u*=f;
     if (u < 0.0 || u > 1.0){
@@ -33,7 +33,7 @@ int triangle_render(triangle* tri, ray* r){
             return 0;
         float3 normal;
         crossProduct(edge1, edge2, normal);
-        normalize(normal, normal);
+        normal = normalize(normal);
         float val = dotProduct(normal, r->dir);
         if(val < 0)
             val*=-1;

@@ -4,6 +4,7 @@
 #include "camera.h"
 #include "mesh.h"
 #include <stdlib.h>
+#include "vectors.h"
 #include "../utils/daft_math.h"
 #include <omp.h>
 #include "./material.h"

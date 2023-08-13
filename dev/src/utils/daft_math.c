@@ -7,7 +7,7 @@ float3 normalize(float3 p)
     if(sum == 0)
     {
         copy(p, r);
-        return;
+        return r;
     }
     scale(p, 1 / sum, r);
     return r;
@@ -25,8 +25,10 @@ float project(float3 w, float3 v){
     return wv / nsqr;
 }
 
-void reflect(float3 v, float3 n, float3* r){
+float3  reflect(float3 v, float3 n){
     float3 proj;
     scale(n, 2 * dotProduct(v, n), proj);
-    minus(proj, v, (*r));
+    float3 r;
+    minus(proj, v, r);
+    return r;
 }
