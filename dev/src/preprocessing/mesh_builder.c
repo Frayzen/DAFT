@@ -1,10 +1,16 @@
 #include "../../include/preprocessing/mesh_builder.h"
+void add_tri(mesh* m, int3 v, int3 vt, int3 vn, int mat){
+    m->tri_v[m->tri_size] = v;
+    m->tri_t[m->tri_size] = vt;
+    m->tri_n[m->tri_size] = vn;
+    m->tri_m[m->tri_size] = mat;
+    m->tri_size++;
+}
 
 void add_v(mesh * m, float3 v)
 {
     copy(v, m->vs[m->vs_size]);
     m->vs_size++;
-
 }
 
 void add_vt(mesh * m, float2 vt){

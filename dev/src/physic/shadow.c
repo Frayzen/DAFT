@@ -31,34 +31,33 @@ void get_pixel_color(SDL_Surface *surface, int x, int y, Uint8 *r, Uint8 *g, Uin
     SDL_GetRGB(pixel, surface->format, r, g, b);
 }
 
-void get_color_at(ray *ry, SDL_Surface *text, float *color)
+void get_color_at(ray *ry, SDL_Surface *text, float3 color)
 {
     mesh *m = ry->last_hit->m;
-    float *uvw = ry->last_hit->uvw;
-    triangle *tri = ry->last_hit->tri;
-    float *pt0 = m->vt[tri->vt[0]];
-    float *pt1 = m->vt[tri->vt[1]];
-    float *pt2 = m->vt[tri->vt[2]];
-    float x = (pt0[0] * uvw[2] + pt1[0] * uvw[0] + pt2[0] * uvw[1]);
-    float y = (pt0[1] * uvw[2] + pt1[1] * uvw[0] + pt2[1] * uvw[1]);
+    float3 uvw = ry->last_hit->uvw;
+    int tri = ry->last_hit->tri;
+    float2 pts[3];
+    get_vt_from_tri(m, tri, pts);
+    float x = (pts[0].x * uvw.z + pts[1].x * uvw.x + pts[2].x * uvw.y);
+    float y = (pts[0].y * uvw.z + pts[1].y * uvw.x + pts[2].x * uvw.y);
     int px = (int)(x * text->w);
     int py = (int)((1 - y) * text->h);
     Uint8 r, g, b;
     get_pixel_color(text, px, py, &r, &g, &b);
-    color[0] = r / 255.0;
-    color[1] = g / 255.0;
-    color[2] = b / 255.0;
+    color.x = r / 255.0;
+    color.y = g / 255.0;
+    color.z = b / 255.0;
 }
 
-void clamp(float *color)
+void clamp(float3 color)
 {
-    for (int i = 0; i < 3; i++)
-    {
-        if (color[i] > 1)
-            color[i] = 1;
-        if (color[i] < 0)
-            color[i] = 0;
-    }
+    // clamp between 0 and 1
+    color.x = color.x > 1 ? 1 : color.x;
+    color.y = color.y > 1 ? 1 : color.y;
+    color.z = color.z > 1 ? 1 : color.z;
+    color.x = color.x < 0 ? 0 : color.x;
+    color.y = color.y < 0 ? 0 : color.y;
+    color.z = color.z < 0 ? 0 : color.z;
 }
 
 void shadow_render(raycast_param *rcp)
@@ -87,7 +86,7 @@ void shadow_render(raycast_param *rcp)
         light *lgt = w->lights[i];
         float3 dist;
         minus(lgt->pos, shadow_ray->pos, dist);
-        normalize(dist, shadow_ray->dir);
+        shadow_ray->dir = normalize(dist);
         shadow_ray->last_hit = calloc(sizeof(ray_result), 1);
 
         // setup mint
@@ -118,7 +117,7 @@ void shadow_render(raycast_param *rcp)
 
             float3 to_view;
             scale(ry->dir, -1, to_view);
-            normalize(to_view, to_view);
+            to_view = normalize(to_view);
 
             dp = max(0, dotProduct(to_view, r_m));
             dp = pow(dp, mat->shininess);

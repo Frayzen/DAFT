@@ -21,7 +21,7 @@ void reflection(raycast_param* rcp){
     add(new_ray->pos, litl_norm, new_ray->pos);
     add(ry->pos, new_ray->pos, new_ray->pos);
 
-    normalize(new_dir, new_ray->dir);
+    new_ray->dir = normalize(new_dir);
 
     float reflected = ry->last_hit->mat->reflection;
     new_ray->last_hit = NULL;

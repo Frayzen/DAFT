@@ -42,18 +42,18 @@ void mtl_parser(const char *filename, const char* path, material **materials, in
         }
         else if (strncmp(line, "Ka", 2) == 0)
         { // Ambiant color of the material
-            sscanf(line, "Ka %f %f %f", &(*materials)[*numMaterials - 1].ambient[0],
-                   &(*materials)[*numMaterials - 1].ambient[1], &(*materials)[*numMaterials - 1].ambient[2]);
+            sscanf(line, "Ka %f %f %f", &(*materials)[*numMaterials - 1].ambient.x,
+                   &(*materials)[*numMaterials - 1].ambient.y, &(*materials)[*numMaterials - 1].ambient.z);
         }
         else if (strncmp(line, "Kd", 2) == 0)
         { // Difuse color
-            sscanf(line, "Kd %f %f %f", &(*materials)[*numMaterials - 1].diffuse[0],
-                   &(*materials)[*numMaterials - 1].diffuse[1], &(*materials)[*numMaterials - 1].diffuse[2]);
+            sscanf(line, "Kd %f %f %f", &(*materials)[*numMaterials - 1].diffuse.x,
+                   &(*materials)[*numMaterials - 1].diffuse.y, &(*materials)[*numMaterials - 1].diffuse.z);
         }
         else if (strncmp(line, "Ks", 2) == 0)
         { // Specular color
-            sscanf(line, "Ks %f %f %f", &(*materials)[*numMaterials - 1].specular[0],
-                   &(*materials)[*numMaterials - 1].specular[1], &(*materials)[*numMaterials - 1].specular[2]);
+            sscanf(line, "Ks %f %f %f", &(*materials)[*numMaterials - 1].specular.x,
+                   &(*materials)[*numMaterials - 1].specular.y, &(*materials)[*numMaterials - 1].specular.z);
         }
         else if (strncmp(line, "Ns", 2) == 0)
         { // Shininess

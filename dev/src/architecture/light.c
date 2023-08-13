@@ -5,7 +5,7 @@ light* init_light(float3 pos, float3 color){
     light* lt = calloc(sizeof(light), 1);
     copy(pos, lt->pos);
     copy(color, lt->color);
-    sphere* s = sphere_init(pos, 0.1, create_mat_from_color(color[0], color[1], color[2]));
+    sphere* s = sphere_init(pos, 0.1, create_mat_from_color(color));
     lt->s = s;
     return lt;
 }

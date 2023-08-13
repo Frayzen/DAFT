@@ -15,12 +15,12 @@ material* mat_init(float3 ambient, float3 diffuse, float3 specular, float shinin
     return mat;
 }
 
-material* create_mat_from_color(float r, float g, float b){
-    return mat_init((float[]){r, g, b}, (float[]){0, 0, 0}, (float[]){0, 0, 0}, 1, 0);
+material* create_mat_from_color(float3 color){
+    return mat_init(color, (float3){0, 0, 0}, (float3){0, 0, 0}, 1, 0);
 }
 
 material* def_mat(float shininess, float reflection){
-    return mat_init((float[]){0.4,0.4,0.4}, (float[]){1,1,1}, (float[]){.8,.8,.8}, shininess, reflection);
+    return mat_init((float3){0.4,0.4,0.4}, (float3){1,1,1}, (float3){.8,.8,.8}, shininess, reflection);
 }
 material* default_mat(){
     return def_mat(50,0);
