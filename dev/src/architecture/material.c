@@ -4,6 +4,7 @@
 //reflection less than 1
 material* mat_init(float3 ambient, float3 diffuse, float3 specular, float shininess, float reflection){
     material* mat = malloc(sizeof(material));
+    assert(mat != NULL);
     copy(ambient, mat->ambient);
     copy(diffuse, mat->diffuse);
     copy(specular, mat->specular);

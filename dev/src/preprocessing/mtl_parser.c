@@ -25,6 +25,7 @@ void mtl_parser(const char *filename, const char* path, material **materials, in
     int maxMaterials = 10;
     *numMaterials = 0;
     *materials = (material *)malloc(maxMaterials * sizeof(material));
+    assert(*materials != NULL);
 
     char line[256];
     while (fgets(line, 256, file) != NULL)
@@ -35,6 +36,7 @@ void mtl_parser(const char *filename, const char* path, material **materials, in
             {
                 maxMaterials *= 2;
                 *materials = (material *)realloc(*materials, maxMaterials * sizeof(material));
+                assert(*materials != NULL);
             }
             sscanf(line, "newmtl %[^\n]", (*materials)[*numMaterials].name);
             (*numMaterials)++;

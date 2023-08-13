@@ -2,6 +2,7 @@
 
 sphere* sphere_init(float3 pos, float radius, material* mat){
     sphere* s = malloc(sizeof(sphere));
+    assert(s != NULL);
     s->mat = mat;
     copy(pos, s->pos);
     s->radius = radius;

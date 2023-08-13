@@ -1,4 +1,5 @@
 #include "../architecture/world.h"
+#include <assert.h>
 #ifndef MESH_BUILDER_H
 #define MESH_BUILDER_H
 void add_v(mesh * m, float3 p);

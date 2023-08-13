@@ -79,25 +79,39 @@ int build_bboxes(mesh* m, int cur_depth, int* cur_tri){
 mesh * init_mesh(int no_vert, int no_tri, int text_vert, int norm_vert)
 {
     mesh * m = malloc(sizeof(mesh));
+    assert(m != NULL);
+    assert(m != NULL);
     m->vs_size = 0;
     m->vs = malloc(sizeof(float3)*no_vert);
+    assert(m->vs != NULL);
     m->vt_size = 0;
     m->vt = malloc(sizeof(int2)*text_vert);
+    assert(m->vt != NULL);
     m->vn_size = 0;
     m->vn = malloc(sizeof(float3)*norm_vert);
+    assert(m->vn != NULL);
 
     m->tri_size = 0;
     m->tri_v = malloc(sizeof(int3)*no_tri);
+    assert(m->tri_v != NULL);
     m->tri_t = malloc(sizeof(int3)*no_tri);
+    assert(m->tri_t != NULL);
     m->tri_n = malloc(sizeof(int3)*no_tri);
+    assert(m->tri_n != NULL);
     m->tri_m = malloc(sizeof(int)*no_tri);
+    assert(m->tri_m != NULL);
     
     int depth = compute_depth(no_tri);
     int nb_bboxes = pow(LBBOX, depth);
     m->bboxes_size = 0;
     m->b_min = calloc(sizeof(float3),nb_bboxes);
+    assert(m->b_min != NULL);
+
     m->b_max = calloc(sizeof(float3),nb_bboxes);
+    assert(m->b_max != NULL);
+
     m->b_children = malloc(sizeof(int)*nb_bboxes*LBBOX);
+    assert(m->b_children != NULL);
     
     m->mat_size = 0;
     m->mats = NULL;

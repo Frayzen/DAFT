@@ -14,6 +14,7 @@ void reflection(raycast_param* rcp){
     minus(ry->dir, new_dir, new_dir);
     
     ray* new_ray = malloc(sizeof(ray));
+    assert(new_ray != NULL);
     
     scale(ry->dir, ry->last_hit->mint, new_ray->pos);
     float3 litl_norm;

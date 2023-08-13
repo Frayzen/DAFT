@@ -1,6 +1,7 @@
 #ifndef CAMPPOINT_H
 #define CAMPPOINT_H
 #include "sphere.h"
+#include <assert.h>
 
 typedef struct campoint{
     struct sphere *s;

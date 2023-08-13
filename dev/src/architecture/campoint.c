@@ -3,6 +3,7 @@
 campoint *init_campoint(float3 pos, float yaw, float pitch)
 {
     campoint *cp = malloc(sizeof(campoint));
+    assert(cp != NULL);
     cp->yaw = yaw;
     cp->pitch = pitch;
     cp->time = 1;

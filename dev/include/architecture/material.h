@@ -2,6 +2,7 @@
 #define MATERIAL_H
 
 #include <stdlib.h>
+#include <assert.h>
 #include <stdio.h>
 #include "../constants.h"
 #include "../utils/daft_math.h"

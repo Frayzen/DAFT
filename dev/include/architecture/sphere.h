@@ -1,6 +1,7 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 #include <stdlib.h>
+#include <assert.h>
 #include "./material.h"
 #include "../architecture/vectors.h"
 
