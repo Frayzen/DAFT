@@ -78,7 +78,7 @@ int build_bboxes(mesh* m, int cur_depth, int* cur_tri){
 
 mesh * init_mesh(int no_vert, int no_tri, int text_vert, int norm_vert)
 {
-    mesh * m = (mesh *)malloc(sizeof(mesh));
+    mesh * m = malloc(sizeof(mesh));
     m->vs_size = 0;
     m->vs = malloc(sizeof(float3)*no_vert);
     m->vt_size = 0;
@@ -90,7 +90,7 @@ mesh * init_mesh(int no_vert, int no_tri, int text_vert, int norm_vert)
     m->tri_v = malloc(sizeof(int3)*no_tri);
     m->tri_t = malloc(sizeof(int3)*no_tri);
     m->tri_n = malloc(sizeof(int3)*no_tri);
-    m->tri_m = malloc(sizeof(material*)*no_tri);
+    m->tri_m = malloc(sizeof(int)*no_tri);
     
     int depth = compute_depth(no_tri);
     int nb_bboxes = pow(LBBOX, depth);

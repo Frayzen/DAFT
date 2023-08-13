@@ -14,7 +14,7 @@ material *load_mat(char *path)
 
 world *load_scene(char *path)
 {
-    char *path_copy = malloc(strlen(path) + 1);
+    char path_copy[strlen(path) + 1];
     strcpy(path_copy, path);
     
     
@@ -24,7 +24,7 @@ world *load_scene(char *path)
     #else
     char *_dir_name = dirname(path_copy);
     #endif
-    char* dir_name = malloc(strlen(_dir_name) + 1);
+    char dir_name[strlen(_dir_name) + 1];
     strcpy(dir_name, _dir_name);
     strcat(dir_name, "/");
     printf("Dir: %s\n", dir_name);
@@ -36,8 +36,6 @@ world *load_scene(char *path)
     if (file == NULL)
     {
         printf("Can't open the file named '%s'\n", path);
-        free(path_copy);
-        free(dir_name);
         return NULL;
     }
 
@@ -123,7 +121,5 @@ world *load_scene(char *path)
     add_camera(wd, cam);
     printf("=== Scene loaded ===\n");
     fclose(file);
-    free(path_copy);
-    free(dir_name);
     return wd;
 }
