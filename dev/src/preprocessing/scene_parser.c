@@ -41,7 +41,7 @@ world *load_scene(char *path)
 
     world *wd = init_world();
     char skybox_path[200] = "";
-    float cam_pos[3];
+    float3 cam_pos;
     float cam_pitch = 0;
     float cam_yaw = 0;
     float cam_fov = 90;
@@ -59,7 +59,7 @@ world *load_scene(char *path)
         // camera x y z pitch yaw fov(default 90)
         if (startsWith("camera ", line))
         {
-            sscanf(line, "camera %f %f %f %f %f %f", &cam_pos[0], &cam_pos[1], &cam_pos[2], &cam_pitch, &cam_yaw, &cam_fov);
+            sscanf(line, "camera %f %f %f %f %f %f", &cam_pos.x, &cam_pos.y, &cam_pos.z, &cam_pitch, &cam_yaw, &cam_fov);
             printf("Camera initialized\n");
             continue;
         }
@@ -78,7 +78,7 @@ world *load_scene(char *path)
             sscanf(line, "mesh %s %f %f %f %f %f %f %f", mesh_path, &p[0], &p[1], &p[2], &p[3], &p[4], &p[5], &p[6]);
             char dir_name_cpy[200];
             strcpy(dir_name_cpy, dir_name);
-            if(load_object(strcat(dir_name_cpy, mesh_path), wd, p[3], (float[]){p[0], p[1], p[2]}, (float[]){p[4], p[5], p[6]}, dir_name))
+            if(load_object(strcat(dir_name_cpy, mesh_path), wd, p[3], (float3){p[0], p[1], p[2]}, (float3){p[4], p[5], p[6]}, dir_name))
                 printf("Mesh %s loaded\n", mesh_path);
             continue;
         }
@@ -86,7 +86,7 @@ world *load_scene(char *path)
         if (startsWith("light ", line))
         {
             sscanf(line, "light %f %f %f %f %f %f", &p[0], &p[1], &p[2], &p[3], &p[4], &p[5]);
-            light *lt = init_light((float[]){p[0], p[1], p[2]}, (float[]){p[3], p[4], p[5]});
+            light *lt = init_light((float3){p[0], p[1], p[2]}, (float3){p[3], p[4], p[5]});
             add_light(wd, lt);
             printf("Light loaded\n");
             continue;
@@ -98,14 +98,14 @@ world *load_scene(char *path)
             sscanf(line, "sphere %f %f %f %f %s", &p[0], &p[1], &p[2], &p[3], material_path);
             char dir_name_cpy[200];
             strcpy(dir_name_cpy, dir_name);
-            sphere *sph = sphere_init(p[0], p[1], p[2], p[3], load_mat(strcat(dir_name_cpy, material_path)));
+            sphere *sph = sphere_init((float3){p[0], p[1], p[2]}, p[3], load_mat(strcat(dir_name_cpy, material_path)));
             add_sphere(wd, sph);
             printf("Sphere initialized\n");
             continue;
         }
     }
 
-    light *lt2 = init_light((float[]){-10, 0, 0}, (float[]){1, 1, 1});
+    light *lt2 = init_light((float3){-10, 0, 0}, (float3){1, 1, 1});
     add_light(wd, lt2);
 
     if (strlen(skybox_path) != 0)
