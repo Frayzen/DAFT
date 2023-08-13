@@ -78,7 +78,7 @@ int load_object(char *path, world *w, float scale, float3 pos, float3 rot, char 
         return 0;
     }
 
-    mesh *new_mesh = build_mesh(vert, tri, text_vert, norm_vert);
+    mesh *new_mesh = init_mesh(vert, tri, text_vert, norm_vert);
     fseek(file, 0, SEEK_SET);
 
     float3 v;
@@ -229,7 +229,6 @@ int load_object(char *path, world *w, float scale, float3 pos, float3 rot, char 
         //load_texture(mats, "./assets/textures/leather_white_diff_4k.jpg");
     }
     */
-    printf("Bbox of the object created: from %f %f %f to %f %f %f\n", new_mesh->b_min[0].x, new_mesh->b_min[0].y, new_mesh->b_min[0].z, new_mesh->b_max[0].x, new_mesh->b_max[0].y, new_mesh->b_max[0].z);
     printf("Mesh loaded : %s (%d vertices, %d triangles)\n", path, new_mesh->vs_size, new_mesh->tri_size);
     new_mesh->mats = mats;
     new_mesh->mat_size = nb_mat;
@@ -241,6 +240,7 @@ int load_object(char *path, world *w, float scale, float3 pos, float3 rot, char 
         printf("kd is %f %f %f\n", new_mesh->mats[i].diffuse.x, new_mesh->mats[i].diffuse.y, new_mesh->mats[i].diffuse.z);
         printf("ks is %f %f %f\n", new_mesh->mats[i].specular.x, new_mesh->mats[i].specular.y, new_mesh->mats[i].specular.z);
     }
+    build_mesh(new_mesh);
     add_mesh(w, new_mesh);
     fclose(file);
     return 1;

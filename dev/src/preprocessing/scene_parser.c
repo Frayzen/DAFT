@@ -36,6 +36,8 @@ world *load_scene(char *path)
     if (file == NULL)
     {
         printf("Can't open the file named '%s'\n", path);
+        free(path_copy);
+        free(dir_name);
         return NULL;
     }
 
@@ -121,5 +123,7 @@ world *load_scene(char *path)
     add_camera(wd, cam);
     printf("=== Scene loaded ===\n");
     fclose(file);
+    free(path_copy);
+    free(dir_name);
     return wd;
 }

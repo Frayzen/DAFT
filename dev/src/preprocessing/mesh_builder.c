@@ -54,15 +54,17 @@ int build_bboxes(mesh* m, int cur_depth, int* cur_tri){
     if(cur_depth == 0){
         for (size_t i = 0; i < LBBOX; i++)
         {
+            if(*cur_tri >= m->tri_size)
+                return id;
             m->b_children[id*LBBOX+i] = *cur_tri;
+            float3 pts[3];
+            get_v_from_tri(m, *cur_tri, pts);
+            for (size_t j = 0; j < 3; j++)
+            {
+                take_min(&m->b_min[id], pts[j]);
+                take_max(&m->b_max[id], pts[j]);
+            }
             *cur_tri = *cur_tri + 1;
-            int3 tri = m->tri_v[m->b_children[id*LBBOX+i]];
-            take_min(&m->b_min[id], m->vs[tri.p1]);
-            take_min(&m->b_min[id], m->vs[tri.p2]);
-            take_min(&m->b_min[id], m->vs[tri.p3]);
-            take_max(&m->b_max[id], m->vs[tri.p1]);
-            take_max(&m->b_max[id], m->vs[tri.p2]);
-            take_max(&m->b_max[id], m->vs[tri.p3]);
         }
         return id;
     }
@@ -74,7 +76,7 @@ int build_bboxes(mesh* m, int cur_depth, int* cur_tri){
     return id;
 }
 
-mesh * build_mesh(int no_vert, int no_tri, int text_vert, int norm_vert)
+mesh * init_mesh(int no_vert, int no_tri, int text_vert, int norm_vert)
 {
     mesh * m = (mesh *)malloc(sizeof(mesh));
     m->vs_size = 0;
@@ -93,14 +95,16 @@ mesh * build_mesh(int no_vert, int no_tri, int text_vert, int norm_vert)
     int depth = compute_depth(no_tri);
     int nb_bboxes = pow(LBBOX, depth);
     m->bboxes_size = 0;
-    m->b_min = malloc(sizeof(float3)*nb_bboxes);
-    m->b_max = malloc(sizeof(float3)*nb_bboxes);
-    m->b_children = malloc(sizeof(int)*nb_bboxes);
+    m->b_min = calloc(sizeof(float3),nb_bboxes);
+    m->b_max = calloc(sizeof(float3),nb_bboxes);
+    m->b_children = malloc(sizeof(int)*nb_bboxes*LBBOX);
     
-    int cur_tri = 0;
-    build_bboxes(m, depth, &cur_tri);
-
     m->mat_size = 0;
     m->mats = NULL;
 	return m;
+}
+void build_mesh(mesh* m){
+    int cur_tri = 0;
+    int depth = compute_depth(m->tri_size);
+    build_bboxes(m, depth, &cur_tri);
 }

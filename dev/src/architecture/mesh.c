@@ -27,6 +27,7 @@ void get_vn_from_tri(mesh* m, int tri, float3 vn[3]){
 }
 
 void get_v_from_tri(mesh* m, int tri, float3 v[3]){
+    //printf("tri %d p1 %d p2 %d p3 %d\n", tri, m->tri_v[tri].p1, m->tri_v[tri].p2, m->tri_v[tri].p3);
     v[0] = m->vs[m->tri_v[tri].p1];
     v[1] = m->vs[m->tri_v[tri].p2];
     v[2] = m->vs[m->tri_v[tri].p3];

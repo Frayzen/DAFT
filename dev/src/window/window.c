@@ -6,9 +6,12 @@ int setup_window(app_params* params){
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
     SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" );
+    
+    printf("OK\n");
     params->window = SDL_CreateWindow("SDL2 Displaying Image",
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
             params->width * params->screen_scale, params->height * params->screen_scale, 0);
+    printf("OK\n");
     params->renderer = SDL_CreateRenderer(params->window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRelativeMouseMode(SDL_TRUE);
     SDL_RendererInfo info;
@@ -18,7 +21,7 @@ int setup_window(app_params* params){
     Uint32* pixels;
     int pitch;
     SDL_LockTexture(params->texture, NULL, (void**)&pixels, &pitch);
-
+    printf("OK\n");
     params->rdp = init_rendering_params(params->wd, params->width, params->height, params->cam, params->screen_scale, pixels);
     return 0;
 }
