@@ -2,4 +2,4 @@ skybox assets/skybox/Sky.jpg
 camera -3 0 0
 light 0 0 0 1 1 1
 sphere 0 0 0 1
-#mesh assets/objs/teddy.obj 0 0 0 .1
+mesh assets/objs/teddy.obj 0 0 0 .1

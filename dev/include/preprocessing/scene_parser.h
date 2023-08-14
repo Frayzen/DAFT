@@ -12,6 +12,8 @@
 #include "../architecture/ray.h"
 #include "../architecture/sphere.h"
 #include "../preprocessing/obj_parser.h"
+#include <assert.h>
+
 world* load_scene(char* filename);
 
 #endif

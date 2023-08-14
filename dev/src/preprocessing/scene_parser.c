@@ -14,9 +14,10 @@ material *load_mat(char *path)
 
 world *load_scene(char *path)
 {
-    char path_copy[strlen(path) + 1];
+    int pthlen = strlen(path);
+    char path_copy[pthlen + 1];
     strcpy(path_copy, path);
-    
+    path_copy[pthlen] = 0;
     
     #ifdef _WIN32
     char _dir_name[200];
@@ -26,18 +27,18 @@ world *load_scene(char *path)
     #endif
     char dir_name[strlen(_dir_name) + 1];
     strcpy(dir_name, _dir_name);
+    #ifndef _WIN32
     strcat(dir_name, "/");
+    #endif
     printf("Dir: %s\n", dir_name);
 
-    FILE *file;
-    file = fopen(path, "r");
-    printf("File %p opened\n", file);
-
+    FILE *file = fopen(path, "r");
     if (file == NULL)
     {
         printf("Can't open the file named '%s'\n", path);
         return NULL;
     }
+    printf("file first char: %d\n", *file);
 
     world *wd = init_world();
     char skybox_path[200] = "";
@@ -51,8 +52,10 @@ world *load_scene(char *path)
     char mesh_path[200];
     char material_path[200];
     char line[200];
-    while (fgets(line, sizeof(line), file))
-    {
+    int i = 0;
+    while (fgets(line, sizeof(line), file) != NULL)
+    {   
+        i++;
         mesh_path[0] = '\0';
         material_path[0] = '\0';
         memset(p, 0, sizeof(p));
@@ -120,6 +123,7 @@ world *load_scene(char *path)
     camera *cam = init_camera(cam_pos, cam_pitch, cam_yaw, cam_fov, cam_fov);
     add_camera(wd, cam);
     printf("=== Scene loaded ===\n");
-    fclose(file);
+    //check if file is closed
+    printf("file first char: %d\n", *file);
     return wd;
 }

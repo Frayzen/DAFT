@@ -20,8 +20,7 @@ void rotate(float3* r, float rotX, float rotY, float rotZ){
 
 int load_object(char *path, world *w, float scale, float3 pos, float3 rot, char *rel_path)
 {
-    FILE *file;
-    file = fopen(path, "r");
+    FILE *file = fopen(path, "r");
     if (file == NULL)
     {
         printf("Cant open the file named '%s'\n", path);
@@ -79,7 +78,7 @@ int load_object(char *path, world *w, float scale, float3 pos, float3 rot, char 
     }
 
     mesh *new_mesh = init_mesh(vert, tri, text_vert, norm_vert);
-    fseek(file, 0, SEEK_SET);
+    rewind(file);
 
     float3 v;
     float3 vn;

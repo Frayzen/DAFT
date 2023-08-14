@@ -7,7 +7,7 @@
 #define MAXREFLECTIONS 2
 #define QUALITY_WIDTH 4096
 #define QUALITY_HEIGHT 4096
-#define LBBOX 4
+#define LBBOX 8
 
 //shadow
 #define MIN_DIFUSE_LIGHT 0.1
