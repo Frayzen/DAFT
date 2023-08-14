@@ -1,22 +1,24 @@
-#ifndef HMESH
-#define HMESH
-
+#ifndef MESH_H
+#define MESH_H
 #include "vectors.h"
 #include "triangle.h"
-
 typedef struct {
-    unsigned int vertexCount;
-    unsigned int normalCount;
-    unsigned int uvCount;
+    int vertexCount;
+    int normalCount;
+    int uvCount;
+    int triangleCount;
     
     Vector3 *vertices;
     Vector3 *normals;
     Vector2 *uvs;
+    Triangle *triangles;
 
-    unsigned int triangleCount;
-    unsigned Triangle *triangles;
 } Mesh;
+#include <stdlib.h>
+#include "../preprocessing/obj_parser.h"
 
-Mesh* createMesh(const char* path);
+Mesh* createMesh(char* path);
+void clearMesh(Mesh* m);
+void freeMesh(Mesh* m);
 
 #endif

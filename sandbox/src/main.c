@@ -9,18 +9,15 @@ Sources: http://www.eriksmistad.no/getting-started-with-opencl-and-gpu-computing
 #define CL_TARGET_OPENCL_VERSION 120
 #include <CL/cl.h>
 
-
-
 #include <stdio.h>
 #include <stdlib.h>
+#include "../include/architecture/mesh.h"
 
 
 #define MAX_SOURCE_SIZE (0x100000)
 
 
-
-int main() {
-
+void checkOpenCL(){
 	int SIZE = 1024*1024;
 
 	// Allocate memories for input arrays and output array.
@@ -144,6 +141,11 @@ int main() {
 	free(B);
 	free(C);
 
-	return 0;
+}
 
-	}
+
+int main() {
+	Mesh* m = createMesh("./assets/objs/cube.obj");
+	freeMesh(m);
+	return 0;
+}
