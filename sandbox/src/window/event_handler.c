@@ -8,40 +8,40 @@ void clamp(float* value, float min, float max){
 }
 
 //pressed = 1 if key is pressed, 0 if released
-void handle_key(SDL_Keycode key, app_params* params, int pressed){
+void handle_key(SDL_Keycode key, DaftApp* app, int pressed){
     float delta = MOVING_SPEED;
     if(!pressed)
         delta*=-1;
     switch (key)
     {
         case SDLK_w:
-            params->cam->movement_speed.x += delta;
+            app->camera->movement_speed.x += delta;
             break;
         case SDLK_s:
-            params->cam->movement_speed.x -= delta;
+            app->camera->movement_speed.x -= delta;
             break;
         case SDLK_a:
-            params->cam->movement_speed.y -= delta;
+            app->camera->movement_speed.y -= delta;
             break;
         case SDLK_d:
-            params->cam->movement_speed.y += delta;
+            app->camera->movement_speed.y += delta;
             break;
         case SDLK_SPACE:
-            params->cam->movement_speed.z += delta;
+            app->camera->movement_speed.z += delta;
             break;
         case SDLK_LSHIFT:
-            params->cam->movement_speed.z -= delta;
+            app->camera->movement_speed.z -= delta;
             break;
         default:
             break;
     }
 
-    clamp(&params->cam->movement_speed.x, -MOVING_SPEED, MOVING_SPEED);
-    clamp(&params->cam->movement_speed.y, -MOVING_SPEED, MOVING_SPEED);
-    clamp(&params->cam->movement_speed.z, -MOVING_SPEED, MOVING_SPEED);
+    clamp(&app->camera->movement_speed.x, -MOVING_SPEED, MOVING_SPEED);
+    clamp(&app->camera->movement_speed.y, -MOVING_SPEED, MOVING_SPEED);
+    clamp(&app->camera->movement_speed.z, -MOVING_SPEED, MOVING_SPEED);
 }
 
-void handle_events(int* quit, app_params* params){
+void handle_events(int* quit, DaftApp* app){
     SDL_Event event;
     if(SDL_PollEvent(&event)){
         switch (event.type)
@@ -50,28 +50,28 @@ void handle_events(int* quit, app_params* params){
                 *quit = 1;
                 break;
             case SDL_KEYDOWN:
-                handle_key(event.key.keysym.sym, params, 1);
+                handle_key(event.key.keysym.sym, app, 1);
                 break;
             case SDL_KEYUP:
-                handle_key(event.key.keysym.sym, params, 0);
+                handle_key(event.key.keysym.sym, app, 0);
                 break;
             case SDL_MOUSEMOTION:
-                params->cam->rotation_speed.x = event.motion.xrel;
+                app->camera->rotation_speed.x = event.motion.xrel;
                 break;
             default:
                 break;
         }
     }
-    float yaw = params->cam->angles.x;
+    float yaw = app->camera->angles.x;
     Vector3 forward = {cos(yaw), 0, sin(yaw)};
     Vector3 right = {cos(yaw+M_PI/2), 0, sin(yaw+M_PI/2)};
     Vector3 up = {0, 1, 0};
-    forward = scale(forward, params->cam->movement_speed.x);
-    right = scale(right, params->cam->movement_speed.y);
-    up = scale(up, params->cam->movement_speed.z);
-    params->cam->pos = add(forward, params->cam->pos);
-    params->cam->pos = add(right, params->cam->pos);
-    params->cam->pos = add(up, params->cam->pos);
-    params->cam->angles.x += params->cam->rotation_speed.x/100;
-    params->cam->rotation_speed.x = 0;
+    forward = scale(forward, app->camera->movement_speed.x);
+    right = scale(right, app->camera->movement_speed.y);
+    up = scale(up, app->camera->movement_speed.z);
+    app->camera->pos = add(forward, app->camera->pos);
+    app->camera->pos = add(right, app->camera->pos);
+    app->camera->pos = add(up, app->camera->pos);
+    app->camera->angles.x += app->camera->rotation_speed.x/100;
+    app->camera->rotation_speed.x = 0;
 }

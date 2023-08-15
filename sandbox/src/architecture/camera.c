@@ -1,9 +1,8 @@
 #include "../../include/architecture/camera.h"
 
-Camera* createCamera(Vector3 pos, Vector2 angles, Vector2 FOV){
+Camera* createCamera(){
     Camera* cam = calloc(sizeof(Camera), 1);
-    cam->pos = pos;
-    cam->angles = angles;
-    cam->FOV = FOV;
+    cam->FOV.x = CAM_FOV;
+    cam->FOV.y = CAM_FOV;
     return cam;
 }

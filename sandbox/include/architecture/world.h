@@ -7,7 +7,6 @@
 #include <SDL2/SDL.h>
 
 typedef struct{
-    Camera* camera;
     int meshesCount;
     Mesh** meshes;
     SDL_Surface* skybox;

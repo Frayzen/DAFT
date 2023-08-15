@@ -2,7 +2,6 @@
 
 World* createWorld(){
     World* wd = calloc(sizeof(World), 1);
-    wd->camera = createCamera((Vector3){0, 0, 0}, (Vector2){0, 0}, (Vector2){CAM_FOV, CAM_FOV});
     return wd;
 }
 
@@ -14,7 +13,6 @@ void freeWorld(World* world){
     {
         freeMesh(world->meshes[i]);
     }
-    free(world->camera);
     free(world->meshes);
     free(world);
 }

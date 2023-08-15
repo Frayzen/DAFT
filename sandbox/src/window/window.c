@@ -1,67 +1,63 @@
 #include "../../include/window/window.h"
 
-int setup_window(app_params* params){
+DaftApp* initApp(){
+    DaftApp* app = calloc(sizeof(DaftApp), 1);
+    app->world = createWorld();
+    app->camera = NULL;
+    app->width = SCREEN_WIDTH;
+    app->height = SCREEN_HEIGHT;
     omp_set_num_threads(omp_get_num_procs());
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
     SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" );
-    
-    params->window = SDL_CreateWindow("SDL2 Displaying Image",
+    app->window = SDL_CreateWindow("SDL2 Displaying Image",
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            params->width * params->screen_scale, params->height * params->screen_scale, 0);
-    params->renderer = SDL_CreateRenderer(params->window, -1, SDL_RENDERER_ACCELERATED);
+            app->width, app->height, 0);
+    app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRelativeMouseMode(SDL_TRUE);
     SDL_RendererInfo info;
-    SDL_GetRendererInfo(params->renderer, &info );
+    SDL_GetRendererInfo(app->renderer, &info );
     //pixels
-    params->texture = SDL_CreateTexture(params->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, params->width, params->height);
+    app->texture = SDL_CreateTexture(app->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, app->width, app->height);
     Uint32* pixels;
     int pitch;
-    SDL_LockTexture(params->texture, NULL, (void**)&pixels, &pitch);
-    return 0;
+    SDL_LockTexture(app->texture, NULL, (void**)&pixels, &pitch);
+    return app;
 }
 
-void free_window(app_params* params){
-    SDL_DestroyRenderer(params->renderer); 
-    SDL_DestroyWindow(params->window);
-    SDL_DestroyTexture(params->texture);
+void freeApp(DaftApp* app){
+    freeWorld(app->world);
+    if(app->camera != NULL)
+        free(app->camera);
+    SDL_DestroyRenderer(app->renderer); 
+    SDL_DestroyWindow(app->window);
+    SDL_DestroyTexture(app->texture);
     SDL_Quit();
 }
 
-int launch_screen(app_params* params){
+void launchScreen(DaftApp* app){
     int quit = 0;
     time_t last = time(NULL);
     int fps = 0;
-    // float angle = 0;
-    // float ro = 5;
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(params->renderer, params->wd->skybox);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(app->renderer, app->world->skybox);
     while (!quit)
     {
         //quit = 1;
-        // params->cam->pos[0] = ro*cos(angle);
-        // params->cam->pos[2] = ro*sin(angle);
-        // params->cam->yaw = M_PI-angle;
-        // angle+=0.003;
-        // if(angle > 2*M_PI){
-        //     angle -= 2*M_PI;
-        // }
         
-        render_screen();
-        SDL_UnlockTexture(params->texture);
-        if(params->wd->skybox != NULL){
-            define_sky_points(params->renderer, texture, params->wd);
-            SDL_SetTextureBlendMode(params->texture, SDL_BLENDMODE_BLEND);
+        renderScreen(app, texture);
+        if(app->world->skybox != NULL){
+            defineSkyPoints(app, texture);
+            SDL_SetTextureBlendMode(app->texture, SDL_BLENDMODE_BLEND);
         }
-        SDL_RenderCopy(params->renderer, params->texture, NULL, NULL); 
-        SDL_RenderPresent(params->renderer);
+        SDL_RenderCopy(app->renderer, app->texture, NULL, NULL); 
+        SDL_RenderPresent(app->renderer);
         fps++;
         if(last != time(NULL)){
             printf("%i fps\n", fps);
             fps = 0;
             last = time(NULL);
         }
-        handle_events(&quit, params);
+        handle_events(&quit, app);
     }
-    return 0;
 }
 

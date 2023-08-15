@@ -12,6 +12,8 @@ typedef struct {
     Vector2 rotation_speed;
 } Camera;
 
-Camera* createCamera(Vector3 pos, Vector2 angles, Vector2 FOV);
+#include "../constants.h"
+
+Camera* createCamera();
 
 #endif

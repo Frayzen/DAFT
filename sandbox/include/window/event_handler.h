@@ -7,6 +7,6 @@
 #include <math.h>
 #include "../constants.h"
 
-void handle_events(int* quit, app_params* params);
+void handle_events(int* quit, DaftApp* params);
 
 #endif
