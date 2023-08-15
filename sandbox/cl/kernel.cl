@@ -1,5 +1,6 @@
 __constant float EPSILON = 0.0000001;
 __kernel void raytrace(
+  float3 cameraPosition,
   float3 cameraRotation,
   __global const float3 *camRays,
   __global const float3 *vertices,
@@ -33,7 +34,7 @@ __kernel void raytrace(
     if (a > -EPSILON && a < EPSILON)
       continue;
     float f = 1.0 / a;
-    float3 s = ray - p1;
+    float3 s = cameraPosition - p1;
     float u = f * dot(s, h);
     if (u < 0.0 || u > 1.0)
       continue;
@@ -42,7 +43,9 @@ __kernel void raytrace(
     if (v < 0.0 || u + v > 1.0)
       continue;
     float t = f * dot(e2, q);
-    if (t < mint)
+    if (t < EPSILON)
+      continue;
+    if(t > mint)
       continue;
     //if intersection is in triangle, return the index of the triangle
     result[index] = i;

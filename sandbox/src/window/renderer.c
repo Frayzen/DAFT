@@ -12,6 +12,7 @@ void renderScreen(DaftApp* app, SDL_Texture* texture)
     for (i = 0; i < app->world->meshesCount; i++)
     {
         raycastResults[i] = calloc(sizeof(int), SCREEN_HEIGHT * SCREEN_WIDTH);
+        memset(raycastResults[i], -1, sizeof(int) * SCREEN_HEIGHT * SCREEN_WIDTH);
     }
     for (int i = 0; i < app->world->meshesCount; i++)
     {
@@ -21,13 +22,14 @@ void renderScreen(DaftApp* app, SDL_Texture* texture)
     finishRaycasting(app->openCL);
     for(i = 0; i < SCREEN_WIDTH*SCREEN_HEIGHT; i++)
     {
-        pixels[i] = 0x0000000;
+        pixels[i] = 0xFF000000;
         for (j = 0; j < app->world->meshesCount; j++)
         {
             //raycastResult starts at 1, so if it's not 0, it's a hit
             if(raycastResults[j][i] != -1)
             {
                 pixels[i] = 0xFFFFFFFF;
+                printf("ok\n");
                 break;
             }
         }

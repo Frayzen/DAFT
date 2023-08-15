@@ -4,6 +4,7 @@
 #include "../constants.h"
 #include <omp.h>
 #include <stdio.h>
+#include <string.h>
 #include <SDL2/SDL.h>
 #include "../window/window.h"
 #include "../acceleration/opencl.h"

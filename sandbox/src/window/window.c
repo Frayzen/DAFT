@@ -45,7 +45,9 @@ void launchApp(DaftApp* app){
     SDL_Texture* texture = SDL_CreateTextureFromSurface(app->renderer, app->world->skybox);
     while (!quit)
     {
-        //quit = 1;
+        #if DEBUG == 1
+        quit = 1;
+        #endif
         renderScreen(app, texture);
         if(app->world->skybox != NULL){
             defineSkyPoints(app, texture);

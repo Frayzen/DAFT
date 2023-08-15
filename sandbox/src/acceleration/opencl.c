@@ -57,7 +57,7 @@ DaftOpenCL* initOpenCL(){
 	openCL->result = clCreateBuffer(openCL->context, CL_MEM_WRITE_ONLY, sizeof(int) * SCREEN_HEIGHT * SCREEN_WIDTH, NULL, &ret);
 
 	// Set arguments for kernel
-	ret = clSetKernelArg(openCL->kernel, 5, sizeof(cl_mem), (void *)&openCL->result);
+	ret = clSetKernelArg(openCL->kernel, 6, sizeof(cl_mem), (void *)&openCL->result);
 	assert(ret == CL_SUCCESS);
 
 	return openCL;
@@ -94,18 +94,22 @@ void raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL, int* resultArra
 	ret = clEnqueueWriteBuffer(openCL->commandQueue, trianglesBuffer, CL_TRUE, 0, sizeof(Triangle) * mesh->triangleCount, mesh->triangles, 0, NULL, NULL);
 	assert(ret == CL_SUCCESS);
 	ret = clEnqueueWriteBuffer(openCL->commandQueue, rayBuffer, CL_TRUE, 0, sizeof(Vector3) * SCREEN_HEIGHT * SCREEN_WIDTH, camera->rays, 0, NULL, NULL);
-
-
+	assert(ret == CL_SUCCESS);
+	ret = clEnqueueWriteBuffer(openCL->commandQueue, openCL->result, CL_TRUE, 0, sizeof(int) * SCREEN_HEIGHT * SCREEN_WIDTH, resultArray, 0, NULL, NULL);
+	assert(ret == CL_SUCCESS);
+	
 	// Set arguments for kernel
-	ret = clSetKernelArg(kernel, 0, sizeof(cl_float3), &(camera->rotation));
+	ret = clSetKernelArg(kernel, 0, sizeof(cl_float3), &(camera->position));
 	assert(ret == CL_SUCCESS);
-	ret = clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&rayBuffer);
+	ret = clSetKernelArg(kernel, 1, sizeof(cl_float3), &(camera->rotation));
 	assert(ret == CL_SUCCESS);
-	ret = clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&verticesBuffer);
+	ret = clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&rayBuffer);
 	assert(ret == CL_SUCCESS);
-	ret = clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&trianglesBuffer);
+	ret = clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&verticesBuffer);
 	assert(ret == CL_SUCCESS);
-	ret = clSetKernelArg(kernel, 4, sizeof(cl_int), &mesh->triangleCount);
+	ret = clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&trianglesBuffer);
+	assert(ret == CL_SUCCESS);
+	ret = clSetKernelArg(kernel, 5, sizeof(cl_int), &mesh->triangleCount);
 	assert(ret == CL_SUCCESS);
 
 	// Execute the kernel
