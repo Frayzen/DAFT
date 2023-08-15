@@ -1,13 +1,10 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <stdio.h>
-#include <omp.h>
 #ifdef _WIN32
-#include <windows.h>
 #endif
+#include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "../architecture/camera.h"
@@ -25,6 +22,11 @@ struct app_params{
     World* wd;
     Camera* cam;
 } typedef app_params;
+
+#include "event_handler.h"
+#include "skybox.h"
+#include "renderer.h"
+#include "time.h"
 
 int setup_window(app_params* params);
 int launch_screen(app_params* params);

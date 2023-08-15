@@ -33,8 +33,8 @@ Vector3 get_ray_direction(int width, int height, int x_pix, int y_pix, Camera *c
 }
 
 void define_sky_scales(Vector2* from_scale, Vector2* to_scale, World* wd){
-    Vector3 from = get_ray_direction(SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, wd->cam);
-    Vector3 to = get_ray_direction(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT, wd->cam);
+    Vector3 from = get_ray_direction(SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, wd->camera);
+    Vector3 to = get_ray_direction(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT, wd->camera);
     *from_scale =  get_skybox_point(from);
     *to_scale = get_skybox_point(to);
 }

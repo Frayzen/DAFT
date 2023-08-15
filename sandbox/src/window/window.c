@@ -1,5 +1,4 @@
 #include "../../include/window/window.h"
-#include "../../include/window/event_handler.h"
 
 int setup_window(app_params* params){
     omp_set_num_threads(omp_get_num_procs());
