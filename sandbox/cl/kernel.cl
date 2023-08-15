@@ -1,10 +1,10 @@
 
 __kernel void raytrace(
-  const float3 cameraRotation,
+  float3 cameraRotation,
   __global const float3 *camRays,
   __global const float3 *vertices,
   __global const int3 *triangles,
-  const int nbTriangle,
+  int nbTriangle,
   __global int*result
   ) {
   int y = get_global_id(0);
@@ -50,7 +50,7 @@ __kernel void raytrace(
       continue;
     }
     //if intersection is in triangle, return the index of the triangle
-    result[index] = i;
+    result[index] = i+1;
     mint = t;
   }
 }

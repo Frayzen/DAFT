@@ -1,7 +1,7 @@
 #include "../../include/acceleration/opencl.h"
 
 DaftOpenCL* initOpenCL(){
-	DaftOpenCL* acceleration = (DaftOpenCL*)malloc(sizeof(DaftOpenCL));
+	DaftOpenCL* openCL = (DaftOpenCL*)malloc(sizeof(DaftOpenCL));
 	FILE *kernelFile;
 	char *kernelSource;
 	size_t kernelSize;
@@ -22,41 +22,45 @@ DaftOpenCL* initOpenCL(){
 
 	// Getting platform and device information
 	cl_platform_id platformId = NULL;
-	cl_device_id deviceID = NULL;
 	cl_uint retNumDevices;
 	cl_uint retNumPlatforms;
 	cl_int ret = clGetPlatformIDs(1, &platformId, &retNumPlatforms);
-	ret = clGetDeviceIDs(platformId, CL_DEVICE_TYPE_DEFAULT, 1, &deviceID, &retNumDevices);
+	ret = clGetDeviceIDs(platformId, CL_DEVICE_TYPE_DEFAULT, 1, &openCL->deviceID, &retNumDevices);
 
 	// Creating context.
-	cl_context context = clCreateContext(NULL, 1, &deviceID, NULL, NULL,  &ret);
+	openCL->context = clCreateContext(NULL, 1, &openCL->deviceID, NULL, NULL,  &ret);
 
 	// Creating command queue
-	cl_command_queue commandQueue = clCreateCommandQueue(context, deviceID, 0, &ret);
+	cl_command_queue commandQueue = clCreateCommandQueue(openCL->context, openCL->deviceID, 0, &ret);
 
-	acceleration->deviceID = deviceID;
-	acceleration->context = context;
-	acceleration->commandQueue = commandQueue;
+	openCL->commandQueue = commandQueue;
 
 	// Create program from kernel source
-	cl_program program = clCreateProgramWithSource(context, 1, (const char **)&kernelSource, (const size_t *)&kernelSize, &ret);	
+	openCL->program = clCreateProgramWithSource(openCL->context, 1, (const char **)&kernelSource, (const size_t *)&kernelSize, &ret);	
 
 	// Build program
-	ret = clBuildProgram(program, 1, &deviceID, NULL, NULL, NULL);
+	ret = clBuildProgram(openCL->program, 1, &openCL->deviceID, NULL, NULL, NULL);
+	if(ret != CL_SUCCESS){
+		size_t len;
+		char buffer[2048];
+		clGetProgramBuildInfo(openCL->program, openCL->deviceID, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &len);
+		printf("%s\n", buffer);
+		exit(-1);
+	}
 
 	// Create kernel
-	cl_kernel kernel = clCreateKernel(program, "raytrace", &ret);
-
-	// Create memory buffers on the device for each vector
-	cl_mem rayBuffer = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(Vector3) * SCREEN_HEIGHT * SCREEN_WIDTH, NULL, &ret);
-	acceleration->result = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(int) * SCREEN_HEIGHT * SCREEN_WIDTH, NULL, &ret);
-
-
-	// Set arguments for kernel
-	ret = clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&acceleration->result);
+	openCL->kernel = clCreateKernel(openCL->program, "raytrace", &ret);
 	assert(ret == CL_SUCCESS);
 
-	return acceleration;
+	// Create memory buffers on the device for each vector
+	cl_mem rayBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * SCREEN_HEIGHT * SCREEN_WIDTH, NULL, &ret);
+	openCL->result = clCreateBuffer(openCL->context, CL_MEM_WRITE_ONLY, sizeof(int) * SCREEN_HEIGHT * SCREEN_WIDTH, NULL, &ret);
+
+	// Set arguments for kernel
+	ret = clSetKernelArg(openCL->kernel, 5, sizeof(cl_mem), (void *)&openCL->result);
+	assert(ret == CL_SUCCESS);
+
+	return openCL;
 }
 
 void freeOpenCL(DaftOpenCL* openCL){
@@ -73,12 +77,11 @@ void freeOpenCL(DaftOpenCL* openCL){
 	assert(ret == CL_SUCCESS);
 }
 
-int* raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL){
+void raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL, int* resultArray){
 	int ret;
 	cl_kernel kernel = openCL->kernel; 
 	cl_command_queue commandQueue = openCL->commandQueue;
 	cl_context context = openCL->context;
-	cl_mem result = openCL->result;
 
 	// Memory buffers for each array
 	cl_mem verticesBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * mesh->vertexCount, NULL, &ret);
@@ -94,7 +97,7 @@ int* raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL){
 
 
 	// Set arguments for kernel
-	ret = clSetKernelArg(kernel, 0, sizeof(cl_float3), &camera->rotation);
+	ret = clSetKernelArg(kernel, 0, sizeof(cl_float3), &(camera->rotation));
 	assert(ret == CL_SUCCESS);
 	ret = clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&rayBuffer);
 	assert(ret == CL_SUCCESS);
@@ -102,7 +105,7 @@ int* raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL){
 	assert(ret == CL_SUCCESS);
 	ret = clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&trianglesBuffer);
 	assert(ret == CL_SUCCESS);
-	ret = clSetKernelArg(kernel, 4, sizeof(int), &mesh->triangleCount);
+	ret = clSetKernelArg(kernel, 4, sizeof(cl_int), &mesh->triangleCount);
 	assert(ret == CL_SUCCESS);
 
 	// Execute the kernel
@@ -111,11 +114,21 @@ int* raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL){
 	ret = clEnqueueNDRangeKernel(openCL->commandQueue, kernel, 2, NULL, globalItemSize, &localItemSize, 0, NULL, NULL);
 
 	// Read from device back to host.
-	int* resultArray = (int*)malloc(sizeof(int) * SCREEN_HEIGHT * SCREEN_WIDTH);
-	ret = clEnqueueReadBuffer(openCL->commandQueue, openCL->result, CL_TRUE, 0, sizeof(int) * SCREEN_HEIGHT * SCREEN_WIDTH, result, 0, NULL, NULL);
-
-	// Clean up, release memory.
+	ret = clEnqueueReadBuffer(openCL->commandQueue, openCL->result, CL_TRUE, 0, sizeof(int) * SCREEN_HEIGHT * SCREEN_WIDTH, resultArray, 0, NULL, NULL);
 	ret = clFlush(openCL->commandQueue);
-	ret = clFinish(commandQueue);
-	return resultArray;
+
+	// Free memory buffers
+	ret = clReleaseMemObject(verticesBuffer);
+	assert(ret == CL_SUCCESS);
+	ret = clReleaseMemObject(trianglesBuffer);
+	assert(ret == CL_SUCCESS);
+	ret = clReleaseMemObject(rayBuffer);
+	assert(ret == CL_SUCCESS);
+}
+
+
+void finishRaycasting(DaftOpenCL* openCL){
+	int ret;
+	ret = clFinish(openCL->commandQueue);
+	assert(ret == CL_SUCCESS);
 }

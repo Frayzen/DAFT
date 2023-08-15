@@ -42,7 +42,6 @@ void launchScreen(DaftApp* app){
     while (!quit)
     {
         //quit = 1;
-        
         renderScreen(app, texture);
         if(app->world->skybox != NULL){
             defineSkyPoints(app, texture);

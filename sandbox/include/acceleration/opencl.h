@@ -26,6 +26,7 @@ typedef struct {
 DaftOpenCL* initOpenCL();
 void freeOpenCL(DaftOpenCL* openCL);
 #include "../window/window.h"
-int* raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL);
+void raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL, int* resultArray);
+void finishRaycasting(DaftOpenCL* openCL);
 
 #endif
