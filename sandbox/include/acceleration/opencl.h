@@ -10,7 +10,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../window/window.h"
 
 #define MAX_SOURCE_SIZE (0x100000)
 
@@ -23,8 +22,10 @@ typedef struct {
     cl_mem result;
 } DaftOpenCL;
 
+
 DaftOpenCL* initOpenCL();
 void freeOpenCL(DaftOpenCL* openCL);
-int* raycastMesh(DaftApp* app, int meshId);
+#include "../window/window.h"
+int* raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL);
 
 #endif

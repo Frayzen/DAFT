@@ -73,31 +73,28 @@ void freeOpenCL(DaftOpenCL* openCL){
 	assert(ret == CL_SUCCESS);
 }
 
-int* raycastMesh(DaftApp* app, int meshId){
+int* raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL){
 	int ret;
-	Camera* cam = app->camera;
-	Mesh* mesh = app->world->meshes[meshId];
-
-	cl_kernel kernel = app->openCL->kernel; 
-	cl_command_queue commandQueue = app->openCL->commandQueue;
-	cl_context context = app->openCL->context;
-	cl_mem result = app->openCL->result;
+	cl_kernel kernel = openCL->kernel; 
+	cl_command_queue commandQueue = openCL->commandQueue;
+	cl_context context = openCL->context;
+	cl_mem result = openCL->result;
 
 	// Memory buffers for each array
-	cl_mem verticesBuffer = clCreateBuffer(app->openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * mesh->vertexCount, NULL, &ret);
-	cl_mem trianglesBuffer = clCreateBuffer(app->openCL->context, CL_MEM_READ_ONLY, sizeof(Triangle) * mesh->triangleCount, NULL, &ret);
-	cl_mem rayBuffer = clCreateBuffer(app->openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * SCREEN_HEIGHT * SCREEN_WIDTH, NULL, &ret);
+	cl_mem verticesBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * mesh->vertexCount, NULL, &ret);
+	cl_mem trianglesBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Triangle) * mesh->triangleCount, NULL, &ret);
+	cl_mem rayBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * SCREEN_HEIGHT * SCREEN_WIDTH, NULL, &ret);
 
 	// Copy lists to memory buffers
-	ret = clEnqueueWriteBuffer(app->openCL->commandQueue, verticesBuffer, CL_TRUE, 0, sizeof(Vector3) * mesh->vertexCount, mesh->vertices, 0, NULL, NULL);
+	ret = clEnqueueWriteBuffer(openCL->commandQueue, verticesBuffer, CL_TRUE, 0, sizeof(Vector3) * mesh->vertexCount, mesh->vertices, 0, NULL, NULL);
 	assert(ret == CL_SUCCESS);
-	ret = clEnqueueWriteBuffer(app->openCL->commandQueue, trianglesBuffer, CL_TRUE, 0, sizeof(Triangle) * mesh->triangleCount, mesh->triangles, 0, NULL, NULL);
+	ret = clEnqueueWriteBuffer(openCL->commandQueue, trianglesBuffer, CL_TRUE, 0, sizeof(Triangle) * mesh->triangleCount, mesh->triangles, 0, NULL, NULL);
 	assert(ret == CL_SUCCESS);
-	ret = clEnqueueWriteBuffer(app->openCL->commandQueue, rayBuffer, CL_TRUE, 0, sizeof(Vector3) * SCREEN_HEIGHT * SCREEN_WIDTH, app->camera->rays, 0, NULL, NULL);
+	ret = clEnqueueWriteBuffer(openCL->commandQueue, rayBuffer, CL_TRUE, 0, sizeof(Vector3) * SCREEN_HEIGHT * SCREEN_WIDTH, camera->rays, 0, NULL, NULL);
 
 
 	// Set arguments for kernel
-	ret = clSetKernelArg(kernel, 0, sizeof(cl_float3), &app->camera->rotation);
+	ret = clSetKernelArg(kernel, 0, sizeof(cl_float3), &camera->rotation);
 	assert(ret == CL_SUCCESS);
 	ret = clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&rayBuffer);
 	assert(ret == CL_SUCCESS);
@@ -105,20 +102,20 @@ int* raycastMesh(DaftApp* app, int meshId){
 	assert(ret == CL_SUCCESS);
 	ret = clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&trianglesBuffer);
 	assert(ret == CL_SUCCESS);
-	ret = clSetKernelArg(kernel, 4, sizeof(int), mesh->triangleCount);
+	ret = clSetKernelArg(kernel, 4, sizeof(int), &mesh->triangleCount);
 	assert(ret == CL_SUCCESS);
 
 	// Execute the kernel
 	size_t globalItemSize[2] = {SCREEN_HEIGHT, SCREEN_WIDTH};
 	size_t localItemSize = 1;
-	ret = clEnqueueNDRangeKernel(app->openCL->commandQueue, kernel, 2, NULL, &globalItemSize, &localItemSize, 0, NULL, NULL);
+	ret = clEnqueueNDRangeKernel(openCL->commandQueue, kernel, 2, NULL, globalItemSize, &localItemSize, 0, NULL, NULL);
 
 	// Read from device back to host.
 	int* resultArray = (int*)malloc(sizeof(int) * SCREEN_HEIGHT * SCREEN_WIDTH);
-	ret = clEnqueueReadBuffer(app->openCL->commandQueue, app->openCL->result, CL_TRUE, 0, sizeof(int) * SCREEN_HEIGHT * SCREEN_WIDTH, result, 0, NULL, NULL);
+	ret = clEnqueueReadBuffer(openCL->commandQueue, openCL->result, CL_TRUE, 0, sizeof(int) * SCREEN_HEIGHT * SCREEN_WIDTH, result, 0, NULL, NULL);
 
 	// Clean up, release memory.
-	ret = clFlush(app->openCL->commandQueue);
+	ret = clFlush(openCL->commandQueue);
 	ret = clFinish(commandQueue);
-	return result;
+	return resultArray;
 }
