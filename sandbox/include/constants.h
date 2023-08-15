@@ -1,5 +1,6 @@
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
+#define ASPECT_RATIO ((float)SCREEN_WIDTH/(float)SCREEN_HEIGHT)
 #define CAM_FOV 90
 #define CAM_MOV_SPEED 0.1
 #define MOVING_SPEED 0.01

@@ -4,21 +4,20 @@ DaftApp* initApp(){
     DaftApp* app = calloc(sizeof(DaftApp), 1);
     app->world = createWorld();
     app->camera = NULL;
-    app->width = SCREEN_WIDTH;
-    app->height = SCREEN_HEIGHT;
+    app->openCL = initOpenCL();
     omp_set_num_threads(omp_get_num_procs());
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
     SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" );
     app->window = SDL_CreateWindow("SDL2 Displaying Image",
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            app->width, app->height, 0);
+            SCREEN_WIDTH, SCREEN_HEIGHT, 0);
     app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRelativeMouseMode(SDL_TRUE);
     SDL_RendererInfo info;
     SDL_GetRendererInfo(app->renderer, &info );
     //pixels
-    app->texture = SDL_CreateTexture(app->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, app->width, app->height);
+    app->texture = SDL_CreateTexture(app->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
     Uint32* pixels;
     int pitch;
     SDL_LockTexture(app->texture, NULL, (void**)&pixels, &pitch);

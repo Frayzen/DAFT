@@ -19,5 +19,7 @@ Vector3 normalize(Vector3 v);
 Vector3 add(Vector3 v1, Vector3 v2);
 Vector3 sub(Vector3 v1, Vector3 v2);
 Vector3 scale(Vector3 v, float s);
+Vector3 rotate(Vector3 v, Vector3 rotation);
+Vector3 rotateRPY(Vector3 v, Vector3 rotation);
 
 #endif

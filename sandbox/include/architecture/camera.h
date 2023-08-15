@@ -5,11 +5,12 @@
 #include <stdlib.h>
 
 typedef struct {
-    Vector3 pos;
-    Vector2 angles;
+    Vector3 position;
+    Vector3 rotation;
     Vector2 FOV;
     Vector3 movement_speed;
     Vector2 rotation_speed;
+    Vector3* rays;
 } Camera;
 
 #include "../constants.h"

@@ -1,11 +1,7 @@
 #ifndef OPENCL_H
 #define OPENCL_H
 
-/*
-
-Sources: http://www.eriksmistad.no/getting-started-with-opencl-and-gpu-computing/
-
-*/
+/* Sources: http://www.eriksmistad.no/getting-started-with-opencl-and-gpu-computing/ */
 
 // openCL headers
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
@@ -14,8 +10,21 @@ Sources: http://www.eriksmistad.no/getting-started-with-opencl-and-gpu-computing
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "../window/window.h"
+
 #define MAX_SOURCE_SIZE (0x100000)
 
-void checkOpenCL();
+typedef struct {
+    cl_device_id deviceID;
+    cl_context context;
+    cl_command_queue commandQueue;
+    cl_program program;
+    cl_kernel kernel;
+    cl_mem result;
+} DaftOpenCL;
+
+DaftOpenCL* initOpenCL();
+void freeOpenCL(DaftOpenCL* openCL);
+int* raycastMesh(DaftApp* app, int meshId);
 
 #endif

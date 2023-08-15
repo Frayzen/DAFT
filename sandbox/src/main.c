@@ -6,7 +6,7 @@ int main(int argc, char *argv[]){
 	DaftApp* app = initApp();
 	app->camera = createCamera();
 	worldAddMesh(app->world, createMesh("./assets/objs/cube.obj"));
-	worldSetSkybox(app->world, "./assets/skybox/Sky.jpg");
+	worldSetSkybox(app->world, "./assets/skybox/Factory.jpg");
 	launchScreen(app);
 	freeApp(app);
 	return 0;

@@ -7,15 +7,15 @@
 #include "../architecture/camera.h"
 #include "../architecture/world.h"
 #include "../architecture/camera.h"
+#include "../acceleration/opencl.h"
 
 struct DaftApp{
-    int width;
-    int height;
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Texture *texture;
     World* world;
     Camera* camera;
+    DaftOpenCL* openCL;
 } typedef DaftApp;
 
 #include "event_handler.h"
