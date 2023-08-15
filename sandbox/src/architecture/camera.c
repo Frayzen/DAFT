@@ -1,11 +1,10 @@
 #include "../../include/architecture/camera.h"
 
-Vector3 createRay(int i, int j){
-    Vector3 ray;
-    ray.x = (2 * ((j + 0.5) / SCREEN_WIDTH) - 1) * tan(CAM_FOV / 2) * ASPECT_RATIO;
-    ray.y = (1 - 2 * ((i + 0.5) / SCREEN_HEIGHT)) * tan(CAM_FOV / 2);
-    ray.z = -1;
-    return ray;
+Vector3 createRay(Camera* cam, int y, int x){
+    Vector2 FOV = cam->FOV;
+    float px = (2*(x+0.5)/SCREEN_WIDTH - 1)*tan(FOV.x/2)*SCREEN_ASPECT_RATIO;
+    float py = (1 - 2*(y+0.5)/SCREEN_HEIGHT)*tan(FOV.y/2);
+    return normalize((Vector3){px, py, -1});
 }
 
 Camera* createCamera(){
@@ -17,7 +16,7 @@ Camera* createCamera(){
     {
         for (int j = 0; j < SCREEN_WIDTH; j++)
         {
-            cam->rays[i*SCREEN_WIDTH+j] = createRay(i, j);
+            cam->rays[i*SCREEN_WIDTH+j] = createRay(cam, j, i);
         }
     }
     return cam;

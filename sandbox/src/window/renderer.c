@@ -25,7 +25,7 @@ void renderScreen(DaftApp* app, SDL_Texture* texture)
         for (j = 0; j < app->world->meshesCount; j++)
         {
             //raycastResult starts at 1, so if it's not 0, it's a hit
-            if(raycastResults[j][i] != 0)
+            if(raycastResults[j][i] != -1)
             {
                 pixels[i] = 0xFFFFFFFF;
                 break;

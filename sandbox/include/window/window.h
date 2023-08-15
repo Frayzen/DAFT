@@ -24,6 +24,6 @@ struct DaftApp{
 #include "time.h"
 
 DaftApp* initApp();
-void launchScreen(DaftApp* app);
+void launchApp(DaftApp* app);
 void freeApp(DaftApp* app);
 #endif

@@ -1,4 +1,4 @@
-
+__constant float EPSILON = 0.0000001;
 __kernel void raytrace(
   float3 cameraRotation,
   __global const float3 *camRays,
@@ -12,45 +12,40 @@ __kernel void raytrace(
   
   int index = x + y * get_global_size(1);
   //get ray
-  float3 ray = camRays[index];
+  float3 camRay = camRays[index];
+  //rotate ray
+  float3 ray;
+  ray.x = camRay.x * cos(cameraRotation.y) + camRay.z * sin(cameraRotation.y);
+  ray.y = camRay.y;
+  ray.z = -camRay.x * sin(cameraRotation.y) + camRay.z * cos(cameraRotation.y);
   //for each triangle
   float mint = INFINITY;
+  result[index] = -1;
   for(int i = 0; i < nbTriangle; i++){
     int3 triangle = triangles[i];
     float3 p1 = vertices[triangle.x];
     float3 p2 = vertices[triangle.y];
     float3 p3 = vertices[triangle.z];
-    //get normal
-    float3 normal = cross(p2 - p1, p3 - p1);
-    //get distance
-    float distance = dot(normal, p1);
-    //get intersection
-    float t = (distance - dot(normal, ray)) / dot(normal, cameraRotation);
-    if(t < 0 || t > mint){
+    float3 e1 = p2 - p1;
+    float3 e2 = p3 - p1;
+    float3 h = cross(ray, e2);
+    float a = dot(e1, h);
+    if (a > -EPSILON && a < EPSILON)
       continue;
-    }
-    float3 intersection = ray * t;
-    //check if intersection is in triangle
-    float3 edge0 = p2 - p1;
-    float3 vp0 = intersection - p1;
-    float3 c = cross(edge0, vp0);
-    if(dot(normal, c) < 0){
+    float f = 1.0 / a;
+    float3 s = ray - p1;
+    float u = f * dot(s, h);
+    if (u < 0.0 || u > 1.0)
       continue;
-    }
-    float3 edge1 = p3 - p2;
-    float3 vp1 = intersection - p2;
-    c = cross(edge1, vp1);
-    if(dot(normal, c) < 0){
+    float3 q = cross(s, e1);
+    float v = f * dot(ray, q);
+    if (v < 0.0 || u + v > 1.0)
       continue;
-    }
-    float3 edge2 = p1 - p3;
-    float3 vp2 = intersection - p3;
-    c = cross(edge2, vp2);
-    if(dot(normal, c) < 0){
+    float t = f * dot(e2, q);
+    if (t < mint)
       continue;
-    }
     //if intersection is in triangle, return the index of the triangle
-    result[index] = i+1;
+    result[index] = i;
     mint = t;
   }
 }

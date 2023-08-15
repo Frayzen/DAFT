@@ -34,7 +34,11 @@ void freeApp(DaftApp* app){
     SDL_Quit();
 }
 
-void launchScreen(DaftApp* app){
+void launchApp(DaftApp* app){
+    if(app->camera == NULL){
+        printf("No camera defined, cannot launch DAFT app\n");
+        return;
+    }
     int quit = 0;
     time_t last = time(NULL);
     int fps = 0;
