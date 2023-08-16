@@ -1,10 +1,16 @@
 #include "../../include/architecture/camera.h"
 
-Vector3 createRay(Camera* cam, int y, int x){
+Vector3 createRay(Camera* cam, int x, int y){
     float yaw = cam->rotation.y;
     float pitch = cam->rotation.x;
-    float ratioX = ((float)x / (float)SCREEN_WIDTH) - 1;
-    float ratioY = ((float)y / (float)SCREEN_HEIGHT) - 1;
+    float height = SCREEN_HEIGHT;
+    float width = SCREEN_WIDTH;
+    #if SCREEN_WIDTH > 1 || SCREEN_HEIGHT > 1
+    height -= 1;
+    width -= 1;
+    #endif 
+    float ratioX = ((float)x / height) - 0.5;
+    float ratioY = ((float)y / width) - 0.5;
     yaw += ratioX * cam->FOV.x;
     pitch += ratioY * cam->FOV.y;
     Vector3 ray = {cos(pitch) * cos(yaw), sin(pitch), cos(pitch) * sin(yaw)};
@@ -16,12 +22,11 @@ Camera* createCamera(){
     camera->FOV.x = CAM_FOV;
     camera->FOV.y = CAM_FOV;
     camera->rays = calloc(sizeof(Vector3), SCREEN_HEIGHT*SCREEN_WIDTH);
-    for (int i = 0; i < SCREEN_HEIGHT; i++)
+    for (int y = 0; y < SCREEN_HEIGHT; y++)
     {
-        for (int j = 0; j < SCREEN_WIDTH; j++)
+        for (int x = 0; x < SCREEN_WIDTH; x++)
         {
-            camera->rays[i*SCREEN_WIDTH+j] = createRay(camera, j+1, i+1);
-            printf("ray %d %d : %f %f %f\n", i, j, camera->rays[i*SCREEN_WIDTH+j].x, camera->rays[i*SCREEN_WIDTH+j].y, camera->rays[i*SCREEN_WIDTH+j].z);
+            camera->rays[y*SCREEN_WIDTH+x] = createRay(camera, x, y);
         }
     }
     return camera;

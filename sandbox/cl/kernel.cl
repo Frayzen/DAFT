@@ -19,9 +19,9 @@ __kernel void raytrace(
   ray.x = camRay.x * cos(cameraRotation.y) + camRay.z * sin(cameraRotation.y);
   ray.y = camRay.y;
   ray.z = -camRay.x * sin(cameraRotation.y) + camRay.z * cos(cameraRotation.y);
-  printf("camera rotation: %f %f %f\n", cameraRotation.x, cameraRotation.y, cameraRotation.z);
-  printf("camera position: %f %f %f\n", cameraPosition.x, cameraPosition.y, cameraPosition.z);
-  printf("ray: %f %f %f\n", ray.x, ray.y, ray.z);
+  //printf("camera rotation: %f %f %f\n", cameraRotation.x, cameraRotation.y, cameraRotation.z);
+  // printf("camera position: %f %f %f\n", cameraPosition.x, cameraPosition.y, cameraPosition.z);
+  // printf("ray: %f %f %f\n", ray.x, ray.y, ray.z);
   //for each triangle
   float mint = INFINITY;
   result[index] = -1;
