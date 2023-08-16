@@ -4,6 +4,7 @@
 #include "parser.h"
 #include <assert.h>
 #include "../architecture/mesh.h"
+#include "../architecture/vectors.h"
 
 void parseObjFile(char* path, Mesh* m);
 

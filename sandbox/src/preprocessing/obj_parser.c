@@ -45,27 +45,19 @@ void parseFaceLine(char* line, Mesh* m) {
         assert(res == 1);
         count+=sum;
         if(line[count] == '/'){
-            count++;
-            res = sscanf(line + count, " %d%n", &us[i], &sum);
+            res = sscanf(line + count, "/ %d%n", &us[i], &sum);
             count+=sum;
         }
         if(line[count] == '/'){
-            count++;
-            res = sscanf(line + count, " %d%n", &ns[i], &sum);
+            res = sscanf(line + count, "/ %d%n", &ns[i], &sum);
             assert(res == 1);
             count+=sum;
         }
         if(i > 1){
             Triangle tri = m->triangles[m->triangleCount];
-            tri.v1 = vs[0] - 1;
-            tri.v2 = vs[i - 1] - 1;
-            tri.v3 = vs[i] - 1;
-            tri.n1 = ns[0] - 1;
-            tri.n2 = ns[i - 1] - 1;
-            tri.n3 = ns[i] - 1;
-            tri.uv1 = us[0] - 1;
-            tri.uv2 = us[i - 1] - 1;
-            tri.uv3 = us[i] - 1;
+            tri.vs = (int3){vs[0] - 1, vs[i - 1] - 1, vs[i] - 1}; 
+            tri.ts = (int3){us[0] - 1, us[i - 1] - 1, us[i] - 1};
+            tri.ns = (int3){ns[0] - 1, ns[i - 1] - 1, ns[i] - 1};
             m->triangles[m->triangleCount] = tri;
             m->triangleCount++;
         }
@@ -111,9 +103,9 @@ void checkMesh(Mesh* m){
     assert(m->triangleCount > 0);
     for (int i = 0; i < m->triangleCount; i++)
     {
-        assert(m->triangles[i].v1 < m->vertexCount && m->triangles[i].v2 < m->vertexCount && m->triangles[i].v3 < m->vertexCount);
-        assert(m->triangles[i].n1 < m->normalCount && m->triangles[i].n2 < m->normalCount && m->triangles[i].n3 < m->normalCount);
-        assert(m->triangles[i].uv1 < m->uvCount && m->triangles[i].uv2 < m->uvCount && m->triangles[i].uv3 < m->uvCount);
+        assert(m->triangles->vs.x < m->vertexCount && m->triangles->vs.y < m->vertexCount && m->triangles->vs.z < m->vertexCount);
+        assert(m->triangles->ns.x < m->normalCount && m->triangles->ns.y < m->normalCount && m->triangles->ns.z < m->normalCount);
+        assert(m->triangles->ts.x < m->uvCount && m->triangles->ts.y < m->uvCount && m->triangles->ts.z < m->uvCount);
     }
 }
 

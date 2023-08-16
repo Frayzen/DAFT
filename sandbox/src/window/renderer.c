@@ -29,7 +29,6 @@ void renderScreen(DaftApp* app, SDL_Texture* texture)
             if(raycastResults[j][i] != -1)
             {
                 pixels[i] = 0xFFFFFFFF;
-                printf("ok\n");
                 break;
             }
         }

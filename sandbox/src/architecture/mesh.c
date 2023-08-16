@@ -21,3 +21,4 @@ void freeMesh(Mesh* m) {
     if(m->triangles != NULL) free(m->triangles);
     free(m);
 }
+

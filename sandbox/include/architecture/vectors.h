@@ -12,6 +12,12 @@ typedef struct {
     float y;
 } Vector2;
 
+typedef struct {
+    int x;
+    int y;
+    int z;
+} int3;
+
 #include <math.h>
 
 Vector2 normalize2(Vector2 v);

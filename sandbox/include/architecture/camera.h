@@ -14,6 +14,8 @@ typedef struct {
 } Camera;
 
 #include "../constants.h"
+#include <math.h>
+#include <stdio.h>
 
 Camera* createCamera();
 

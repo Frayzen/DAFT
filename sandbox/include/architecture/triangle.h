@@ -1,16 +1,12 @@
 #ifndef TRIANGLE_H
 #define TRIANGLE_H
 
+#include "../architecture/vectors.h"
+
 typedef struct {
-    int v1;
-    int v2;
-    int v3;
-    int n1;
-    int n2;
-    int n3;
-    int uv1;
-    int uv2;
-    int uv3;
+    int3 vs;
+    int3 ns;
+    int3 ts;
 } Triangle;
 
 #endif
