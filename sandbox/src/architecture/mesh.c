@@ -1,8 +1,8 @@
 #include "../../include/architecture/mesh.h"
 
-Mesh* createMesh(char* path) {
+Mesh* createMesh(char* path, Transform transform) {
     Mesh* mesh = malloc(sizeof(Mesh));
-    parseObjFile(path, mesh);
+    parseObjFile(path, mesh, &transform);
     printf("Mesh %s created (%d vertices, %d faces)\n", path, mesh->vertexCount, mesh->triangleCount);
     return mesh;
 }

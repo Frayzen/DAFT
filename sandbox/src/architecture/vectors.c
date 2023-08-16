@@ -18,12 +18,18 @@ Vector3 sub(Vector3 v1, Vector3 v2) {
     Vector3 result = {v1.x - v2.x, v1.y - v2.y, v1.z - v2.z};
     return result;
 }
-Vector3 scale(Vector3 v, float s) {
+Vector3 scalef(Vector3 v, float s) {
     v.x = v.x * s;
     v.y = v.y * s;
     v.z = v.z * s;
     return v;
 }
+
+Vector3 scale(Vector3 v1, Vector3 v2) {
+    Vector3 result = {v1.x * v2.x, v1.y * v2.y, v1.z * v2.z};
+    return result;
+}
+
 Vector3 rotate(Vector3 v, Vector3 rotation) {
     Vector3 result = {0, 0, 0};
     float x = v.x;

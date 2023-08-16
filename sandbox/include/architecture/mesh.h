@@ -16,8 +16,9 @@ typedef struct {
 } Mesh;
 #include <stdlib.h>
 #include "../preprocessing/obj_parser.h"
+#include "transform.h"
 
-Mesh* createMesh(char* path);
+Mesh* createMesh(char* path, Transform transform);
 void clearMesh(Mesh* m);
 void freeMesh(Mesh* m);
 

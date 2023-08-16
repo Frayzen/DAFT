@@ -109,7 +109,7 @@ void checkMesh(Mesh* m){
     }
 }
 
-void parseObjFile(char* path, Mesh* m){
+void parseObjFile(char* path, Mesh* m, Transform* transform){
     clearMesh(m);
     clearCounts(m);
     parseFile(path, &countObjLine, m);
@@ -119,5 +119,9 @@ void parseObjFile(char* path, Mesh* m){
     m->triangles = malloc(sizeof(Triangle) * m->triangleCount);
     clearCounts(m);
     parseFile(path, &postParseObjLine, m);
+    for (int i = 0; i < m->vertexCount; i++)
+    {
+        m->vertices[i] = transformVector3(m->vertices[i], transform);
+    }
     checkMesh(m);
 }

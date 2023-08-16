@@ -16,7 +16,7 @@ void worldSetSkybox(World* wd, char* path){
 
 Vector2 getSkyboxPoint(Vector3 direction){
     Vector3 dir = normalize(direction);
-    dir = scale(dir, -1);
+    dir = scalef(dir, -1);
     Vector2 r = { 0.5- (atan2f(dir.x, dir.z)/(M_PI*2)), 0.5+ (asinf(dir.y)/M_PI)};
     return r;
 }
