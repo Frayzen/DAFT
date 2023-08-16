@@ -57,3 +57,29 @@ Vector3 rotateRPY(Vector3 v, Vector3 rpy){
     result.z = -v.x * sinPitch + v.y * cosPitch * sinRoll + v.z * cosRoll * cosPitch;
     return result;
 }
+Matrix createRotationMatrix(Vector3 rotation){
+    Matrix result;
+    float cosX = cos(rotation.x);
+    float sinX = sin(rotation.x);
+    float cosY = cos(rotation.y);
+    float sinY = sin(rotation.y);
+    float cosZ = cos(rotation.z);
+    float sinZ = sin(rotation.z);
+    result.c1[0] = cosY * cosZ;
+    result.c1[1] = cosZ * sinX * sinY - cosX * sinZ;
+    result.c1[2] = cosX * cosZ * sinY + sinX * sinZ;
+    result.c2[0] = cosY * sinZ;
+    result.c2[1] = cosX * cosZ + sinX * sinY * sinZ;
+    result.c2[2] = cosX * sinY * sinZ - cosZ * sinX;
+    result.c3[0] = -sinY;
+    result.c3[1] = cosY * sinX;
+    result.c3[2] = cosX * cosY;
+    return result;
+}
+Vector3 multiplyMatrixVector(Matrix m, Vector3 v){
+    Vector3 result;
+    result.x = m.c1[0] * v.x + m.c1[1] * v.y + m.c1[2] * v.z;
+    result.y = m.c2[0] * v.x + m.c2[1] * v.y + m.c2[2] * v.z;
+    result.z = m.c3[0] * v.x + m.c3[1] * v.y + m.c3[2] * v.z;
+    return result;
+}

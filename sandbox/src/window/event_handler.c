@@ -63,9 +63,9 @@ void handle_events(int* quit, DaftApp* app){
                 break;
         }
     }
-    float yaw = app->camera->rotation.x;
-    Vector3 forward = {cos(yaw), 0, sin(yaw)};
-    Vector3 right = {cos(yaw+M_PI/2), 0, sin(yaw+M_PI/2)};
+    float yaw = app->camera->rotation.y;
+    Vector3 forward = {cos(-yaw), 0, sin(-yaw)};
+    Vector3 right = {cos(-yaw+M_PI/2), 0, sin(-yaw+M_PI/2)};
     Vector3 up = {0, 1, 0};
     forward = scale(forward, app->camera->movement_speed.x);
     right = scale(right, app->camera->movement_speed.y);
@@ -74,7 +74,7 @@ void handle_events(int* quit, DaftApp* app){
     app->camera->position = add(right, app->camera->position);
     app->camera->position = add(up, app->camera->position);
     app->camera->rotation.y -= app->camera->rotation_speed.x/100;
-    app->camera->rotation.x += app->camera->rotation_speed.y/100;
+    app->camera->rotation.z -= app->camera->rotation_speed.y/100;
     clamp(&app->camera->rotation.x, -M_PI/4, M_PI/4);
     app->camera->rotation_speed.x = 0;
     app->camera->rotation_speed.y = 0;

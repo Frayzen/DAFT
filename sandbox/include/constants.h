@@ -1,10 +1,10 @@
 #define DEBUG 0
 #if DEBUG == 1
-#define SCREEN_WIDTH 2
-#define SCREEN_HEIGHT 2
+#define SCREEN_WIDTH 200
+#define SCREEN_HEIGHT 200
 #else
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#define SCREEN_WIDTH 300
+#define SCREEN_HEIGHT 200
 #endif
 #define SCREEN_ASPECT_RATIO ((float)SCREEN_WIDTH/(float)SCREEN_HEIGHT)
 #define CAM_MOV_SPEED 0.1

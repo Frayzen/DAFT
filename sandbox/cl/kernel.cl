@@ -1,34 +1,32 @@
 __constant float EPSILON = 0.0000001;
 __kernel void raytrace(
-  float3 cameraPosition,
-  float3 cameraRotation,
-  __global const float *camRays,
-  __global const float *vertices,
-  __global const int* triangles,
-  int nbTriangle,
-  __global int* result
-  ) {
+    float3 cameraPosition,
+    __global const float* rotationMatrix,
+    __global const float* camRays,
+    __global const float* vertices,
+    __global const int *triangles,
+    int nbTriangle,
+    __global int *result
+) {
   int y = get_global_id(0);
   int x = get_global_id(1);
-  
+
   int index = x + y * get_global_size(1);
-  //get ray
+  // get ray
   float3 camRay = vload3(index, camRays);
+
   //rotate ray
-  float3 ray;
-  ray.x = camRay.x * cos(cameraRotation.y) + camRay.z * sin(cameraRotation.y);
-  ray.y = camRay.y;
-  ray.z = -camRay.x * sin(cameraRotation.y) + camRay.z * cos(cameraRotation.y);
-  //printf("camera rotation: %f %f %f\n", cameraRotation.x, cameraRotation.y, cameraRotation.z);
-  // printf("camera position: %f %f %f\n", cameraPosition.x, cameraPosition.y, cameraPosition.z);
-  // printf("ray: %f %f %f\n", ray.x, ray.y, ray.z);
-  //for each triangle
+  float3 ray = (float3)(dot(camRay, vload3(0, rotationMatrix)),
+                        dot(camRay, vload3(1, rotationMatrix)),
+                        dot(camRay, vload3(2, rotationMatrix)));
+
+  // for each triangle
   float mint = INFINITY;
   result[index] = -1;
-  for(int i = 0; i < nbTriangle; i++){
-    float3 p1 = vload3(triangles[9*i], vertices);
-    float3 p2 = vload3(triangles[9*i+1], vertices);
-    float3 p3 = vload3(triangles[9*i+2], vertices);
+  for (int i = 0; i < nbTriangle; i++) {
+    float3 p1 = vload3(triangles[9 * i], vertices);
+    float3 p2 = vload3(triangles[9 * i + 1], vertices);
+    float3 p3 = vload3(triangles[9 * i + 2], vertices);
     float3 e1 = p2 - p1;
     float3 e2 = p3 - p1;
     float3 h = cross(ray, e2);
@@ -47,9 +45,9 @@ __kernel void raytrace(
     float t = f * dot(e2, q);
     if (t < EPSILON)
       continue;
-    if(t > mint)
+    if (t > mint)
       continue;
-    //if intersection is in triangle, return the index of the triangle
+    // if intersection is in triangle, return the index of the triangle
     result[index] = i;
     mint = t;
   }

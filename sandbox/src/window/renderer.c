@@ -20,7 +20,7 @@ void renderScreen(DaftApp* app, SDL_Texture* texture)
         raycastMesh(app->camera, mesh, app->openCL, raycastResults[i]);
     }
     finishRaycasting(app->openCL);
-    for(i = 0; i < SCREEN_WIDTH*SCREEN_HEIGHT; i++)
+    for(i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++)
     {
         pixels[i] = 0xFF000000;
         for (j = 0; j < app->world->meshesCount; j++)

@@ -21,20 +21,17 @@ Vector2 getSkyboxPoint(Vector3 direction){
     return r;
 }
 
-Vector3 getRayDirection(int width, int height, int xpix, int ypix, Camera *camera)
+Vector3 getRayDirection(int xpix, int ypix, Camera *camera)
 {
-    Vector3 dir = {
-        (2.0f * xpix) / width - 1.0f,
-        1.0f - (2.0f * ypix) / height,
-        1.0f
-    };
-    dir = rotateRPY(dir, camera->rotation);
-    return dir;
+    Vector3 ray = camera->rays[ypix*SCREEN_WIDTH + xpix];
+    Matrix rotation = createRotationMatrix(camera->rotation);
+    ray = multiplyMatrixVector(rotation, ray);
+    return ray;
 }
 
 void defineSkyScales(Vector2* from_scale, Vector2* to_scale, Camera* camera){
-    Vector3 from = getRayDirection(SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, camera);
-    Vector3 to = getRayDirection(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT, camera);
+    Vector3 from = getRayDirection(0, 0, camera);
+    Vector3 to = getRayDirection(SCREEN_WIDTH-1, SCREEN_HEIGHT-1, camera);
     *from_scale =  getSkyboxPoint(from);
     *to_scale = getSkyboxPoint(to);
 }

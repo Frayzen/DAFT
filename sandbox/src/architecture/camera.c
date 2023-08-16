@@ -5,12 +5,8 @@ Vector3 createRay(Camera* cam, int x, int y){
     float pitch = cam->rotation.x;
     float height = SCREEN_HEIGHT;
     float width = SCREEN_WIDTH;
-    #if SCREEN_WIDTH > 1 || SCREEN_HEIGHT > 1
-    height -= 1;
-    width -= 1;
-    #endif 
     float ratioX = ((float)x / height) - 0.5;
-    float ratioY = ((float)y / width) - 0.5;
+    float ratioY = 0.5 - ((float)y / width);
     yaw += ratioX * cam->FOV.x;
     pitch += ratioY * cam->FOV.y;
     Vector3 ray = {cos(pitch) * cos(yaw), sin(pitch), cos(pitch) * sin(yaw)};

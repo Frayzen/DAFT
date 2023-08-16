@@ -87,6 +87,7 @@ void raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL, int* resultArra
 	cl_mem verticesBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * mesh->vertexCount, NULL, &ret);
 	cl_mem trianglesBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Triangle) * mesh->triangleCount, NULL, &ret);
 	cl_mem rayBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * SCREEN_HEIGHT * SCREEN_WIDTH, NULL, &ret);
+	cl_mem rotationBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Matrix), NULL, &ret);
 
 	// Copy lists to memory buffers
 	ret = clEnqueueWriteBuffer(openCL->commandQueue, verticesBuffer, CL_TRUE, 0, sizeof(Vector3) * mesh->vertexCount, mesh->vertices, 0, NULL, NULL);
@@ -97,11 +98,14 @@ void raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL, int* resultArra
 	assert(ret == CL_SUCCESS);
 	ret = clEnqueueWriteBuffer(openCL->commandQueue, openCL->result, CL_TRUE, 0, sizeof(int) * SCREEN_HEIGHT * SCREEN_WIDTH, resultArray, 0, NULL, NULL);
 	assert(ret == CL_SUCCESS);
-	
+	Matrix rotationMatrix = createRotationMatrix(camera->rotation);
+	ret = clEnqueueWriteBuffer(openCL->commandQueue, rotationBuffer, CL_TRUE, 0, sizeof(Matrix), &rotationMatrix, 0, NULL, NULL);
+	assert(ret == CL_SUCCESS);
+
 	// Set arguments for kernel
 	ret = clSetKernelArg(kernel, 0, sizeof(cl_float3), &(camera->position));
 	assert(ret == CL_SUCCESS);
-	ret = clSetKernelArg(kernel, 1, sizeof(cl_float3), &(camera->rotation));
+	ret = clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&rotationBuffer);
 	assert(ret == CL_SUCCESS);
 	ret = clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&rayBuffer);
 	assert(ret == CL_SUCCESS);
@@ -127,6 +131,8 @@ void raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL, int* resultArra
 	ret = clReleaseMemObject(trianglesBuffer);
 	assert(ret == CL_SUCCESS);
 	ret = clReleaseMemObject(rayBuffer);
+	assert(ret == CL_SUCCESS);
+	ret = clReleaseMemObject(rotationBuffer);
 	assert(ret == CL_SUCCESS);
 }
 
