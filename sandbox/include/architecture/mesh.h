@@ -19,6 +19,7 @@ typedef struct {
     int2 *children;
 
 } Mesh;
+#include "bvh.h"
 #include <stdlib.h>
 #include "../preprocessing/obj_parser.h"
 #include "transform.h"
