@@ -48,7 +48,7 @@ void launchApp(DaftApp* app){
     while (!quit)
     {
         #if DEBUG == 1
-        //quit = 1;
+        quit = 1;
         #endif
         renderScreen(app, texture);
         if(app->world->skybox != NULL){

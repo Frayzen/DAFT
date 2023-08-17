@@ -1,5 +1,11 @@
 #include "../../include/architecture/vectors.h"
 
+float dist(Vector3 v1, Vector3 v2) {
+    float dx = v1.x - v2.x;
+    float dy = v1.y - v2.y;
+    float dz = v1.z - v2.z;
+    return sqrt(dx * dx + dy * dy + dz * dz);
+}
 Vector2 normalize2(Vector2 v) {
     float length = sqrt(v.x * v.x + v.y * v.y);
     Vector2 result = {v.x / length, v.y / length};
@@ -87,5 +93,17 @@ Vector3 multiplyMatrixVector(Matrix m, Vector3 v){
     result.x = m.c1[0] * v.x + m.c1[1] * v.y + m.c1[2] * v.z;
     result.y = m.c2[0] * v.x + m.c2[1] * v.y + m.c2[2] * v.z;
     result.z = m.c3[0] * v.x + m.c3[1] * v.y + m.c3[2] * v.z;
+    return result;
+}
+Vector3 minv3(Vector3 v1, Vector3 v2) {
+    Vector3 result = {min(v1.x, v2.x), min(v1.y, v2.y), min(v1.z, v2.z)};
+    return result;
+}
+Vector3 maxv3(Vector3 v1, Vector3 v2) {
+    Vector3 result = {max(v1.x, v2.x), max(v1.y, v2.y), max(v1.z, v2.z)};
+    return result;
+}
+Vector3 midPoint(Vector3 v1, Vector3 v2) {
+    Vector3 result = {(v1.x + v2.x) / 2, (v1.y + v2.y) / 2, (v1.z + v2.z) / 2};
     return result;
 }
