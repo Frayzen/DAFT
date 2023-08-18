@@ -36,11 +36,11 @@ void buildLayer(Vector3* minPoints, Vector3* maxPoints, int* ids, int count, Mes
     Vector3 newMaxPoints[count / 2 + count%2];
     int newIds[count/2];
     int newCurrent = 0;
-
+    
     for(int i = 0; i < count; i ++){
         if(ids[i] == -1) continue;
         int closest = getClosestTriangle(minPoints, maxPoints, ids, i, count);
-        int curBbox = mesh->bboxCount;
+        int curBbox = count == 2 ? 0 : mesh->bboxCount;
         if(i != closest){
             mesh->maxBbox[curBbox] = maxv3(maxPoints[i], maxPoints[closest]);
             mesh->minBbox[curBbox] = minv3(minPoints[i], minPoints[closest]);
@@ -50,8 +50,8 @@ void buildLayer(Vector3* minPoints, Vector3* maxPoints, int* ids, int count, Mes
             newMaxPoints[newCurrent] = mesh->maxBbox[curBbox];
             newMinPoints[newCurrent] = mesh->minBbox[curBbox];
             newIds[newCurrent] = curBbox;
-
-            mesh->bboxCount++;
+            if(count != 2)
+                mesh->bboxCount++;
         }else{
             newMinPoints[newCurrent] = minPoints[i];
             newMaxPoints[newCurrent] = maxPoints[i];
@@ -70,7 +70,7 @@ void setupBboxCount(Mesh* mesh){
     mesh->maxBbox = malloc(sizeof(Vector3) * bboxCount);
     mesh->minBbox = malloc(sizeof(Vector3) * bboxCount);
     mesh->children = malloc(sizeof(int2) * bboxCount);
-    mesh->bboxCount = 0;
+    mesh->bboxCount = 1;
 }
 
 void buildBbox(Mesh* mesh){

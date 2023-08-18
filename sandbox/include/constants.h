@@ -1,7 +1,7 @@
-#define DEBUG 1
+#define DEBUG 0
 #if DEBUG == 1
-#define SCREEN_WIDTH 300
-#define SCREEN_HEIGHT 200
+#define SCREEN_WIDTH 3
+#define SCREEN_HEIGHT 3
 #else
 #define SCREEN_WIDTH 300
 #define SCREEN_HEIGHT 200
