@@ -27,36 +27,7 @@ int test_triangle(__global const int *triangles, int i, __global const float* ve
 }
 
 bool intersect_bbox(float3 max, float3 min, float3 ray){
-  float tmin = (min.x - ray.x) / ray.x;
-  float tmax = (max.x - ray.x) / ray.x;
-  if (tmin > tmax){
-    float tmp = tmin;
-    tmin = tmax;
-    tmax = tmp;
-  }
-  float tymin = (min.y - ray.y) / ray.y;
-  float tymax = (max.y - ray.y) / ray.y;
-  if (tymin > tymax){
-    float tmp = tymin;
-    tymin = tymax;
-    tymax = tmp;
-  }
-  if ((tmin > tymax) || (tymin > tmax))
-    return false;
-  if (tymin > tmin)
-    tmin = tymin;
-  if (tymax < tmax)
-    tmax = tymax;
-  float tzmin = (min.z - ray.z) / ray.z;
-  float tzmax = (max.z - ray.z) / ray.z;
-  if (tzmin > tzmax){
-    float tmp = tzmin;
-    tzmin = tzmax;
-    tzmax = tmp;
-  }
-  if ((tmin > tzmax) || (tzmin > tmax))
-    return false;
-  return true;
+  
 }
 
 __kernel void raytrace(
