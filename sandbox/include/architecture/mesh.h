@@ -17,6 +17,7 @@ typedef struct {
     Vector3 *minBbox;
     Vector3 *maxBbox;
     int2 *children;
+    int2 *originChildren;
 
 } Mesh;
 #include "bvh.h"

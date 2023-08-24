@@ -70,6 +70,7 @@ void setupBboxCount(Mesh* mesh){
     mesh->maxBbox = malloc(sizeof(Vector3) * bboxCount);
     mesh->minBbox = malloc(sizeof(Vector3) * bboxCount);
     mesh->children = malloc(sizeof(int2) * bboxCount);
+    mesh->originChildren = malloc(sizeof(int2) * bboxCount);
     mesh->bboxCount = 1;
 }
 
@@ -86,4 +87,8 @@ void buildBbox(Mesh* mesh){
     }
     setupBboxCount(mesh);
     buildLayer(minPoints, maxPoints, ids, mesh->triangleCount, mesh, 1);
+    //copy children in origin children
+    for(int i = 0; i < mesh->bboxCount; i++){
+        mesh->originChildren[i] = mesh->children[i];
+    }
 }

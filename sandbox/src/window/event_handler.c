@@ -32,6 +32,9 @@ void handle_key(SDL_Keycode key, DaftApp* app, int pressed){
         case DOWN_KEY:
             app->camera->movement_speed.y -= delta;
             break;
+        case SDLK_f:
+            printf("Children: %d, %d\n", app->world->meshes[0]->children[0].x, app->world->meshes[0]->children[0].y);
+            break;
         default:
             break;
     }

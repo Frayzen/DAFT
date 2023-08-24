@@ -109,6 +109,7 @@ __kernel void raytrace(
   float mint = INFINITY;
   int countLoop = 0;
   int i;
+  int isInitial = 1;
 
   while(stack_size > 0){
     countLoop++;
@@ -118,6 +119,13 @@ __kernel void raytrace(
     }
     i = stack[stack_size - 1];
     stack_size--;
+    if(i == 0){
+      if(isInitial){
+        isInitial = 0;
+      }else{
+        continue;
+      }
+    }
     if(intersect_bbox(mint, vload3(i, maxbbox), vload3(i, minbbox), &ray, camPos)){
       int2 child = children[i];
       if(child.x < 0){
