@@ -24,6 +24,7 @@ void freeMesh(Mesh* m) {
     if(m->maxBbox != NULL) free(m->maxBbox);
     if(m->minBbox != NULL) free(m->minBbox);
     if(m->children != NULL) free(m->children);
+    if(m->originChildren != NULL) free(m->originChildren);
     free(m);
 }
 
