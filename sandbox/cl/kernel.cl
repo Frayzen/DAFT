@@ -31,9 +31,9 @@ float intersect_triangle(__global const int *triangles, int i, __global const fl
   return t;
 }
 
-bool intersect_bbox(float3 maxBound, float3 minBound, float3* ry, float3 pos){
+bool intersect_bbox(float mint, float3 maxBound, float3 minBound, float3* ry, float3 pos){
   float tmin = -INFINITY;
-  float tmax = INFINITY;
+  float tmax = mint;
   float3 ray = *ry;
 
   if(ray.x != 0){
@@ -42,16 +42,18 @@ bool intersect_bbox(float3 maxBound, float3 minBound, float3* ry, float3 pos){
     tmin = max(tmin, min(tx1, tx2));
     tmax = min(tmax, max(tx1, tx2));
   }
-  if(tmax < tmin)
+  if(tmin > tmax || tmax < 0){
     return false;
+  }
   if(ray.y != 0){
     float ty1 = (minBound.y - pos.y) / ray.y;
     float ty2 = (maxBound.y - pos.y) / ray.y;
     tmin = max(tmin, min(ty1, ty2));
     tmax = min(tmax, max(ty1, ty2));
   }
-  if(tmax < tmin)
+  if(tmin > tmax || tmax < 0){
     return false;
+  }
   if(ray.z != 0){
     float tz1 = (minBound.z - pos.z) / ray.z;
     float tz2 = (maxBound.z - pos.z) / ray.z;
@@ -116,7 +118,7 @@ __kernel void raytrace(
     }
     i = stack[stack_size - 1];
     stack_size--;
-    if(intersect_bbox(vload3(i, maxbbox), vload3(i, minbbox), &ray, camPos)){
+    if(intersect_bbox(mint, vload3(i, maxbbox), vload3(i, minbbox), &ray, camPos)){
       int2 child = children[i];
       if(child.x < 0){
         int cx = -(child.x+1);
@@ -152,7 +154,6 @@ __kernel void raytrace(
       normal = normalize(cross(p2 - p1, p3 - p1));
     }
     //float3 hit = camPos + mint * ray;
-
     float diffuse = dot(normal, ray);
     if(diffuse < 0){
       diffuse *= -1;

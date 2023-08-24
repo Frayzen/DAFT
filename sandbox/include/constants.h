@@ -4,8 +4,8 @@
 #define SCREEN_WIDTH 3
 #define SCREEN_HEIGHT 3
 #else
-#define SCREEN_WIDTH 300
-#define SCREEN_HEIGHT 200
+#define SCREEN_WIDTH 500
+#define SCREEN_HEIGHT 500
 #endif
 #define SCREEN_ASPECT_RATIO ((float)SCREEN_WIDTH/(float)SCREEN_HEIGHT)
 

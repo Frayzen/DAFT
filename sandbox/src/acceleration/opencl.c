@@ -143,8 +143,7 @@ void raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL, unsigned int* r
 
 	// Execute the kernel
 	size_t globalItemSize[2] = {SCREEN_HEIGHT, SCREEN_WIDTH};
-	size_t localItemSize = 1;
-	ret = clEnqueueNDRangeKernel(openCL->commandQueue, kernel, 2, NULL, globalItemSize, &localItemSize, 0, NULL, NULL);
+	ret = clEnqueueNDRangeKernel(openCL->commandQueue, kernel, 2, NULL, globalItemSize, NULL, 0, NULL, NULL);
 
 	// Read from device back to host.
 	ret = clEnqueueReadBuffer(openCL->commandQueue, openCL->result, CL_TRUE, 0, sizeof(int) * SCREEN_HEIGHT * SCREEN_WIDTH, resultArray, 0, NULL, NULL);
