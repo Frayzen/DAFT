@@ -69,30 +69,33 @@ Vector3 rotateRPY(Vector3 v, Vector3 rpy){
     result.z = -v.x * sinPitch + v.y * cosPitch * sinRoll + v.z * cosRoll * cosPitch;
     return result;
 }
-Matrix createRotationMatrix(Vector3 rotation){
-    Matrix result;
-    float cosX = cos(rotation.x);
-    float sinX = sin(rotation.x);
-    float cosY = cos(rotation.y);
-    float sinY = sin(rotation.y);
-    float cosZ = cos(rotation.z);
-    float sinZ = sin(rotation.z);
-    result.c1[0] = cosY * cosZ;
-    result.c1[1] = cosZ * sinX * sinY - cosX * sinZ;
-    result.c1[2] = cosX * cosZ * sinY + sinX * sinZ;
-    result.c2[0] = cosY * sinZ;
-    result.c2[1] = cosX * cosZ + sinX * sinY * sinZ;
-    result.c2[2] = cosX * sinY * sinZ - cosZ * sinX;
-    result.c3[0] = -sinY;
-    result.c3[1] = cosY * sinX;
-    result.c3[2] = cosX * cosY;
+Matrix3 createRotationMatrix(Vector3 rotation){
+    Matrix3 result;
+    float cosT = cos(rotation.x);
+    float sinT = sin(rotation.x);
+    float cosB = cos(rotation.y);
+    float sinB = sin(rotation.y);
+    float cosA = cos(rotation.z);
+    float sinA = sin(rotation.z);
+    result.r1[0] = cosA * cosB;
+    result.r1[1] = cosA * sinB * sinT - sinA * cosT;
+    result.r1[2] = cosA * sinB * cosT + sinA * sinT;
+
+    result.r2[0] = sinA * cosB;
+    result.r2[1] = sinA * sinB * sinT + cosA * cosT;
+    result.r2[2] = sinA * sinB * cosT - cosA * sinT;
+
+    result.r3[0] = -sinB;
+    result.r3[1] = cosB * sinT;
+    result.r3[2] = cosB * cosT;
+
     return result;
 }
-Vector3 multiplyMatrixVector(Matrix m, Vector3 v){
+Vector3 multiplyMatrixVector(Matrix3 m, Vector3 v){
     Vector3 result;
-    result.x = m.c1[0] * v.x + m.c1[1] * v.y + m.c1[2] * v.z;
-    result.y = m.c2[0] * v.x + m.c2[1] * v.y + m.c2[2] * v.z;
-    result.z = m.c3[0] * v.x + m.c3[1] * v.y + m.c3[2] * v.z;
+    result.x = m.r1[0] * v.x + m.r1[1] * v.y + m.r1[2] * v.z;
+    result.y = m.r2[0] * v.x + m.r2[1] * v.y + m.r2[2] * v.z;
+    result.z = m.r3[0] * v.x + m.r3[1] * v.y + m.r3[2] * v.z;
     return result;
 }
 Vector3 minv3(Vector3 v1, Vector3 v2) {

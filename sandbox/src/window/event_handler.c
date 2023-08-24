@@ -14,23 +14,23 @@ void handle_key(SDL_Keycode key, DaftApp* app, int pressed){
         delta*=-1;
     switch (key)
     {
-        case SDLK_w:
+        case FORW_KEY:
             app->camera->movement_speed.x += delta;
             break;
-        case SDLK_s:
+        case BACK_KEY:
             app->camera->movement_speed.x -= delta;
             break;
-        case SDLK_a:
-            app->camera->movement_speed.y -= delta;
-            break;
-        case SDLK_d:
-            app->camera->movement_speed.y += delta;
-            break;
-        case SDLK_SPACE:
+        case RIGHT_KEY:
             app->camera->movement_speed.z += delta;
             break;
-        case SDLK_LSHIFT:
+        case LEFT_KEY:
             app->camera->movement_speed.z -= delta;
+            break;
+        case UP_KEY:
+            app->camera->movement_speed.y += delta;
+            break;
+        case DOWN_KEY:
+            app->camera->movement_speed.y -= delta;
             break;
         default:
             break;
@@ -64,18 +64,20 @@ void handle_events(int* quit, DaftApp* app){
         }
     }
     float yaw = app->camera->rotation.y;
-    Vector3 forward = {cos(-yaw), 0, sin(-yaw)};
-    Vector3 right = {cos(-yaw+M_PI/2), 0, sin(-yaw+M_PI/2)};
-    Vector3 up = {0, 1, 0};
+    Matrix3 rotationMatrix = createRotationMatrix(app->camera->rotation);
+    Vector3 forward = multiplyMatrixVector(rotationMatrix, VECTOR_FORWARD);
+    Vector3 up = multiplyMatrixVector(rotationMatrix, VECTOR_UP);
+    Vector3 right = multiplyMatrixVector(rotationMatrix, VECTOR_RIGHT);
+
     forward = scalef(forward, app->camera->movement_speed.x);
-    right = scalef(right, app->camera->movement_speed.y);
-    up = scalef(up, app->camera->movement_speed.z);
+    up = scalef(up, app->camera->movement_speed.y);
+    right = scalef(right, app->camera->movement_speed.z);
     app->camera->position = add(forward, app->camera->position);
     app->camera->position = add(right, app->camera->position);
     app->camera->position = add(up, app->camera->position);
     app->camera->rotation.y -= app->camera->rotation_speed.x/100;
-    //app->camera->rotation.x -= app->camera->rotation_speed.y/100;
-    clamp(&app->camera->rotation.x, -M_PI/4, M_PI/4);
+    //app->camera->rotation.z -= app->camera->rotation_speed.y/100;
+    clamp(&app->camera->rotation.z, -M_PI/4, M_PI/4);
     app->camera->rotation_speed.x = 0;
     app->camera->rotation_speed.y = 0;
 }

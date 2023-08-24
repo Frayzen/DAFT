@@ -87,7 +87,8 @@ void raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL, int* resultArra
 	cl_mem verticesBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * mesh->vertexCount, NULL, &ret);
 	cl_mem trianglesBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Triangle) * mesh->triangleCount, NULL, &ret);
 	cl_mem rayBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * SCREEN_HEIGHT * SCREEN_WIDTH, NULL, &ret);
-	cl_mem rotationBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Matrix), NULL, &ret);
+	cl_mem rotationBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Matrix3), NULL, &ret);
+	cl_mem positionBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3), NULL, &ret);
 	cl_mem minbboxBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * mesh->bboxCount, NULL, &ret);
 	cl_mem maxbboxBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * mesh->bboxCount, NULL, &ret);
 	cl_mem childrenbboxBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(int2) * mesh->bboxCount, NULL, &ret);
@@ -101,8 +102,44 @@ void raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL, int* resultArra
 	assert(ret == CL_SUCCESS);
 	ret = clEnqueueWriteBuffer(openCL->commandQueue, openCL->result, CL_TRUE, 0, sizeof(int) * SCREEN_HEIGHT * SCREEN_WIDTH, resultArray, 0, NULL, NULL);
 	assert(ret == CL_SUCCESS);
-	Matrix rotationMatrix = createRotationMatrix(camera->rotation);
-	ret = clEnqueueWriteBuffer(openCL->commandQueue, rotationBuffer, CL_TRUE, 0, sizeof(Matrix), &rotationMatrix, 0, NULL, NULL);
+	Matrix3 rotationMatrix = createRotationMatrix(camera->rotation);
+	
+	/*
+	0.020795 0.000000 0.999784
+0.000000 1.000000 0.000000
+-0.999784 0.000000 0.020795
+	
+	-0.285188 0.000000 0.958471
+-0.000000 1.000000 0.000000
+-0.958471 -0.000000 -0.285188
+
+
+
+
+
+-0.039194 0.000000 0.999232
+-0.000000 1.000000 0.000000
+-0.999232 -0.000000 -0.039194
+
+-0.009203 0.000000 0.999958
+-0.000000 1.000000 0.000000
+-0.999958 -0.000000 -0.009203
+
+
+
+-0.059168 0.000000 0.998248
+-0.000000 1.000000 0.000000
+-0.998248 -0.000000 -0.059168
+
+-0.069148 0.000000 0.997606
+-0.000000 1.000000 0.000000
+-0.997606 -0.000000 -0.069148
+
+	*/
+
+	ret = clEnqueueWriteBuffer(openCL->commandQueue, rotationBuffer, CL_TRUE, 0, sizeof(Matrix3), &rotationMatrix, 0, NULL, NULL);
+	assert(ret == CL_SUCCESS);
+	ret = clEnqueueWriteBuffer(openCL->commandQueue, positionBuffer, CL_TRUE, 0, sizeof(Vector3), &(camera->position), 0, NULL, NULL);
 	assert(ret == CL_SUCCESS);
 	ret = clEnqueueWriteBuffer(openCL->commandQueue, minbboxBuffer, CL_TRUE, 0, sizeof(Vector3) * mesh->bboxCount, mesh->minBbox, 0, NULL, NULL);
 	assert(ret == CL_SUCCESS);
@@ -112,7 +149,7 @@ void raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL, int* resultArra
 	assert(ret == CL_SUCCESS);
 
 	// Set arguments for kernel
-	ret = clSetKernelArg(kernel, 0, sizeof(cl_float3), &(camera->position));
+	ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&positionBuffer);
 	assert(ret == CL_SUCCESS);
 	ret = clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&rotationBuffer);
 	assert(ret == CL_SUCCESS);
@@ -148,6 +185,8 @@ void raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL, int* resultArra
 	ret = clReleaseMemObject(rayBuffer);
 	assert(ret == CL_SUCCESS);
 	ret = clReleaseMemObject(rotationBuffer);
+	assert(ret == CL_SUCCESS);
+	ret = clReleaseMemObject(positionBuffer);
 	assert(ret == CL_SUCCESS);
 	ret = clReleaseMemObject(minbboxBuffer);
 	assert(ret == CL_SUCCESS);

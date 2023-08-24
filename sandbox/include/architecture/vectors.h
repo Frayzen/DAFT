@@ -8,10 +8,10 @@ typedef struct {
 } Vector3;
 
 typedef struct {
-    float c1[3];
-    float c2[3];
-    float c3[3];
-} Matrix;
+    float r1[3];
+    float r2[3];
+    float r3[3];
+} Matrix3;
 
 typedef struct {
     float x;
@@ -30,6 +30,11 @@ typedef struct {
 } int2;
 
 #include <math.h>
+
+#define VECTOR_FORWARD (Vector3){1, 0, 0}
+#define VECTOR_UP (Vector3){0, 1, 0}
+#define VECTOR_RIGHT (Vector3){0, 0, 1}
+
 #ifndef max
     #define max(a,b) ((a) > (b) ? (a) : (b))
 #endif
@@ -46,8 +51,8 @@ Vector3 scalef(Vector3 v, float s);
 Vector3 scale(Vector3 v, Vector3 s);
 Vector3 rotate(Vector3 v, Vector3 rotation);
 Vector3 rotateRPY(Vector3 v, Vector3 rotation);
-Matrix createRotationMatrix(Vector3 rotation);
-Vector3 multiplyMatrixVector(Matrix m, Vector3 v);
+Matrix3 createRotationMatrix(Vector3 rotation);
+Vector3 multiplyMatrixVector(Matrix3 m, Vector3 v);
 Vector3 minv3(Vector3 v1, Vector3 v2);
 Vector3 maxv3(Vector3 v1, Vector3 v2);
 Vector3 midPoint(Vector3 v1, Vector3 v2);

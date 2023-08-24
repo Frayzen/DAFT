@@ -13,3 +13,20 @@
 #define M_PI 3.14159265358979323846
 #endif
 #define CAM_FOV 90 * M_PI / 180
+
+#define UP_KEY SDLK_SPACE
+#define DOWN_KEY SDLK_LSHIFT
+
+#define KEYBOARD_AZERTY 1
+
+#if KEYBOARD_AZERTY == 1
+#define FORW_KEY SDLK_z
+#define BACK_KEY SDLK_s
+#define LEFT_KEY SDLK_q
+#define RIGHT_KEY SDLK_d
+#else
+#define FORW_KEY SDLK_w
+#define BACK_KEY SDLK_s
+#define LEFT_KEY SDLK_a
+#define RIGHT_KEY SDLK_d
+#endif
