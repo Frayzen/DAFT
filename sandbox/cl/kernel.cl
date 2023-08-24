@@ -35,6 +35,7 @@ bool intersect_bbox(float3 maxBound, float3 minBound, float3* ry, float3 pos){
   float tmin = -INFINITY;
   float tmax = INFINITY;
   float3 ray = *ry;
+
   if(ray.x != 0){
     float tx1 = (minBound.x - pos.x) / ray.x;
     float tx2 = (maxBound.x - pos.x) / ray.x;
@@ -57,7 +58,7 @@ bool intersect_bbox(float3 maxBound, float3 minBound, float3* ry, float3 pos){
     tmin = max(tmin, min(tz1, tz2));
     tmax = min(tmax, max(tz1, tz2));
   }
-  return tmax >= tmin;
+  return tmax >= tmin && tmax > 0;
 }
 
 __kernel void raytrace(
