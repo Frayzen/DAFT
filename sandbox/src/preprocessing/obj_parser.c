@@ -39,8 +39,8 @@ void parseFaceLine(char* line, Mesh* m) {
     int us[nbvertices];
     int res, sum;
     for (int i = 0; i < nbvertices; i++){
-        us[i] = 0;
-        ns[i] = 0;
+        us[i] = -1;
+        ns[i] = -1;
         res = sscanf(line + count, " %d%n", &vs[i], &sum);
         assert(res == 1);
         count+=sum;

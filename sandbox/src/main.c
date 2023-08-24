@@ -7,8 +7,8 @@ int main(int argc, char *argv[]){
 	DaftApp* app = initApp();
 	app->camera = createCamera();
 	app->camera->position = (Vector3){0, 0, 0};
-	// worldAddMesh(app->world, createMesh("./assets/objs/teddy.obj", createTransformPS((Vector3){3, 0, 0}, (Vector3){.05,.05,.05})));
-	worldAddMesh(app->world, createMesh("./assets/objs/cube.obj", createTransformP((Vector3){3, 0, 0})));
+	worldAddMesh(app->world, createMesh("./assets/objs/teddy.obj", createTransformPS((Vector3){3, 0, 0}, (Vector3){.05,.05,.05})));
+	// worldAddMesh(app->world, createMesh("./assets/objs/cube.obj", createTransformP((Vector3){3, 0, 0})));
 	worldSetSkybox(app->world, "./assets/skybox/Sky.jpg");
 
 	// Mesh* m = app->world->meshes[0];

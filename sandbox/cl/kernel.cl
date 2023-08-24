@@ -2,9 +2,11 @@ __constant float EPSILON = 0.0000001;
 __constant int LOOP_THRESHOLD = 30000;
 
 float intersect_triangle(__global const int *triangles, int i, __global const float* vertices, __global const float* normals, float3* ray, float3 cameraPosition){
-  float3 normal1 = vload3(triangles[9 * i + 3], normals);
-  if(dot(*ray, normal1) > 0){
-    return -1;
+  if(triangles[9 * i + 3] != -1){
+    float3 normal1 = vload3(triangles[9 * i + 3], normals);
+    if(dot(*ray, normal1) > 0){
+      return -1;
+    }
   }
   float3 p1 = vload3(triangles[9 * i], vertices);
   float3 p2 = vload3(triangles[9 * i + 1], vertices);

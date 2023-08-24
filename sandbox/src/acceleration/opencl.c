@@ -83,9 +83,11 @@ void raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL, int* resultArra
 	cl_command_queue commandQueue = openCL->commandQueue;
 	cl_context context = openCL->context;
 
+	int normalCount = max(1, mesh->normalCount);
+
 	// Memory buffers for each array
 	cl_mem verticesBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * mesh->vertexCount, NULL, &ret);
-	cl_mem normalsBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * mesh->normalCount, NULL, &ret);
+	cl_mem normalsBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * normalCount, NULL, &ret);
 	cl_mem trianglesBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Triangle) * mesh->triangleCount, NULL, &ret);
 	cl_mem rayBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * SCREEN_HEIGHT * SCREEN_WIDTH, NULL, &ret);
 	cl_mem rotationBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Matrix3), NULL, &ret);
@@ -97,7 +99,7 @@ void raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL, int* resultArra
 	// Copy lists to memory buffers
 	ret = clEnqueueWriteBuffer(openCL->commandQueue, verticesBuffer, CL_TRUE, 0, sizeof(Vector3) * mesh->vertexCount, mesh->vertices, 0, NULL, NULL);
 	assert(ret == CL_SUCCESS);
-	ret = clEnqueueWriteBuffer(openCL->commandQueue, normalsBuffer, CL_TRUE, 0, sizeof(Vector3) * mesh->normalCount, mesh->normals, 0, NULL, NULL);
+	ret = clEnqueueWriteBuffer(openCL->commandQueue, normalsBuffer, CL_TRUE, 0, sizeof(Vector3) * normalCount, mesh->normals, 0, NULL, NULL);
 	assert(ret == CL_SUCCESS);
 	ret = clEnqueueWriteBuffer(openCL->commandQueue, trianglesBuffer, CL_TRUE, 0, sizeof(Triangle) * mesh->triangleCount, mesh->triangles, 0, NULL, NULL);
 	assert(ret == CL_SUCCESS);
