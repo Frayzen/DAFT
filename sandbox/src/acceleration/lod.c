@@ -60,8 +60,10 @@ int2 findCommonPoints(Triangle t1, Triangle t2)
     return commonIds;
 }
 
-#define MAX_VECTOR3 (Vector3){INFINITY, INFINITY, INFINITY}
-#define MIN_VECTOR3 (Vector3){-INFINITY, -INFINITY, -INFINITY}
+#define MAX_VECTOR3 \
+    (Vector3) { INFINITY, INFINITY, INFINITY }
+#define MIN_VECTOR3 \
+    (Vector3) { -INFINITY, -INFINITY, -INFINITY }
 void rebuildBboxesBounds(Mesh *mesh, int curr)
 {
     int2 children = mesh->children[curr];
@@ -80,8 +82,8 @@ void rebuildBboxesBounds(Mesh *mesh, int curr)
     }
     else
     {
-        leftMax = MAX_VECTOR3;
-        leftMin = MIN_VECTOR3;
+        leftMax = MIN_VECTOR3;
+        leftMin = MAX_VECTOR3;
     }
     if (children.y < 0)
     {
@@ -97,11 +99,14 @@ void rebuildBboxesBounds(Mesh *mesh, int curr)
     }
     else
     {
-        rightMax = MAX_VECTOR3;
-        rightMin = MIN_VECTOR3;
+        rightMax = MIN_VECTOR3;
+        rightMin = MAX_VECTOR3;
     }
     mesh->maxBbox[curr] = maxv3(leftMax, rightMax);
     mesh->minBbox[curr] = minv3(leftMin, rightMin);
+    if (mesh->maxBbox[curr].x == INFINITY)
+        printf("maxv3(%f, %f, %f)\n", mesh->maxBbox[curr].x, mesh->maxBbox[curr].y, mesh->maxBbox[curr].z);
+
 }
 
 void simplifyMesh(Mesh *mesh, Vector3 camPos)
@@ -109,18 +114,39 @@ void simplifyMesh(Mesh *mesh, Vector3 camPos)
     int id = 0;
     float distance = INFINITY;
     findFurthestBbox(mesh, 0, &camPos, &id, &distance);
-    int2 tris = mesh->children[id];
-    Triangle t1 = mesh->triangles[-(tris.x + 1)];
-    Triangle t2 = mesh->triangles[-(tris.y + 1)];
-    int2 commonIds = findCommonPoints(t1, t2);
-
-    
-    if (commonIds.x != -1 && commonIds.y != -1)
+    int loopId = id;
+    if (loopId != 0)
     {
-        Vector3 middle = add(mesh->vertices[commonIds.x], mesh->vertices[commonIds.y]);
-        middle = scalef(middle, 0.5f);
-        mesh->vertices[commonIds.x] = middle;
-        mesh->vertices[commonIds.y] = middle;
-        rebuildBboxesBounds(mesh, 0);
+        int parent = findParent(mesh, loopId);
+        int2 children = mesh->children[parent];
+        if (children.x == loopId)
+        {
+            mesh->children[parent].x = 0;
+            if (children.y != 0)
+                loopId = 0;
+            else
+                loopId = parent;
+        }
+        else
+        {
+            mesh->children[parent].y = 0;
+            if (children.x != 0)
+                loopId = 0;
+            else
+                loopId = parent;
+        }
     }
+
+    // int2 tris = mesh->children[id];
+    // Triangle t1 = mesh->triangles[-(tris.x + 1)];
+    // Triangle t2 = mesh->triangles[-(tris.y + 1)];
+    // int2 commonIds = findCommonPoints(t1, t2);
+    // if (commonIds.x != -1 && commonIds.y != -1)
+    // {
+    //     Vector3 middle = add(mesh->vertices[commonIds.x], mesh->vertices[commonIds.y]);
+    //     middle = scalef(middle, 0.5f);
+    //     mesh->vertices[commonIds.x] = middle;
+    //     mesh->vertices[commonIds.y] = middle;
+    //     rebuildBboxesBounds(mesh, 0);
+    // }
 }
