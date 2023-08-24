@@ -1,7 +1,7 @@
 __constant float EPSILON = 0.0000001;
 __constant int LOOP_THRESHOLD = 30000;
 
-int intersect_triangle(__global const int *triangles, int i, __global const float* vertices, __global const float* normals, float3* ray, float3 cameraPosition){
+float intersect_triangle(__global const int *triangles, int i, __global const float* vertices, __global const float* normals, float3* ray, float3 cameraPosition){
   float3 normal1 = vload3(triangles[9 * i + 3], normals);
   if(dot(*ray, normal1) > 0){
     return -1;
@@ -14,8 +14,7 @@ int intersect_triangle(__global const int *triangles, int i, __global const floa
   float3 h = cross(*ray, e2);
   float a = dot(e1, h);
 
-  // if (a > -EPSILON && a < EPSILON)
-  if(a == 0)
+  if (a > -EPSILON && a < EPSILON)
     return -1;
   float f = 1.0 / a;
   float3 s = cameraPosition - p1;
@@ -30,9 +29,10 @@ int intersect_triangle(__global const int *triangles, int i, __global const floa
   return t;
 }
 
-bool intersect_bbox(float3 maxBound, float3 minBound, float3 ray, float3 pos){
+bool intersect_bbox(float3 maxBound, float3 minBound, float3* ry, float3 pos){
   float tmin = -INFINITY;
   float tmax = INFINITY;
+  float3 ray = *ry;
   if(ray.x != 0){
     float tx1 = (minBound.x - pos.x) / ray.x;
     float tx2 = (maxBound.x - pos.x) / ray.x;
@@ -88,54 +88,54 @@ __kernel void raytrace(
 
   result[index] = -1;
   
-  for(int i = 0; i < nbTriangle; i++){
-    int t = intersect_triangle(triangles, i, vertices, normals, &ray, camPos);
-    if(t > 0){
-      result[index] = i;
-      break;
-    }
-  }
-
-  // int stack[35];
-  // stack[0] = 0;
-  // int stack_size = 1;
-  // //dfs
-  // int mint = INFINITY;
-  // int countLoop = 0;
-  // int i;
-
-  // while(stack_size > 0){
-  //   countLoop++;
-  //   if(LOOP_THRESHOLD < countLoop){
-  //     printf("loop threshold reached\n");
+  // for(int i = 0; i < nbTriangle; i++){
+  //   int t = intersect_triangle(triangles, i, vertices, normals, &ray, camPos);
+  //   if(t > 0){
+  //     result[index] = i;
   //     break;
   //   }
-  //   i = stack[stack_size - 1];
-  //   stack_size--;
-  //   if(intersect_bbox(vload3(i, maxbbox), vload3(i, minbbox), ray, camPos)){
-  //     int2 child = children[i];
-  //     if(child.x < 0){
-  //       int cx = -(child.x+1);
-  //       int t = intersect_triangle(triangles, cx, vertices, &ray, camPos);
-  //       if(t > 0 && t < mint){
-  //         mint = t;
-  //         result[index] = cx;
-  //       }
-  //     }else{
-  //       stack[stack_size] = child.x;
-  //       stack_size++;
-  //     }
-  //     if(child.y < 0){
-  //       int cy = -(child.y+1);
-  //       int t = intersect_triangle(triangles, cy, vertices, &ray, camPos);
-  //       if(t > 0 && t < mint){
-  //         mint = t;
-  //         result[index] = cy;
-  //       }
-  //     }else{
-  //       stack[stack_size] = child.y;
-  //       stack_size++;
-  //     }
-  //   }
   // }
+
+  int stack[35];
+  stack[0] = 0;
+  int stack_size = 1;
+  //dfs
+  float mint = INFINITY;
+  int countLoop = 0;
+  int i;
+
+  while(stack_size > 0){
+    countLoop++;
+    if(LOOP_THRESHOLD < countLoop){
+      printf("loop threshold reached\n");
+      break;
+    }
+    i = stack[stack_size - 1];
+    stack_size--;
+    if(intersect_bbox(vload3(i, maxbbox), vload3(i, minbbox), &ray, camPos)){
+      int2 child = children[i];
+      if(child.x < 0){
+        int cx = -(child.x+1);
+        float t = intersect_triangle(triangles, cx, vertices, normals, &ray, camPos);
+        if(t > EPSILON && t < mint){
+          mint = t;
+          result[index] = cx;
+        }
+      }else{
+        stack[stack_size] = child.x;
+        stack_size++;
+      }
+      if(child.y < 0){
+        int cy = -(child.y+1);
+        float t = intersect_triangle(triangles, cy, vertices, normals, &ray, camPos);
+        if(t > EPSILON && t < mint){
+          mint = t;
+          result[index] = cy;
+        }
+      }else{
+        stack[stack_size] = child.y;
+        stack_size++;
+      }
+    }
+  }
 }
