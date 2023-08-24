@@ -12,9 +12,6 @@ DaftApp* initApp(){
     app->window = SDL_CreateWindow("SDL2 Displaying Image",
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
             SCREEN_WIDTH, SCREEN_HEIGHT, 0);
-    #if FULLSCREEN
-    SDL_SetWindowFullscreen(app->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-    #endif
     app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRelativeMouseMode(SDL_TRUE);
     SDL_RendererInfo info;
@@ -38,6 +35,9 @@ void freeApp(DaftApp* app){
 }
 
 void launchApp(DaftApp* app){
+    #if FULLSCREEN
+    SDL_SetWindowFullscreen(app->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    #endif
     if(app->camera == NULL){
         printf("No camera defined, cannot launch DAFT app\n");
         return;

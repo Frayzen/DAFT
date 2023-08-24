@@ -71,7 +71,7 @@ __kernel void raytrace(
     __global const float* minbbox,
     __global const float* maxbbox,
     __global const int2 *children,
-    __global int *result
+    __global unsigned int *result
 ) {
   int y = get_global_id(0);
   int x = get_global_id(1);
@@ -87,6 +87,7 @@ __kernel void raytrace(
     dot(camRay, vload3(1, rotationMatrix)),
     dot(camRay, vload3(2, rotationMatrix))
   );
+  ray = normalize(ray);
 
   result[index] = -1;
   
@@ -139,5 +140,29 @@ __kernel void raytrace(
         stack_size++;
       }
     }
+  }
+  if(result[index] != -1){
+    int t = result[index];
+    float3 normal = vload3(triangles[9 * t + 3], normals);
+    if(normal.x == 0 && normal.y == 0 && normal.z == 0){
+      float3 p1 = vload3(triangles[9 * t], vertices);
+      float3 p2 = vload3(triangles[9 * t + 1], vertices);
+      float3 p3 = vload3(triangles[9 * t + 2], vertices);
+      normal = normalize(cross(p2 - p1, p3 - p1));
+    }
+    //float3 hit = camPos + mint * ray;
+
+    float diffuse = dot(normal, ray);
+    if(diffuse < 0){
+      diffuse *= -1;
+    }
+    unsigned int diffuseValue = 0xFF;
+    diffuseValue = diffuseValue * diffuse;
+    result[index] = 0x000000FF;
+    result[index] |= diffuseValue << 8;
+    result[index] |= diffuseValue << 16;
+    result[index] |= diffuseValue << 24;
+  }else{
+    result[index] = 0xFF000000;
   }
 }

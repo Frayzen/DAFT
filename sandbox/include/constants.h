@@ -12,7 +12,7 @@
 #define CAM_MOV_SPEED 0.1
 #define MOVING_SPEED 0.01
 
-#define FULLSCREEN 1
+#define FULLSCREEN 0
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846

@@ -54,7 +54,7 @@ DaftOpenCL* initOpenCL(){
 
 	// Create memory buffers on the device for each vector
 	cl_mem rayBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * SCREEN_HEIGHT * SCREEN_WIDTH, NULL, &ret);
-	openCL->result = clCreateBuffer(openCL->context, CL_MEM_WRITE_ONLY, sizeof(int) * SCREEN_HEIGHT * SCREEN_WIDTH, NULL, &ret);
+	openCL->result = clCreateBuffer(openCL->context, CL_MEM_WRITE_ONLY, sizeof(unsigned int) * SCREEN_HEIGHT * SCREEN_WIDTH, NULL, &ret);
 
 	// Set arguments for kernel
 	ret = clSetKernelArg(openCL->kernel, 10, sizeof(cl_mem), (void *)&openCL->result);
@@ -77,7 +77,7 @@ void freeOpenCL(DaftOpenCL* openCL){
 	assert(ret == CL_SUCCESS);
 }
 
-void raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL, int* resultArray){
+void raycastMesh(Camera* camera, Mesh* mesh, DaftOpenCL* openCL, unsigned int* resultArray){
 	int ret;
 	cl_kernel kernel = openCL->kernel; 
 	cl_command_queue commandQueue = openCL->commandQueue;

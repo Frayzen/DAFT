@@ -21,7 +21,7 @@ Vector2 getSkyboxPoint(Vector3 direction){
     return r;
 }
 
-Vector3 getRayDirection(int xpix, int ypix, Camera *camera)
+Vector3 getRayDirection(int xpix, int ypix, int width, Camera *camera)
 {
     Vector3 ray = camera->rays[ypix*SCREEN_WIDTH + xpix];
     Matrix3 rotation = createRotationMatrix(camera->rotation);
@@ -29,42 +29,43 @@ Vector3 getRayDirection(int xpix, int ypix, Camera *camera)
     return ray;
 }
 
-void defineSkyScales(Vector2* from_scale, Vector2* to_scale, Camera* camera){
-    Vector3 from = getRayDirection(0, 0, camera);
-    Vector3 to = getRayDirection(SCREEN_WIDTH-1, SCREEN_HEIGHT-1, camera);
+void defineSkyScales(int width, int height, Vector2* from_scale, Vector2* to_scale, Camera* camera){
+    Vector3 from = getRayDirection(0, 0, width, camera);
+    Vector3 to = getRayDirection(width-1, height-1, width, camera);
     *from_scale =  getSkyboxPoint(from);
     *to_scale = getSkyboxPoint(to);
 }
 
-void renderOnScreen(SDL_Renderer* renderer, SDL_Texture* texture, World* wd, float fromSbX, float fromSbY, float toSbX, float toSbY, float fromScX, float fromScY, float toScX, float toScY){
+void renderOnScreen(int width, int height, SDL_Renderer* renderer, SDL_Texture* texture, World* wd, float fromSbX, float fromSbY, float toSbX, float toSbY, float fromScX, float fromScY, float toScX, float toScY){
     SDL_Rect src;
     SDL_Rect dest;
     
     src.x = fromSbX*wd->skybox->w;
-    dest.x = fromScX*SCREEN_WIDTH;
+    dest.x = fromScX*width;
     
     src.y = fromSbY*wd->skybox->h;
-    dest.y = fromScY*SCREEN_HEIGHT;
+    dest.y = fromScY*height;
 
     src.w = wd->skybox->w * (toSbX - fromSbX);
-    dest.w = SCREEN_WIDTH * (toScX - fromScX);
+    dest.w = width * (toScX - fromScX);
 
     src.h = wd->skybox->h * (toSbY - fromSbY);
-    dest.h = SCREEN_HEIGHT * (toScY - fromScY);
-
+    dest.h = height * (toScY - fromScY);
 
     SDL_RenderCopy(renderer, texture, &src, &dest);
 }
 
 void defineSkyPoints(DaftApp* app, SDL_Texture* skybox_texture){
+    int width, height;
+    SDL_GetWindowSize(app->window, &width, &height);
     Vector2 from_scale, to_scale;
-    defineSkyScales(&from_scale, &to_scale, app->camera);
+    defineSkyScales(width, height, &from_scale, &to_scale, app->camera);
     if(from_scale.x < to_scale.x){
-        renderOnScreen(app->renderer, skybox_texture, app->world, from_scale.x, from_scale.y, to_scale.x, to_scale.y, 0, 0, 1, 1);
+        renderOnScreen(width, height, app->renderer, skybox_texture, app->world, from_scale.x, from_scale.y, to_scale.x, to_scale.y, 0, 0, 1, 1);
     }
     else{
         float middleScreen = (1 - from_scale.x)/(1 - from_scale.x + to_scale.x);
-        renderOnScreen(app->renderer, skybox_texture, app->world, from_scale.x, from_scale.y, 1, to_scale.y, 0, 0, middleScreen, 1);
-        renderOnScreen(app->renderer, skybox_texture, app->world, 0, from_scale.y, to_scale.x, to_scale.y, middleScreen, 0, 1, 1);
+        renderOnScreen(width, height, app->renderer, skybox_texture, app->world, from_scale.x, from_scale.y, 1, to_scale.y, 0, 0, middleScreen, 1);
+        renderOnScreen(width, height, app->renderer, skybox_texture, app->world, 0, from_scale.y, to_scale.x, to_scale.y, middleScreen, 0, 1, 1);
     }
 }
