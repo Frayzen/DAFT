@@ -91,6 +91,11 @@ Matrix3 createRotationMatrix(Vector3 rotation){
 
     return result;
 }
+
+float dot(Vector3 v1, Vector3 v2) {
+    return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+}
+
 Vector3 multiplyMatrixVector(Matrix3 m, Vector3 v){
     Vector3 result;
     result.x = m.r1[0] * v.x + m.r1[1] * v.y + m.r1[2] * v.z;

@@ -56,4 +56,5 @@ Vector3 multiplyMatrixVector(Matrix3 m, Vector3 v);
 Vector3 minv3(Vector3 v1, Vector3 v2);
 Vector3 maxv3(Vector3 v1, Vector3 v2);
 Vector3 midPoint(Vector3 v1, Vector3 v2);
+float dot(Vector3 v1, Vector3 v2);
 #endif

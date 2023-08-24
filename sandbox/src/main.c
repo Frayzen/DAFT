@@ -12,6 +12,12 @@ int main(int argc, char *argv[]){
 	worldSetSkybox(app->world, "./assets/skybox/Sky.jpg");
 
 	// Mesh* m = app->world->meshes[0];
+	// for (int i = 0; i < m->triangleCount; i++)
+	// {
+	// 	printf("triangle count is %d\n", m->triangles[i].ns.x);
+	// 	printf("normal is %f %f %f\n", m->normals[m->triangles[i].ns.x].x, m->normals[m->triangles[i].ns.x].y, m->normals[m->triangles[i].ns.x].z);
+	// }
+	
 	// for (int i = 0; i < m->bboxCount; i++)
 	// {
 	// 	printf("===== %d\n", i);

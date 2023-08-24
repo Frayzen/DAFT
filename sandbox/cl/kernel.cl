@@ -1,7 +1,11 @@
 __constant float EPSILON = 0.0000001;
 __constant int LOOP_THRESHOLD = 30000;
 
-int intersect_triangle(__global const int *triangles, int i, __global const float* vertices, float3* ray, float3 cameraPosition){
+int intersect_triangle(__global const int *triangles, int i, __global const float* vertices, __global const float* normals, float3* ray, float3 cameraPosition){
+  float3 normal1 = vload3(triangles[9 * i + 3], normals);
+  if(dot(*ray, normal1) > 0){
+    return -1;
+  }
   float3 p1 = vload3(triangles[9 * i], vertices);
   float3 p2 = vload3(triangles[9 * i + 1], vertices);
   float3 p3 = vload3(triangles[9 * i + 2], vertices);
@@ -9,7 +13,9 @@ int intersect_triangle(__global const int *triangles, int i, __global const floa
   float3 e2 = p3 - p1;
   float3 h = cross(*ray, e2);
   float a = dot(e1, h);
-  if (a > -EPSILON && a < EPSILON)
+
+  // if (a > -EPSILON && a < EPSILON)
+  if(a == 0)
     return -1;
   float f = 1.0 / a;
   float3 s = cameraPosition - p1;
@@ -57,6 +63,7 @@ __kernel void raytrace(
     __global const float* rotationMatrix,
     __global const float* camRays,
     __global const float* vertices,
+    __global const float* normals,
     __global const int *triangles,
     int nbTriangle,
     __global const float* minbbox,
@@ -82,7 +89,7 @@ __kernel void raytrace(
   result[index] = -1;
   
   for(int i = 0; i < nbTriangle; i++){
-    int t = intersect_triangle(triangles, i, vertices, &ray, camPos);
+    int t = intersect_triangle(triangles, i, vertices, normals, &ray, camPos);
     if(t > 0){
       result[index] = i;
       break;

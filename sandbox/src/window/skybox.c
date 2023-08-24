@@ -24,7 +24,7 @@ Vector2 getSkyboxPoint(Vector3 direction){
 Vector3 getRayDirection(int xpix, int ypix, Camera *camera)
 {
     Vector3 ray = camera->rays[ypix*SCREEN_WIDTH + xpix];
-    Matrix rotation = createRotationMatrix(camera->rotation);
+    Matrix3 rotation = createRotationMatrix(camera->rotation);
     ray = multiplyMatrixVector(rotation, ray);
     return ray;
 }
