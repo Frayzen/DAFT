@@ -35,6 +35,9 @@ void handle_key(SDL_Keycode key, DaftApp* app, int pressed){
         case SDLK_f:
             printf("Children: %d, %d\n", app->world->meshes[0]->children[0].x, app->world->meshes[0]->children[0].y);
             break;
+        case SDLK_g:
+            printf("Bounds min : %f %f %f\n", app->world->meshes[0]->minBbox[0].x, app->world->meshes[0]->minBbox[0].y, app->world->meshes[0]->minBbox[0].z);
+            printf("Bounds max : %f %f %f\n", app->world->meshes[0]->maxBbox[0].x, app->world->meshes[0]->maxBbox[0].y, app->world->meshes[0]->maxBbox[0].z);
         default:
             break;
     }
