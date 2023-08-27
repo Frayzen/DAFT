@@ -141,6 +141,62 @@ Edge* computeEdgesCost(Mesh* mesh, Edge* e, Matrix4* Qs){
     return r;
 }
 
+Edge* removeUnmergeable(Mesh* mesh, Edge* edges){
+    Edge* current = edges;
+    Edge* prev = NULL;
+    Edge* ret = edges;
+    while(current != NULL){
+        Edge* next = current->next;
+        Vector3 v1 = mesh->vertices[current->v1];
+        Vector3 v2 = mesh->vertices[current->v2];
+        int found = 0;
+        for (int i = 0; i < mesh->triangleCount; i++)
+        {
+            Triangle tri = mesh->triangles[i];
+            if(tri.vs.x == current->v1 || tri.vs.y == current->v1 || tri.vs.z == current->v1){
+                if(tri.vs.x == current->v2 || tri.vs.y == current->v2 || tri.vs.z == current->v2){
+                    found ++;
+                    if(found == 2)
+                        break;
+                }
+            }
+        }
+        if(found == 2){
+            if(prev == NULL)
+                ret = current;
+            else{
+                prev->next = current->next;
+                free(current);
+                current = NULL;
+            }
+        }
+        //TODO geometry check (for normals)     
+        prev = current;
+        current = next;
+    }
+    return ret;
+}
+
+void mergeEdges(Mesh* mesh, Edge* edges){
+    Edge e = *edges;
+    Vector3 newPoint = e.newPoint;
+    int v1 = e.v1;
+    int v2 = e.v2;
+    for (int i = 0; i < mesh->triangleCount; i++)
+    {
+        Triangle t = mesh->triangles[i];
+        if(t.vs.x == v2)
+            mesh->triangles[i].vs.x = v1;
+        if(t.vs.y == v2)
+            mesh->triangles[i].vs.y = v1;
+        if(t.vs.z == v2)
+            mesh->triangles[i].vs.z = v1;
+    }
+    mesh->vertices[v1] = newPoint;
+    mesh->vertices[v2] = newPoint;
+    rebuildBVH(mesh);    
+}
+
 void simplifyMesh(Mesh* mesh){
     SymmetricMatrix4* Kps = malloc(mesh->triangleCount * sizeof(SymmetricMatrix4));
     for(int i = 0; i < mesh->triangleCount; i++){
@@ -182,4 +238,6 @@ void simplifyMesh(Mesh* mesh){
     printf("First edge points: %f %f %f | %f %f %f\n", mesh->vertices[edges->v1].x, mesh->vertices[edges->v1].y, mesh->vertices[edges->v1].z, mesh->vertices[edges->v2].x, mesh->vertices[edges->v2].y, mesh->vertices[edges->v2].z);
     printf("Merges to point: %f %f %f\n", edges->newPoint.x, edges->newPoint.y, edges->newPoint.z);
     printf("\n %d edges mergeable\n", count);
+    removeUnmergeable(mesh, edges);
+    mergeEdges(mesh, edges);
 }
