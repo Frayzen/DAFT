@@ -150,12 +150,24 @@ Edge* removeUnmergeable(Mesh* mesh, Edge* edges){
         Vector3 v1 = mesh->vertices[current->v1];
         Vector3 v2 = mesh->vertices[current->v2];
         int found = 0;
+        int joint[mesh->vertexCount];
         for (int i = 0; i < mesh->triangleCount; i++)
         {
             Triangle tri = mesh->triangles[i];
             if(tri.vs.x == current->v1 || tri.vs.y == current->v1 || tri.vs.z == current->v1){
-                if(tri.vs.x == current->v2 || tri.vs.y == current->v2 || tri.vs.z == current->v2){
-                    found ++;
+                joint[tri.vs.x] = 1;
+                joint[tri.vs.y] = 1;
+                joint[tri.vs.z] = 1;
+            }
+        }
+        joint[current->v1] = 0;
+        joint[current->v2] = 0;
+        for (int i = 0; i < mesh->triangleCount; i++)
+        {
+            Triangle tri = mesh->triangles[i];
+            if(tri.vs.x == current->v2 || tri.vs.y == current->v2 || tri.vs.z == current->v2){
+                if(joint[tri.vs.x] == 1 || joint[tri.vs.y] == 1 || joint[tri.vs.z] == 1){
+                    found++;
                     if(found == 2)
                         break;
                 }
@@ -177,24 +189,69 @@ Edge* removeUnmergeable(Mesh* mesh, Edge* edges){
     return ret;
 }
 
+int isInside(Vector3 max, Vector3 min, Vector3 point){
+    return point.x >= min.x && point.x <= max.x && point.y >= min.y && point.y <= max.y && point.z >= min.z && point.z <= max.z;
+}
+int replaceInTri(Triangle* t, int from, int to){
+    if(t->vs.x == from){
+        t->vs.x = to;
+        return 1;
+    }
+    if(t->vs.y == from){
+        t->vs.y = to;
+        return 1;
+    }
+    if(t->vs.z == from){
+        t->vs.z = to;
+        return 1;
+    }
+    return 0;
+}
+
+void removeTrianglesWithEdge(Mesh* mesh, int cur, int v1, int v2){
+    int2 children = mesh->children[cur];
+    if(children.x < 0){
+        int triId = -(children.x+1);
+        Triangle tri = mesh->triangles[triId];
+        if(tri.vs.x == v1 || tri.vs.y == v1 || tri.vs.z == v1){
+            if(tri.vs.x == v2 || tri.vs.y == v2 || tri.vs.z == v2)
+                mesh->children[cur].x = 0;
+            else
+                replaceInTri(&tri, v1, v2);
+        }
+    }else if(children.x > 0 && isInside(mesh->maxBbox[children.x], mesh->minBbox[children.x], mesh->vertices[v1])){
+        removeTrianglesWithEdge(mesh, children.x, v1, v2);
+    }
+    if(children.y < 0){
+        int triId = -(children.y+1);
+        Triangle tri = mesh->triangles[triId];
+        if(tri.vs.x == v1 || tri.vs.y == v1 || tri.vs.z == v1){
+            if(tri.vs.x == v2 || tri.vs.y == v2 || tri.vs.z == v2)
+                mesh->children[cur].y = 0;
+        }
+    }else if(children.y > 0 && isInside(mesh->maxBbox[children.y], mesh->minBbox[children.y], mesh->vertices[v1])){
+        removeTrianglesWithEdge(mesh, children.y, v1, v2);
+    }
+}
+
 void mergeEdges(Mesh* mesh, Edge* edges){
     Edge e = *edges;
     Vector3 newPoint = e.newPoint;
     int v1 = e.v1;
     int v2 = e.v2;
-    for (int i = 0; i < mesh->triangleCount; i++)
-    {
-        Triangle t = mesh->triangles[i];
-        if(t.vs.x == v2)
-            mesh->triangles[i].vs.x = v1;
-        if(t.vs.y == v2)
-            mesh->triangles[i].vs.y = v1;
-        if(t.vs.z == v2)
-            mesh->triangles[i].vs.z = v1;
-    }
+    removeTrianglesWithEdge(mesh, v1, v2, 0);
     mesh->vertices[v1] = newPoint;
     mesh->vertices[v2] = newPoint;
     rebuildBbox(mesh);
+}
+
+int _countBBox(Mesh* m, int cur){
+    if(cur <= 0)
+        return 1;
+    return 1 + _countBBox(m, m->children[cur].x) + _countBBox(m, m->children[cur].y);
+}
+int countBBox(Mesh* m){
+    return 1+_countBBox(m, m->children[0].x)+_countBBox(m, m->children[0].y);
 }
 
 void simplifyMesh(Mesh* mesh){
@@ -228,6 +285,7 @@ void simplifyMesh(Mesh* mesh){
         }
     Edge* edges = computeEdgesCost(mesh, tempEdges, Qs);
 
+    removeUnmergeable(mesh, edges);
     int count = 0;
     Edge* current = edges;
     while(current != NULL){
@@ -238,13 +296,14 @@ void simplifyMesh(Mesh* mesh){
     printf("First edge points: %f %f %f | %f %f %f\n", mesh->vertices[edges->v1].x, mesh->vertices[edges->v1].y, mesh->vertices[edges->v1].z, mesh->vertices[edges->v2].x, mesh->vertices[edges->v2].y, mesh->vertices[edges->v2].z);
     printf("Merges to point: %f %f %f\n", edges->newPoint.x, edges->newPoint.y, edges->newPoint.z);
     printf("\n %d edges mergeable\n", count);
-    removeUnmergeable(mesh, edges);
+    printf("\n %d bbox before\n", countBBox(mesh));
     current = edges;
     for (int i = 0; i < 400; i++)
     {
         mergeEdges(mesh, current);
         current = current->next;
     }
+    printf("\n %d bbox after\n", countBBox(mesh));
     
 
 }
