@@ -1,188 +1,185 @@
 #include "../../include/acceleration/lod.h"
 
-int findParent(Mesh *mesh, int id)
-{
-    for (int i = 0; i < mesh->bboxCount; i++)
-    {
-        int2 children = mesh->children[i];
-        if (children.x == id || children.y == id)
-        {
-            return i;
-        }
-    }
-    return -1;
+void printMat4(Matrix4 m){
+    printf("%f %f %f %f\n", m.r1[0], m.r1[1], m.r1[2], m.r1[3]);
+    printf("%f %f %f %f\n", m.r2[0], m.r2[1], m.r2[2], m.r2[3]);
+    printf("%f %f %f %f\n", m.r3[0], m.r3[1], m.r3[2], m.r3[3]);
+    printf("%f %f %f %f\n", m.r4[0], m.r4[1], m.r4[2], m.r4[3]);
 }
 
-void findFurthestBbox(Mesh *mesh, int curr, Vector3 *camPos, int *maxId, float *maxDist)
-{
-    int2 children = mesh->children[curr];
-    Vector3 middle = add(mesh->maxBbox[curr], mesh->minBbox[curr]);
-    middle = scalef(middle, 0.5f);
-    float distance = dist(middle, *camPos);
-    if (distance < *maxDist && children.x <= 0 && children.y <= 0)
-    {
-        *maxDist = distance;
-        *maxId = curr;
-    }
-    if (children.x > 0)
-    {
-        findFurthestBbox(mesh, children.x, camPos, maxId, maxDist);
-    }
-    if (children.y > 0)
-    {
-        findFurthestBbox(mesh, children.y, camPos, maxId, maxDist);
-    }
+Vector4 getPlaneEquation(Mesh* m, int triId){
+    Triangle tri = m->triangles[triId];
+    Vector3 p1 = m->vertices[tri.vs.x];
+    Vector3 p2 = m->vertices[tri.vs.y];
+    Vector3 p3 = m->vertices[tri.vs.z];
+    Vector3 e1 = sub(p2, p1);
+    Vector3 e2 = sub(p3, p1);
+    Vector3 normal = normalize(cross(e1, e2));
+    float d = -dot(normal, p1);
+    Vector4 result = {normal.x, normal.y, normal.z, d};
+    return result;
 }
 
-int2 findCommonPoints(Triangle t1, Triangle t2)
-{
-    int2 commonIds = {-1, -1};
-    if (t1.vs.x == t2.vs.x || t1.vs.x == t2.vs.y || t1.vs.x == t2.vs.z)
-    {
-        commonIds.x = t1.vs.x;
-    }
-    if (t1.vs.y == t2.vs.x || t1.vs.y == t2.vs.y || t1.vs.y == t2.vs.z)
-    {
-        if (commonIds.x == -1)
-        {
-            commonIds.x = t1.vs.y;
-        }
-        else
-        {
-            commonIds.y = t1.vs.y;
-            return commonIds;
-        }
-    }
-    if (t1.vs.z == t2.vs.x || t1.vs.z == t2.vs.y || t1.vs.z == t2.vs.z)
-    {
-        commonIds.y = t1.vs.z;
-    }
-    return commonIds;
+SymmetricMatrix4 computeKp(Mesh* m, int tri){
+    Vector4 plane = getPlaneEquation(m, tri);
+    float a = plane.x;
+    float b = plane.y;
+    float c = plane.z;
+    float d = plane.w;
+    SymmetricMatrix4 result = {
+        a * a, a * b, a * c, a * d,
+        b * b, b * c, b * d,
+        c * c, c * d,
+        d * d
+    };
+    return result;
 }
 
-#define MAX_VECTOR3 \
-    (Vector3) { INFINITY, INFINITY, INFINITY }
-#define MIN_VECTOR3 \
-    (Vector3) { -INFINITY, -INFINITY, -INFINITY }
-void rebuildBboxesBounds(Mesh *mesh, int curr)
-{
-    int2 children = mesh->children[curr];
-    Vector3 leftMax, leftMin, rightMax, rightMin;
-    if(children.x == 0 && children.y == 0){
-        return;
+void addSymToMat(Matrix4* m, SymmetricMatrix4* s){
+    //r1
+    m->r1[0] += s->r1[0];
+    m->r1[1] += s->r1[1];
+    m->r1[2] += s->r1[2];
+    m->r1[3] += s->r1[3];
+    //r2
+    m->r2[0] += s->r1[1];
+    m->r2[1] += s->r2[0];
+    m->r2[2] += s->r2[1];
+    m->r2[3] += s->r2[2];
+    //r3
+    m->r3[0] += s->r1[2];
+    m->r3[1] += s->r2[1];
+    m->r3[2] += s->r3[0];
+    m->r3[3] += s->r3[1];
+    //r4
+    m->r4[0] += s->r1[3];
+    m->r4[1] += s->r2[2];
+    m->r4[2] += s->r3[1];
+    m->r4[3] += s->r4[0];
+}
+
+Matrix4 addMatToMat(Matrix4 m1, Matrix4 m2){
+    Matrix4 result = {
+        m1.r1[0] + m2.r1[0], m1.r1[1] + m2.r1[1], m1.r1[2] + m2.r1[2], m1.r1[3] + m2.r1[3],
+        m1.r2[0] + m2.r2[0], m1.r2[1] + m2.r2[1], m1.r2[2] + m2.r2[2], m1.r2[3] + m2.r2[3],
+        m1.r3[0] + m2.r3[0], m1.r3[1] + m2.r3[1], m1.r3[2] + m2.r3[2], m1.r3[3] + m2.r3[3],
+        m1.r4[0] + m2.r4[0], m1.r4[1] + m2.r4[1], m1.r4[2] + m2.r4[2], m1.r4[3] + m2.r4[3]
+    };
+    return result;
+}
+
+Edge* addEdgeIfNotExist(int i, int j, Edge* e){
+    Edge* current = e;
+    while(current != NULL){
+        if((current->v1 == i && current->v2 == j) || (current->v1 == j && current->v2 == i)){
+            return e;
+        }
+        current = current->next;
     }
-    if (children.x < 0)
-    {
-        Triangle t = mesh->triangles[-(children.x + 1)];
-        leftMax = maxv3(mesh->vertices[t.vs.x], maxv3(mesh->vertices[t.vs.y], mesh->vertices[t.vs.z]));
-        leftMin = minv3(mesh->vertices[t.vs.x], minv3(mesh->vertices[t.vs.y], mesh->vertices[t.vs.z]));
-    }
-    else if (children.x != 0)
-    {
-        rebuildBboxesBounds(mesh, children.x);
-        leftMax = mesh->maxBbox[children.x];
-        leftMin = mesh->minBbox[children.x];
-    }
+    Edge* newEdge = calloc(sizeof(Edge), 1);
+    newEdge->v1 = i;
+    newEdge->v2 = j;
+    newEdge->cost = 0;
+    newEdge->next = NULL;
+    if(e == NULL)
+        newEdge->next = NULL;
     else
-    {
-        leftMax = MIN_VECTOR3;
-        leftMin = MAX_VECTOR3;
-    }
-    if (children.y < 0)
-    {
-        Triangle t = mesh->triangles[-(children.y + 1)];
-        rightMax = maxv3(mesh->vertices[t.vs.x], maxv3(mesh->vertices[t.vs.y], mesh->vertices[t.vs.z]));
-        rightMin = minv3(mesh->vertices[t.vs.x], minv3(mesh->vertices[t.vs.y], mesh->vertices[t.vs.z]));
-    }
-    else if (children.y != 0)
-    {
-        rebuildBboxesBounds(mesh, children.y);
-        rightMax = mesh->maxBbox[children.y];
-        rightMin = mesh->minBbox[children.y];
-    }
-    else
-    {
-        rightMax = MIN_VECTOR3;
-        rightMin = MAX_VECTOR3;
-    }
-    mesh->maxBbox[curr] = maxv3(leftMax, rightMax);
-    mesh->minBbox[curr] = minv3(leftMin, rightMin);
+        newEdge->next = e;
+    return newEdge;
 }
 
-void replaceVerticle(Mesh *mesh, int oldId, int newId)
-{
+Edge* appendToEdgeList(Edge* e, Edge* newEdge){
+    newEdge->next = NULL;
+    if(e == NULL){
+        return newEdge;
+    }
+    if(e->cost > newEdge->cost){
+        newEdge->next = e;
+        return newEdge;
+    }
+    Edge* current = e;
+    while(current->next != NULL){
+        if(current->next->cost > newEdge->cost){
+            newEdge->next = current->next;
+            current->next = newEdge;
+            return e;
+        }
+        current = current->next;
+    }
+    current->next = newEdge;
+    return e;
+}
+
+Edge* computeEdgesCost(Mesh* mesh, Edge* e, Matrix4* Qs){
+    Edge* r = NULL;
+    Edge* current = e;
+    while(current != NULL){
+        Edge* next = current->next;
+        Vector3 v1 = mesh->vertices[current->v1];
+        Vector3 v2 = mesh->vertices[current->v2];
+        Matrix4 Q = addMatToMat(Qs[current->v1], Qs[current->v2]);
+        Matrix4 savedQ = Q;
+        Q.r4[0] = 0;
+        Q.r4[1] = 0;
+        Q.r4[2] = 0;
+        Q.r4[3] = 1;
+        Matrix4 Qinv;
+        Vector4 newPoint;
+        if(inverseMat4(&Q, &Qinv)){
+            newPoint = multiplyMatrixVector4(Qinv, (Vector4){0,0,0,1});
+            current->newPoint = (Vector3){newPoint.x, newPoint.y, newPoint.z};
+        }else{
+            current->newPoint = midPoint(v1, v2);
+            newPoint = (Vector4){current->newPoint.x, current->newPoint.y, current->newPoint.z, 1};
+        }
+        //hesitate between these two lines
+        current->cost = dot4(newPoint, multiplyMatrixVectTranspose4(savedQ, newPoint));
+        //current->cost = dot4(newPoint, multiplyMatrixVector4(savedQ, newPoint));
+        r = appendToEdgeList(r, current);
+        current = next;  
+    }
+    return r;
+}
+
+void simplifyMesh(Mesh* mesh){
+    SymmetricMatrix4* Kps = malloc(mesh->triangleCount * sizeof(SymmetricMatrix4));
+    for(int i = 0; i < mesh->triangleCount; i++){
+        Kps[i] = computeKp(mesh, i);
+    }
+    Matrix4 Qs[mesh->vertexCount];
+    memset(Qs, 0, sizeof(Matrix4) * mesh->vertexCount);
+    Edge* tempEdges = NULL;
     for (int i = 0; i < mesh->triangleCount; i++)
     {
-        Triangle t = mesh->triangles[i];
-        if (t.vs.x == oldId)
-        {
-            mesh->triangles[i].vs.x = newId;
-        }
-        if (t.vs.y == oldId)
-        {
-            mesh->triangles[i].vs.y = newId;
-        }
-        if (t.vs.z == oldId)
-        {
-            mesh->triangles[i].vs.z = newId;
-        }
+        addSymToMat(&Qs[mesh->triangles[i].vs.x], &Kps[i]);
+        addSymToMat(&Qs[mesh->triangles[i].vs.y], &Kps[i]);
+        addSymToMat(&Qs[mesh->triangles[i].vs.z], &Kps[i]); 
+        tempEdges = addEdgeIfNotExist(mesh->triangles[i].vs.x, mesh->triangles[i].vs.y, tempEdges);
+        tempEdges = addEdgeIfNotExist(mesh->triangles[i].vs.y, mesh->triangles[i].vs.z, tempEdges);
+        tempEdges = addEdgeIfNotExist(mesh->triangles[i].vs.z, mesh->triangles[i].vs.x, tempEdges);
     }
-}
+    free(Kps);
+    if(LOD_THRESHOLD > 0)
+        for (int i = 0; i < mesh->vertexCount; i++)
+        {
+            Vector3 v = mesh->vertices[i];
+            for (int j = i+1; j < mesh->vertexCount; j++)
+            {
+                Vector3 v2 = mesh->vertices[j];
+                if(dist(v,v2) < LOD_THRESHOLD)
+                    addEdgeIfNotExist(i, j, tempEdges);
+            }     
+        }
+    Edge* edges = computeEdgesCost(mesh, tempEdges, Qs);
 
-void simplifyMesh(Mesh *mesh, Vector3 camPos)
-{
-    int id = 0;
-    float distance = INFINITY;
-    findFurthestBbox(mesh, 0, &camPos, &id, &distance);
-    int loopId = id;
-    while (loopId != 0)
-    {
-        int parent = findParent(mesh, loopId);
-        int2 children = mesh->children[parent];
-        if (children.x == loopId)
-        {
-            mesh->children[parent].x = 0;
-            if (children.y != 0)
-                loopId = 0;
-            else
-                loopId = parent;
-        }
-        else
-        {
-            mesh->children[parent].y = 0;
-            if (children.x != 0)
-                loopId = 0;
-            else
-                loopId = parent;
-        }
+    int count = 0;
+    Edge* current = edges;
+    while(current != NULL){
+        count++;
+        //printf("%f | ", current->cost);
+        current = current->next;
     }
-
-    int2 tris = mesh->children[id];
-    if(tris.x == 0 || tris.y == 0){
-        int triId = tris.x == 0 ? tris.y : tris.x;
-        if(triId == 0){
-            return;
-        }
-        Triangle t = mesh->triangles[-(triId + 1)];
-        Vector3 middle = add(mesh->vertices[t.vs.x], add(mesh->vertices[t.vs.y], mesh->vertices[t.vs.z]));
-        middle = scalef(middle, 1.0f / 3.0f);
-        mesh->vertices[t.vs.x] = middle;
-        mesh->vertices[t.vs.y] = middle;
-        mesh->vertices[t.vs.z] = middle;
-        replaceVerticle(mesh, t.vs.y, t.vs.x);
-        replaceVerticle(mesh, t.vs.z, t.vs.x);
-        return;
-    }
-    Triangle t1 = mesh->triangles[-(tris.x + 1)];
-    Triangle t2 = mesh->triangles[-(tris.y + 1)];
-    int2 commonIds = findCommonPoints(t1, t2);
-    if (commonIds.x != -1 && commonIds.y != -1)
-    {
-        Vector3 middle = add(mesh->vertices[commonIds.x], mesh->vertices[commonIds.y]);
-        middle = scalef(middle, 0.5f);
-        mesh->vertices[commonIds.x] = middle;
-        mesh->vertices[commonIds.y] = middle;
-        replaceVerticle(mesh, commonIds.x, commonIds.y);
-        rebuildBboxesBounds(mesh, 0);
-    }
+    printf("First edge points: %f %f %f | %f %f %f\n", mesh->vertices[edges->v1].x, mesh->vertices[edges->v1].y, mesh->vertices[edges->v1].z, mesh->vertices[edges->v2].x, mesh->vertices[edges->v2].y, mesh->vertices[edges->v2].z);
+    printf("Merges to point: %f %f %f\n", edges->newPoint.x, edges->newPoint.y, edges->newPoint.z);
+    printf("\n %d edges mergeable\n", count);
 }

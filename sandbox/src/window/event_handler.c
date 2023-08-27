@@ -71,9 +71,9 @@ void handle_events(int* quit, DaftApp* app){
     }
     float yaw = app->camera->rotation.y;
     Matrix3 rotationMatrix = createRotationMatrix(app->camera->rotation);
-    Vector3 forward = multiplyMatrixVector(rotationMatrix, VECTOR_FORWARD);
-    Vector3 up = multiplyMatrixVector(rotationMatrix, VECTOR_UP);
-    Vector3 right = multiplyMatrixVector(rotationMatrix, VECTOR_RIGHT);
+    Vector3 forward = multiplyMatrixVector3(rotationMatrix, VECTOR_FORWARD);
+    Vector3 up = multiplyMatrixVector3(rotationMatrix, VECTOR_UP);
+    Vector3 right = multiplyMatrixVector3(rotationMatrix, VECTOR_RIGHT);
 
     forward = scalef(forward, app->camera->movement_speed.x);
     up = scalef(up, app->camera->movement_speed.y);

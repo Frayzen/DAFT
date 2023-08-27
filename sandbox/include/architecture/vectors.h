@@ -14,9 +14,31 @@ typedef struct {
 } Matrix3;
 
 typedef struct {
+    float r1[4];
+    float r2[4];
+    float r3[4];
+    float r4[4];
+} Matrix4;
+
+typedef struct {
+    float r1[4];
+    float r2[3];
+    float r3[2];
+    float r4[1];
+} SymmetricMatrix4;
+
+
+typedef struct {
     float x;
     float y;
 } Vector2;
+
+typedef struct {
+    float x;
+    float y;
+    float z;
+    float w;
+} Vector4;
 
 typedef struct {
     int x;
@@ -52,9 +74,14 @@ Vector3 scale(Vector3 v, Vector3 s);
 Vector3 rotate(Vector3 v, Vector3 rotation);
 Vector3 rotateRPY(Vector3 v, Vector3 rotation);
 Matrix3 createRotationMatrix(Vector3 rotation);
-Vector3 multiplyMatrixVector(Matrix3 m, Vector3 v);
+Vector3 multiplyMatrixVector3(Matrix3 m, Vector3 v);
+Vector4 multiplyMatrixVector4(Matrix4 m, Vector4 v);
+Vector4 multiplyMatrixVectTranspose4(Matrix4 m, Vector4 v);
 Vector3 minv3(Vector3 v1, Vector3 v2);
 Vector3 maxv3(Vector3 v1, Vector3 v2);
 Vector3 midPoint(Vector3 v1, Vector3 v2);
 float dot(Vector3 v1, Vector3 v2);
+float dot4(Vector4 v1, Vector4 v2);
+Vector3 cross(Vector3 v1, Vector3 v2);
+int inverseMat4(Matrix4* m, Matrix4* r);
 #endif

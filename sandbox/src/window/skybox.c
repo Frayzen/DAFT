@@ -25,7 +25,7 @@ Vector3 getRayDirection(int xpix, int ypix, int width, Camera *camera)
 {
     Vector3 ray = camera->rays[ypix*SCREEN_WIDTH + xpix];
     Matrix3 rotation = createRotationMatrix(camera->rotation);
-    ray = multiplyMatrixVector(rotation, ray);
+    ray = multiplyMatrixVector3(rotation, ray);
     return ray;
 }
 

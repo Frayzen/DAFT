@@ -13,7 +13,6 @@ void renderScreen(DaftApp* app, SDL_Texture* texture)
         Mesh *mesh = app->world->meshes[i];
         raycastMesh(app->camera, mesh, app->openCL, pixels);
     }
-    simplifyMesh(app->world->meshes[0], app->camera->position);
     finishRaycasting(app->openCL);
     SDL_UnlockTexture(app->texture);
 }

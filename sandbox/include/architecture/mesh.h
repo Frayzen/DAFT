@@ -23,6 +23,7 @@ typedef struct {
 #include "bvh.h"
 #include <stdlib.h>
 #include "../preprocessing/obj_parser.h"
+#include "../acceleration/lod.h"
 #include "transform.h"
 
 Mesh* createMesh(char* path, Transform transform);
