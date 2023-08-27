@@ -92,3 +92,50 @@ void buildBbox(Mesh* mesh){
         mesh->originChildren[i] = mesh->children[i];
     }
 }
+
+#define MAX_VECTOR3 (Vector3){INFINITY, INFINITY, INFINITY}
+#define MIN_VECTOR3 (Vector3){-INFINITY, -INFINITY, -INFINITY}
+void rebuildBboxesBounds(Mesh *mesh, int curr)
+{
+    int2 children = mesh->children[curr];
+    Vector3 leftMax, leftMin, rightMax, rightMin;
+    if (children.x < 0)
+    {
+        Triangle t = mesh->triangles[-(children.x + 1)];
+        leftMax = maxv3(mesh->vertices[t.vs.x], maxv3(mesh->vertices[t.vs.y], mesh->vertices[t.vs.z]));
+        leftMin = minv3(mesh->vertices[t.vs.x], minv3(mesh->vertices[t.vs.y], mesh->vertices[t.vs.z]));
+    }
+    else if (children.x != 0)
+    {
+        rebuildBboxesBounds(mesh, children.x);
+        leftMax = mesh->maxBbox[children.x];
+        leftMin = mesh->minBbox[children.x];
+    }
+    else
+    {
+        leftMax = MAX_VECTOR3;
+        leftMin = MIN_VECTOR3;
+    }
+    if (children.y < 0)
+    {
+        Triangle t = mesh->triangles[-(children.y + 1)];
+        rightMax = maxv3(mesh->vertices[t.vs.x], maxv3(mesh->vertices[t.vs.y], mesh->vertices[t.vs.z]));
+        rightMin = minv3(mesh->vertices[t.vs.x], minv3(mesh->vertices[t.vs.y], mesh->vertices[t.vs.z]));
+    }
+    else if (children.y != 0)
+    {
+        rebuildBboxesBounds(mesh, children.y);
+        rightMax = mesh->maxBbox[children.y];
+        rightMin = mesh->minBbox[children.y];
+    }
+    else
+    {
+        rightMax = MAX_VECTOR3;
+        rightMin = MIN_VECTOR3;
+    }
+    mesh->maxBbox[curr] = maxv3(leftMax, rightMax);
+    mesh->minBbox[curr] = minv3(leftMin, rightMin);
+}
+void rebuildBbox(Mesh* mesh){
+    rebuildBboxesBounds(mesh, 0);
+}

@@ -194,7 +194,7 @@ void mergeEdges(Mesh* mesh, Edge* edges){
     }
     mesh->vertices[v1] = newPoint;
     mesh->vertices[v2] = newPoint;
-    rebuildBVH(mesh);    
+    rebuildBbox(mesh);
 }
 
 void simplifyMesh(Mesh* mesh){
@@ -239,5 +239,12 @@ void simplifyMesh(Mesh* mesh){
     printf("Merges to point: %f %f %f\n", edges->newPoint.x, edges->newPoint.y, edges->newPoint.z);
     printf("\n %d edges mergeable\n", count);
     removeUnmergeable(mesh, edges);
-    mergeEdges(mesh, edges);
+    current = edges;
+    for (int i = 0; i < 400; i++)
+    {
+        mergeEdges(mesh, current);
+        current = current->next;
+    }
+    
+
 }

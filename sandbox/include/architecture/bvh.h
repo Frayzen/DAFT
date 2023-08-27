@@ -5,5 +5,6 @@
 #include "vectors.h"
 
 void buildBbox(Mesh* mesh);
+void rebuildBbox(Mesh* mesh);
 
 #endif
