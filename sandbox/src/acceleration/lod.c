@@ -195,43 +195,26 @@ int isInside(Vector3 max, Vector3 min, Vector3 point){
 int replaceInTri(Triangle* t, int from, int to){
     if(t->vs.x == from){
         t->vs.x = to;
-        return 1;
+        return t->vs.y == to || t->vs.z == to;
     }
     if(t->vs.y == from){
         t->vs.y = to;
-        return 1;
+        return t->vs.x == to || t->vs.z == to;
     }
     if(t->vs.z == from){
         t->vs.z = to;
-        return 1;
+        return t->vs.x == to || t->vs.y == to;
     }
     return 0;
 }
 
-void removeTrianglesWithEdge(Mesh* mesh, int cur, int v1, int v2){
-    int2 children = mesh->children[cur];
-    if(children.x < 0){
-        int triId = -(children.x+1);
-        Triangle tri = mesh->triangles[triId];
-        if(tri.vs.x == v1 || tri.vs.y == v1 || tri.vs.z == v1){
-            if(tri.vs.x == v2 || tri.vs.y == v2 || tri.vs.z == v2)
-                mesh->children[cur].x = 0;
-            else
-                replaceInTri(&tri, v1, v2);
-        }
-    }else if(children.x > 0 && isInside(mesh->maxBbox[children.x], mesh->minBbox[children.x], mesh->vertices[v1])){
-        removeTrianglesWithEdge(mesh, children.x, v1, v2);
+int findParent(Mesh* mesh, int cur){
+    for (int i = 0; i < mesh->bboxCount; i++)
+    {
+        if(mesh->children[i].x == cur || mesh->children[i].y == cur)
+            return i;
     }
-    if(children.y < 0){
-        int triId = -(children.y+1);
-        Triangle tri = mesh->triangles[triId];
-        if(tri.vs.x == v1 || tri.vs.y == v1 || tri.vs.z == v1){
-            if(tri.vs.x == v2 || tri.vs.y == v2 || tri.vs.z == v2)
-                mesh->children[cur].y = 0;
-        }
-    }else if(children.y > 0 && isInside(mesh->maxBbox[children.y], mesh->minBbox[children.y], mesh->vertices[v1])){
-        removeTrianglesWithEdge(mesh, children.y, v1, v2);
-    }
+    return 0;
 }
 
 void mergeEdges(Mesh* mesh, Edge* edges){
@@ -239,10 +222,30 @@ void mergeEdges(Mesh* mesh, Edge* edges){
     Vector3 newPoint = e.newPoint;
     int v1 = e.v1;
     int v2 = e.v2;
-    removeTrianglesWithEdge(mesh, v1, v2, 0);
+    for (int i = 0; i < mesh->triangleCount; i++)
+    {
+        Triangle* t = &mesh->triangles[i];
+        replaceInTri(t, v1, v2);
+        // if(replaceInTri(t, v1, v2)){
+        //     int curId = -(i+1);
+        //     int parentId;
+        //     int2 children;
+        //     while(curId != 0){
+        //         parentId = findParent(mesh, curId);
+        //         children = mesh->children[parentId];
+        //         if(children.x == curId)
+        //             mesh->children[parentId].x = 0;
+        //         else
+        //             mesh->children[parentId].y = 0;
+        //         if(children.x == 0 && children.y == 0)
+        //             curId = parentId;
+        //         else
+        //             curId = 0;
+        //     }
+        // }
+    }
     mesh->vertices[v1] = newPoint;
     mesh->vertices[v2] = newPoint;
-    rebuildBbox(mesh);
 }
 
 int _countBBox(Mesh* m, int cur){
@@ -303,6 +306,7 @@ void simplifyMesh(Mesh* mesh){
         mergeEdges(mesh, current);
         current = current->next;
     }
+    rebuildBbox(mesh);
     printf("\n %d bbox after\n", countBBox(mesh));
     
 
