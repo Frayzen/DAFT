@@ -225,24 +225,30 @@ void mergeEdges(Mesh* mesh, Edge* edges){
     for (int i = 0; i < mesh->triangleCount; i++)
     {
         Triangle* t = &mesh->triangles[i];
-        replaceInTri(t, v1, v2);
-        // if(replaceInTri(t, v1, v2)){
-        //     int curId = -(i+1);
-        //     int parentId;
-        //     int2 children;
-        //     while(curId != 0){
-        //         parentId = findParent(mesh, curId);
-        //         children = mesh->children[parentId];
-        //         if(children.x == curId)
-        //             mesh->children[parentId].x = 0;
-        //         else
-        //             mesh->children[parentId].y = 0;
-        //         if(children.x == 0 && children.y == 0)
-        //             curId = parentId;
-        //         else
-        //             curId = 0;
-        //     }
-        // }
+        if(replaceInTri(t, v1, v2)){
+            int loopId = -(i+1);
+            while (loopId != 0)
+            {
+                int parent = findParent(mesh, loopId);
+                int2 children = mesh->children[parent];
+                if (children.x == loopId)
+                {
+                    mesh->children[parent].x = 0;
+                    if (children.y != 0)
+                        loopId = 0;
+                    else
+                        loopId = parent;
+                }
+                else
+                {
+                    mesh->children[parent].y = 0;
+                    if (children.x != 0)
+                        loopId = 0;
+                    else
+                        loopId = parent;
+                }
+            }
+        }
     }
     mesh->vertices[v1] = newPoint;
     mesh->vertices[v2] = newPoint;
@@ -301,7 +307,7 @@ void simplifyMesh(Mesh* mesh){
     printf("\n %d edges mergeable\n", count);
     printf("\n %d bbox before\n", countBBox(mesh));
     current = edges;
-    for (int i = 0; i < 400; i++)
+    for (int i = 0; i < 2; i++)
     {
         mergeEdges(mesh, current);
         current = current->next;
