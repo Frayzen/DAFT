@@ -113,8 +113,8 @@ void rebuildBboxesBounds(Mesh *mesh, int curr)
     }
     else
     {
-        leftMax = MAX_VECTOR3;
-        leftMin = MIN_VECTOR3;
+        leftMax = MIN_VECTOR3;
+        leftMin = MAX_VECTOR3;
     }
     if (children.y < 0)
     {
@@ -130,8 +130,8 @@ void rebuildBboxesBounds(Mesh *mesh, int curr)
     }
     else
     {
-        rightMax = MAX_VECTOR3;
-        rightMin = MIN_VECTOR3;
+        rightMax = MIN_VECTOR3;
+        rightMin = MAX_VECTOR3;
     }
     mesh->maxBbox[curr] = maxv3(leftMax, rightMax);
     mesh->minBbox[curr] = minv3(leftMin, rightMin);

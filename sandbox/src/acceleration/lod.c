@@ -307,13 +307,11 @@ void simplifyMesh(Mesh* mesh){
     printf("\n %d edges mergeable\n", count);
     printf("\n %d bbox before\n", countBBox(mesh));
     current = edges;
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 500; i++)
     {
         mergeEdges(mesh, current);
         current = current->next;
     }
     rebuildBbox(mesh);
     printf("\n %d bbox after\n", countBBox(mesh));
-    
-
 }

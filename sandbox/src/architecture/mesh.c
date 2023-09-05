@@ -6,7 +6,7 @@ Mesh* createMesh(char* path, Transform transform) {
     buildBbox(mesh);
     printf("Mesh %s created (%d vertices, %d faces, %d bboxes)\n", path, mesh->vertexCount, mesh->triangleCount, mesh->bboxCount);
     printf("Simplifying mesh...\n");
-    simplifyMesh(mesh);
+    //simplifyMesh(mesh);
     printf("Mesh simplified (%d vertices, %d faces, %d bboxes)\n", mesh->vertexCount, mesh->triangleCount, mesh->bboxCount);
     return mesh;
 }
