@@ -10,6 +10,7 @@ void renderScreen(DaftApp* app, SDL_Texture* texture)
     SDL_LockTexture(app->texture, NULL, (void **)&pixels, &pitch);
     for (int i = 0; i < app->world->meshesCount; i++)
     {
+        rasterizeBbox(app->world->meshes[i], app->camera, pixels);
         Mesh *mesh = app->world->meshes[i];
         raycastMesh(app->camera, mesh, app->openCL, pixels);
     }

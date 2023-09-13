@@ -8,10 +8,24 @@ typedef struct {
 } Vector3;
 
 typedef struct {
+    float x;
+    float y;
+    float z;
+    float w;
+} Vector4;
+
+typedef struct {
     float r1[3];
     float r2[3];
     float r3[3];
 } Matrix3;
+
+typedef struct {
+    float r1[4];
+    float r2[4];
+    float r3[4];
+    float r4[4];
+} Matrix4;
 
 typedef struct {
     float x;
@@ -57,4 +71,8 @@ Vector3 minv3(Vector3 v1, Vector3 v2);
 Vector3 maxv3(Vector3 v1, Vector3 v2);
 Vector3 midPoint(Vector3 v1, Vector3 v2);
 float dot(Vector3 v1, Vector3 v2);
+Vector3 vect4to3(Vector4 v);
+Vector4 vect3to4(Vector3 v);
+Vector4 multiplyMatrixVector4(Matrix4 m, Vector4 v);
+Vector3 multiplyMatrixVector3(Matrix4 m, Vector3 v);
 #endif

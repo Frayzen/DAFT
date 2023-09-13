@@ -17,6 +17,7 @@ typedef struct {
 #include <math.h>
 #include <stdio.h>
 
+Matrix4 getProjectionMatrix(Camera* cam);
 Camera* createCamera();
 
 #endif

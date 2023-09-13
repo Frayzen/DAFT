@@ -84,7 +84,11 @@ __kernel void raytrace(
   float3 camRay = vload3(index, camRays);
   float3 camPos = vload3(0, cameraPosition);
 
-  // rotate ray
+  if(result[index] == 1){
+    result[index] = 0xFF0000;
+    return;
+  }
+    // rotate ray
   float3 ray = (float3)(
     dot(camRay, vload3(0, rotationMatrix)),
     dot(camRay, vload3(1, rotationMatrix)),

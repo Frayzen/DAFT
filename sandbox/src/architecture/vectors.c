@@ -115,3 +115,26 @@ Vector3 midPoint(Vector3 v1, Vector3 v2) {
     Vector3 result = {(v1.x + v2.x) / 2, (v1.y + v2.y) / 2, (v1.z + v2.z) / 2};
     return result;
 }
+
+
+Vector3 vect4to3(Vector4 v){
+    Vector3 result = {v.x, v.y, v.z};
+    return result;
+}
+Vector4 vect3to4(Vector3 v){
+    Vector4 result = {v.x, v.y, v.z, 1};
+    return result;
+}
+Vector4 multiplyMatrixVector4(Matrix4 m, Vector4 v){
+    Vector4 result;
+    result.x = m.r1[0] * v.x + m.r1[1] * v.y + m.r1[2] * v.z + m.r1[3] * v.w;
+    result.y = m.r2[0] * v.x + m.r2[1] * v.y + m.r2[2] * v.z + m.r2[3] * v.w;
+    result.z = m.r3[0] * v.x + m.r3[1] * v.y + m.r3[2] * v.z + m.r3[3] * v.w;
+    result.w = m.r4[0] * v.x + m.r4[1] * v.y + m.r4[2] * v.z + m.r4[3] * v.w;
+    return result;
+}
+Vector3 multiplyMatrixVector3(Matrix4 m, Vector3 v){
+    Vector4 v4 = vect3to4(v);
+    Vector4 result = multiplyMatrixVector4(m, v4);
+    return vect4to3(result);
+}

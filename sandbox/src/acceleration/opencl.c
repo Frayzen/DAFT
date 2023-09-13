@@ -53,8 +53,7 @@ DaftOpenCL* initOpenCL(){
 	assert(ret == CL_SUCCESS);
 
 	// Create memory buffers on the device for each vector
-	cl_mem rayBuffer = clCreateBuffer(openCL->context, CL_MEM_READ_ONLY, sizeof(Vector3) * SCREEN_HEIGHT * SCREEN_WIDTH, NULL, &ret);
-	openCL->result = clCreateBuffer(openCL->context, CL_MEM_WRITE_ONLY, sizeof(unsigned int) * SCREEN_HEIGHT * SCREEN_WIDTH, NULL, &ret);
+	openCL->result = clCreateBuffer(openCL->context, CL_MEM_READ_WRITE, sizeof(unsigned int) * SCREEN_HEIGHT * SCREEN_WIDTH, NULL, &ret);
 
 	// Set arguments for kernel
 	ret = clSetKernelArg(openCL->kernel, 10, sizeof(cl_mem), (void *)&openCL->result);
