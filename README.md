@@ -18,10 +18,16 @@ You can find more information about the engine on the [official website](https:/
 ## Usage
 ### Requirements
 #### Linux
-
+##### Ubuntu
 Consider simply executing the following command:
 ```bash
-sudo apt-get install make gcc libsdl2-dev libsdl2-image-dev libgtk-3-dev
+# apt-get install make gcc libsdl2-dev libsdl2-image-dev libgtk-3-dev ffmpeg
+```
+
+##### ArchLinux
+Consider simply executing the following command:
+```bash
+# pacman -Sy make gcc sdl2 sdl2_image gtk3 ffmpeg
 ```
 #### Windows:
 * Install MinGW and all the packages required (dont forget to include mingw32-pthreads-w32 under "All packages section")
@@ -55,7 +61,7 @@ Once the compilation is done, you can **run** the engine using the following com
 ```bash
 ./bin/DAFT <scene_file path>
 ```
-If needed, you can find [sample scene here](https://frayzen.github.io/DAFT/#download).
+If needed, you can find [sample scenes here](https://frayzen.github.io/DAFT/#download).
 
 ### Keys
 Please find below the list of keys used to interact with the engine:
