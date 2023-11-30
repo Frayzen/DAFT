@@ -36,10 +36,10 @@ ifdef OS
 else
 # Linux stuff
 	rm       = rm -f
-	rmdir       = rm -f
+	rmdir       = rm -rf
 	mkdir = mkdir -p $(1)
-	CFLAGS := -std=c99
-	LIBS := -fsanitize=address
+	CFLAGS := -std=c11
+	LIBS := -lc
 endif
 
 

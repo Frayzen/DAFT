@@ -1,7 +1,13 @@
+#ifndef _WIN32
+#define _POSIX_C_SOURCE 200809L
+#endif
 #include "../../include/window/renderer.h"
 
 int percentage = 0;
 unsigned char last_image[VIDEO_WIDTH * VIDEO_HEIGHT * 3];
+
+
+
 
 
 void render_screen(rendering_params *rdp)

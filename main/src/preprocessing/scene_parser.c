@@ -1,5 +1,9 @@
 #include "../../include/preprocessing/scene_parser.h"
 
+#ifndef _WIN32
+#include <libgen.h>
+#endif // _WIN32
+
 int startsWith(const char *pre, const char *str)
 {
     size_t lenpre = strlen(pre),
